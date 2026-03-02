@@ -1,0 +1,15 @@
+# Gemini CLI context file
+GEMINI.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local environment
+.env
