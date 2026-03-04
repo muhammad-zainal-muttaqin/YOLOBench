@@ -185,7 +185,7 @@ Data berikut diekstrak dari confusion matrix ternormalisasi (diagonal = recall p
 
 #### B1 (TBS Paling Matang — Easiest)
 
-![Confusion Matrix Grid](runs/compare_canvases/grid_confusion_matrix_normalized.png)
+![Confusion Matrix Grid](runs/compare_2col/grid2_confusion_matrix_normalized.png)
 
 - **Kelas paling mudah dideteksi** di semua model — tandan matang memiliki warna oranye-merah yang khas
 - Recall rata-rata Combined/DAMIMAS: **0.72–0.78**
@@ -326,7 +326,7 @@ Berdasarkan confusion matrix, pola kesalahan yang konsisten:
 
 ### 8.4 Master Canvas — Perbandingan Visual Per Gambar
 
-![Master Canvas](compare_same_test/master_canvas.jpg)
+![Master Canvas](compare_same_test/canvases_2col/master_canvas_2col.jpg)
 
 **Canvas ini menampilkan 8 gambar test yang sama, diprediksi oleh semua 14 model secara berdampingan.**
 
@@ -345,14 +345,14 @@ Berdasarkan confusion matrix, pola kesalahan yang konsisten:
 
 Detail canvas per gambar tersedia di: `compare_same_test/canvases/`
 
-![Canvas 1](compare_same_test/canvases/canvas_01_DAMIMAS_A21B_0551_3.jpg)
-![Canvas 2](compare_same_test/canvases/canvas_02_DAMIMAS_A21B_0490_4.jpg)
-![Canvas 3](compare_same_test/canvases/canvas_03_DAMIMAS_A21B_0497_4.jpg)
-![Canvas 4](compare_same_test/canvases/canvas_04_DAMIMAS_A21B_0275_3.jpg)
-![Canvas 5](compare_same_test/canvases/canvas_05_DAMIMAS_A21B_0716_1.jpg)
-![Canvas 6](compare_same_test/canvases/canvas_06_DAMIMAS_A21B_0749_1.jpg)
-![Canvas 7](compare_same_test/canvases/canvas_07_DAMIMAS_A21B_0551_4.jpg)
-![Canvas 8](compare_same_test/canvases/canvas_08_DAMIMAS_A21B_0551_2.jpg)
+![Canvas 1](compare_same_test/canvases_2col/canvas_01_DAMIMAS_A21B_0551_3.jpg)
+![Canvas 2](compare_same_test/canvases_2col/canvas_02_DAMIMAS_A21B_0490_4.jpg)
+![Canvas 3](compare_same_test/canvases_2col/canvas_03_DAMIMAS_A21B_0497_4.jpg)
+![Canvas 4](compare_same_test/canvases_2col/canvas_04_DAMIMAS_A21B_0275_3.jpg)
+![Canvas 5](compare_same_test/canvases_2col/canvas_05_DAMIMAS_A21B_0716_1.jpg)
+![Canvas 6](compare_same_test/canvases_2col/canvas_06_DAMIMAS_A21B_0749_1.jpg)
+![Canvas 7](compare_same_test/canvases_2col/canvas_07_DAMIMAS_A21B_0551_4.jpg)
+![Canvas 8](compare_same_test/canvases_2col/canvas_08_DAMIMAS_A21B_0551_2.jpg)
 
 ---
 
