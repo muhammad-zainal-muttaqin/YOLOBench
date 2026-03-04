@@ -1,6 +1,12 @@
 # Gemini CLI context file
 GEMINI.md
 
+# Raw data / scratch files
+Hasil Eval.txt
+Notes-*.txt
+yolo-2stage.txt
+E0_*.html
+
 # OS files
 .DS_Store
 Thumbs.db

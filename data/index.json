@@ -1,0 +1,17 @@
+{
+  "months": [
+    "2026-03"
+  ],
+  "meta": {
+    "project_title": "YOLO Research Logbook",
+    "subtitle": "9 legacy experiments completed — preparing tree-level split for new v2 runs",
+    "last_updated": "2026-03-04"
+  },
+  "rules": {
+    "test_set": "shared test (v2)",
+    "seeds": [
+      42,
+      123
+    ]
+  }
+}

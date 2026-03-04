@@ -1,439 +1,557 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOLO Analytics | Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-body: #f8fafc;
-            --bg-card: #ffffff;
-            --primary: #4f46e5;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --radius: 8px;
-            --shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            padding: 0.75rem;
-            gap: 0.75rem;
-        }
-
-        header {
-            flex: 0 0 auto;
-            background: white;
-            padding: 0.6rem 1rem;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow);
-        }
-
-        .brand h1 { font-size: 1rem; font-weight: 700; }
-        .brand h1 span { color: var(--primary); }
-        .brand p { font-size: 0.7rem; color: var(--text-muted); }
-
-        .tabs { background: #f1f5f9; padding: 3px; border-radius: 6px; display: flex; gap: 2px; }
-        .tab-btn {
-            border: none; background: transparent; padding: 0.4rem 0.8rem;
-            font-size: 0.7rem; font-weight: 600; color: var(--text-muted);
-            cursor: pointer; border-radius: 4px; transition: all 0.2s;
-        }
-        .tab-btn.active { background: white; color: var(--primary); box-shadow: var(--shadow); }
-
-        .dashboard-layout {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 0.75rem;
-            min-height: 0;
-        }
-
-        .card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow);
-            min-height: 0;
-        }
-
-        .card-header {
-            padding: 0.6rem 0.8rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex: 0 0 auto;
-        }
-
-        .card-title { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
-
-        select {
-            padding: 0.3rem 1.4rem 0.3rem 0.4rem; font-size: 0.7rem; font-family: inherit;
-            border: 1px solid var(--border); border-radius: 4px; background-color: white;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 0.3rem center; background-size: 0.9rem;
-            appearance: none; cursor: pointer; outline: none;
-        }
-
-        .ranking-list { flex: 1; overflow-y: auto; padding: 0.4rem; }
-        .lb-item {
-            display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem;
-            border-radius: 6px; margin-bottom: 0.2rem;
-        }
-        .lb-rank { width: 18px; font-weight: 700; color: var(--text-muted); font-size: 0.7rem; text-align: center; }
-        .lb-info { flex: 1; min-width: 0; }
-        .lb-name { font-weight: 600; font-size: 0.75rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .lb-ds { font-size: 0.6rem; color: var(--text-muted); }
-        .lb-val { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--primary); font-size: 0.75rem; }
-        .progress-bar { height: 3px; background: #f1f5f9; border-radius: 2px; margin-top: 3px; }
-        .progress-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
-
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            min-height: 0;
-        }
-
-        .comp-card-top {
-            flex: 0 0 auto;
-            padding: 0.75rem;
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .vs-box {
-            background: #f8fafc; border: 1px solid var(--border); padding: 0.6rem; border-radius: var(--radius);
-            display: flex; align-items: center; justify-content: space-around;
-        }
-        .vs-box.winner { border-color: #10b981; background: #f0fdf4; box-shadow: 0 0 0 1px #10b981; }
-        .vs-val { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; line-height: 1; }
-        .vs-label { font-size: 0.6rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); }
-
-        .vs-divider { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
-        .vs-badge { background: white; border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; font-size: 0.55rem; font-weight: 800; }
-        .vs-diff { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700; }
-
-        .bottom-workspace {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 0.75rem;
-            min-height: 0;
-        }
-
-        .radar-container { display: flex; align-items: center; justify-content: center; }
-        .heatmap-container { overflow: auto; padding: 0.4rem; }
-        
-        .hm-table { width: 100%; border-collapse: separate; border-spacing: 2px; }
-        .hm-table th, .hm-table td { padding: 0.4rem 0.2rem; font-size: 0.7rem; text-align: center; border-radius: 3px; }
-        .hm-th { font-weight: 600; color: var(--text-muted); font-size: 0.6rem; }
-        .hm-row-head { 
-            text-align: left; width: 120px; font-weight: 600; padding-left: 0.4rem; 
-            background: #f8fafc; border-left: 3px solid var(--primary);
-        }
-        .hm-row-head small { font-weight: 400; color: var(--text-muted); font-size: 0.55rem; display: block; }
-        .hm-cell { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
-
-        #tooltip { position: fixed; background: #1e293b; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; opacity: 0; pointer-events: none; z-index: 100; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>YOLO Research Logbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{--bg:#edf3ef;--card:#fff;--line:#cfdbd2;--text:#16231c;--muted:#5a6f63;--accent:#1a8f60;--plan:#c57913;--progress:#136e9c;--solved:#17874f;--shadow:0 10px 24px rgba(16,35,24,.08);--legacy:#d4760a;--v2:#1a8f60}
+    *{box-sizing:border-box;margin:0;padding:0} html,body{height:100%}
+    body{font-family:"Space Grotesk",sans-serif;color:var(--text);background:radial-gradient(circle at 8% 0,#d7efe1 0,transparent 30%),radial-gradient(circle at 94% 5%,#ffe8cb 0,transparent 32%),var(--bg);padding:clamp(8px,1vw,12px);overflow:hidden}
+    .shell{height:100%;display:flex;flex-direction:column;gap:10px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:0}
+    .top{padding:12px 14px;display:grid;grid-template-columns:1.4fr auto;gap:10px;align-items:center}
+    .top h1{font-size:24px;line-height:1.1;margin-bottom:2px}
+    .sub{font-size:12px;color:var(--muted)} .chips{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+    .chip{border:1px solid var(--line);background:#f7faf8;border-radius:999px;color:var(--muted);padding:2px 8px;font-size:10px;font-family:"IBM Plex Mono",monospace}
+    .kpis{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .kpi{border:1px solid var(--line);background:#f7faf8;border-radius:10px;padding:7px 10px;min-width:100px}
+    .kpi span{display:block;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)} .kpi b{font-family:"IBM Plex Mono",monospace;font-size:13px}
+    .work{flex:1;min-height:0;display:grid;grid-template-columns:3fr 5fr 4fr;gap:10px}
+    .right{min-height:0;display:grid;grid-template-rows:minmax(0,4fr) minmax(0,6fr);gap:10px}
+    .h{border-bottom:1px solid var(--line);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .t{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700} .m{font:11px "IBM Plex Mono",monospace;color:var(--muted)}
+    .b{padding:10px;overflow:auto;min-height:0;flex:1}
+    .wrap{border:1px solid var(--line);border-radius:10px;background:#f7faf8;padding:8px;margin-bottom:8px}
+    .filters{display:grid;grid-template-columns:1fr 1fr;gap:7px} .f{display:flex;flex-direction:column;gap:3px}
+    label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700}
+    select,button{border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--text);font:inherit;font-size:12px;padding:6px 7px} button{cursor:pointer}
+    .btn{background:#f7faf8;font:11px "IBM Plex Mono",monospace;padding:5px 7px}
+    .calTop{display:flex;justify-content:space-between;align-items:center;margin:6px 0}
+    .w,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px} .w div{text-align:center;font:10px "IBM Plex Mono",monospace;color:var(--muted)}
+    .day{min-height:52px;border:1px solid var(--line);border-radius:9px;padding:4px;background:#fff;display:flex;flex-direction:column;justify-content:space-between;transition:.15s ease}
+    .day:hover,.event:hover,.run:hover{transform:translateY(-1px)} .day.off{opacity:.35} .day.sel,.event.sel,.run.sel{outline:2px solid var(--accent)}
+    .n{text-align:right;font:11px "IBM Plex Mono",monospace} .dots{display:flex;gap:3px;flex-wrap:wrap} .dot{width:5px;height:5px;border-radius:99px}
+    .plan{background:var(--plan)} .progress{background:var(--progress)} .solved{background:var(--solved)}
+    .legend{margin-top:8px;font-size:10px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap} .legend i{width:6px;height:6px;border-radius:99px;display:inline-block;margin-right:4px}
+    .strip{border:1px solid var(--line);background:#f7faf8;border-radius:9px;padding:7px;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:11px}
+    .event{border:1px solid var(--line);border-radius:10px;background:#fff;padding:8px;display:grid;gap:5px;margin-bottom:7px;cursor:pointer;transition:.15s ease}
+    .eh{display:flex;justify-content:space-between;gap:8px;align-items:flex-start} .et{font-size:14px;line-height:1.25;font-weight:700}
+    .meta{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:11px}
+    .badge{border:1px solid;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:1px 7px;white-space:nowrap;font-weight:700}
+    .bp{color:#8e5809;background:#fff3df;border-color:#efcc92}.bpr{color:#0a577f;background:#e4f1fb;border-color:#a7cde6}.bs{color:#0e683d;background:#e3f5ea;border-color:#a4dcbd}
+    .badge-legacy{color:#8e5809;background:#fff3df;border-color:#efcc92;font-size:9px;padding:1px 5px}
+    .badge-v2{color:#0e683d;background:#e3f5ea;border-color:#a4dcbd;font-size:9px;padding:1px 5px}
+    .badge-warn{color:#99261b;background:#fae4df;border-color:#e8b1a9;font-size:9px;padding:2px 6px;font-weight:700}
+    .tags{display:flex;flex-wrap:wrap;gap:4px}.tag{border:1px solid var(--line);border-radius:999px;padding:1px 6px;font-size:10px;color:var(--muted);font-family:"IBM Plex Mono",monospace;background:#f7faf8}
+    .run{border:1px solid var(--line);border-radius:9px;background:#fff;padding:7px;display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;margin-bottom:6px;cursor:pointer;transition:.15s ease}
+    .rk{text-align:center;color:var(--muted);font:11px "IBM Plex Mono",monospace}.rn{font-size:12px;font-weight:700;line-height:1.2}.rs{font-size:10px;color:var(--muted);font-family:"IBM Plex Mono",monospace;margin-top:2px}.rv{font-size:12px;font-family:"IBM Plex Mono",monospace;color:var(--accent);font-weight:700;white-space:nowrap}
+    .mg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:8px}.mb{border:1px solid var(--line);border-radius:9px;background:#f7faf8;padding:7px}.mb div{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}.mb b{font-size:12px;font-family:"IBM Plex Mono",monospace}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}th,td{border-bottom:1px solid #eaf1ec;padding:6px;font-size:11px;text-align:left}th{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);background:#f7faf8}
+    .blk{border:1px solid var(--line);border-radius:9px;background:#fff;padding:8px;margin-top:8px}.blk h5{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}.blk pre{white-space:pre-wrap;font-size:12px;line-height:1.35;font-family:inherit}
+    .warn{border-color:#e8b1a9;background:#fae4df;color:#99261b}
+    .empty{border:1px dashed var(--line);border-radius:10px;background:#fff;color:var(--muted);text-align:center;padding:14px 12px;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+    .tabs{display:none;position:sticky;bottom:0;z-index:3;background:rgba(238,243,239,.92);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:10px;padding:6px;gap:6px;grid-template-columns:1fr 1fr 1fr}
+    .tabs button{padding:9px 6px;font-size:12px;font-weight:700}.tabs button.active{border-color:var(--accent);color:var(--accent);background:#eefaf4}
+    /* Detail tabs */
+    .dtabs{display:flex;gap:4px;margin-bottom:8px}.dtab{padding:4px 10px;border:1px solid var(--line);border-radius:8px;background:#f7faf8;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}.dtab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    /* Split selector */
+    .split-sel{display:flex;gap:4px;margin-bottom:8px}.split-btn{padding:3px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:10px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.05em}.split-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    /* Speed strip */
+    .speed-strip{display:flex;gap:12px;font-size:10px;color:var(--muted);font-family:"IBM Plex Mono",monospace;margin-bottom:6px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:#f7faf8}
+    .speed-strip b{color:var(--text)}
+    /* Model info strip */
+    .model-strip{display:flex;gap:12px;font-size:10px;color:var(--muted);font-family:"IBM Plex Mono",monospace;margin-bottom:6px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:#f7faf8}
+    .model-strip b{color:var(--text)}
+    /* Heatmap cells */
+    .hm{position:relative;font-family:"IBM Plex Mono",monospace;font-weight:600}
+    .hm-bar{position:absolute;left:0;bottom:0;height:3px;border-radius:2px;opacity:.6}
+    /* Chart container */
+    .chart-box{border:1px solid var(--line);border-radius:9px;background:#fff;padding:8px;margin-bottom:8px}
+    .chart-box canvas{max-height:200px}
+    @media (max-width:1180px){.work{grid-template-columns:320px 1fr}.right{grid-column:1/-1;grid-template-rows:auto auto}}
+    @media (max-width:920px){body{overflow:auto}.shell{height:auto;min-height:100%}.top{grid-template-columns:1fr}.kpis{justify-content:flex-start}.work{display:block}.left,.center,.right{display:none;margin-bottom:10px;min-height:62vh}.left.active,.center.active,.right.active{display:flex}.tabs{display:grid}.mg{grid-template-columns:1fr 1fr}}
+    @media (max-width:560px){.filters{grid-template-columns:1fr}.mg{grid-template-columns:1fr}.day{min-height:46px}.top h1{font-size:20px}}
+  </style>
 </head>
 <body>
-    <div id="tooltip"></div>
-
-    <header>
-        <div class="brand">
-            <h1>YOLO<span>Bench</span></h1>
-            <p>One-shot Benchmark Yolo Model based on 3 dataset</p>
-        </div>
-        <div class="tabs" id="split-tabs">
-            <button class="tab-btn" data-split="train">TRAIN</button>
-            <button class="tab-btn" data-split="val">VAL</button>
-            <button class="tab-btn active" data-split="test">TEST</button>
-        </div>
-    </header>
-
-    <div class="dashboard-layout">
-        <aside class="card">
-            <div class="card-header">
-                <span class="card-title">Ranking</span>
-                <select id="metric-select">
-                    <option value="mAP50">mAP@50</option>
-                    <option value="mAP5095">mAP@50-95</option>
-                    <option value="P">Precision</option>
-                    <option value="R">Recall</option>
-                </select>
-            </div>
-            <div class="ranking-list" id="leaderboard"></div>
-        </aside>
-
-        <main class="main-content">
-            <section class="card">
-                <div class="card-header">
-                    <span class="card-title">Comparison</span>
-                    <select id="dataset-select">
-                        <option value="Damimas Full">Damimas Full</option>
-                        <option value="Stratified">Stratified</option>
-                        <option value="Original">Original</option>
-                    </select>
-                </div>
-                <div class="comp-card-top">
-                    <div class="vs-box" id="card-a">
-                        <div style="text-align:left">
-                            <div class="vs-val" id="val-a">0%</div>
-                            <div class="vs-label" id="label-a">mAP@50</div>
-                        </div>
-                        <select id="model-a-select"></select>
-                    </div>
-                    <div class="vs-divider">
-                        <div class="vs-badge">VS</div>
-                        <div class="vs-diff" id="vs-diff">0.0</div>
-                    </div>
-                    <div class="vs-box" id="card-b">
-                        <select id="model-b-select"></select>
-                        <div style="text-align:right">
-                            <div class="vs-val" id="val-b">0%</div>
-                            <div class="vs-label" id="label-b">mAP@50</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <div class="bottom-workspace">
-                <section class="card">
-                    <div class="card-header"><span class="card-title">Radar View</span></div>
-                    <div class="radar-container">
-                        <svg id="radar-svg" width="280" height="240" viewBox="0 0 280 240"></svg>
-                    </div>
-                </section>
-                <section class="card">
-                    <div class="card-header">
-                        <span class="card-title">Class Matrix</span>
-                        <button id="show-all-btn" class="tab-btn" style="padding: 0.2rem 0.6rem; font-size: 0.6rem;">SHOW ALL</button>
-                    </div>
-                    <div class="heatmap-container" id="heatmap"></div>
-                </section>
-            </div>
-        </main>
+<div class="shell">
+  <section class="card top">
+    <div>
+      <h1 id="projectTitle">YOLO Research Logbook</h1>
+      <p id="projectSub" class="sub">Loading...</p>
+      <div class="chips"><span class="chip">Legacy: YOLO26l + YOLOv9m + YOLOv9c | v2: YOLO26l + YOLOv9c</span><span class="chip">Seeds: 42 &amp; 123</span><span class="chip">4 classes: B1 B2 B3 B4</span></div>
     </div>
+    <div class="kpis">
+      <div class="kpi"><span>Last Updated</span><b id="kUpdated">-</b></div><div class="kpi"><span>Total Events</span><b id="kEvents">-</b></div><div class="kpi"><span>Total Runs</span><b id="kRuns">-</b></div><div class="kpi"><span>Solved Rate</span><b id="kSolved">-</b></div>
+    </div>
+  </section>
+  <main class="work">
+    <aside class="card left active" id="panelCalendar">
+      <div class="h"><span class="t">Calendar & Filters</span></div>
+      <div class="b">
+        <div class="wrap">
+          <div class="filters">
+            <div class="f"><label>Status</label><select id="fStatus"><option>ALL</option><option>Plan</option><option>Progress</option><option>Solved</option></select></div>
+            <div class="f"><label>Type</label><select id="fType"><option>ALL</option><option>discussion</option><option>planning</option><option>training</option><option>evaluation</option><option>dataset-prep</option></select></div>
+            <div class="f"><label>Dataset</label><select id="fScenario"><option>ALL</option><option>stratifikasi</option><option>sawit-yolo</option><option>damimas-full</option><option>all_data</option><option>damimas_only</option><option>lonsum_only</option></select></div>
+            <div class="f"><label>Model</label><select id="fModel"><option>ALL</option><option>YOLO26l</option><option>YOLOv9m</option><option>YOLOv9c</option></select></div>
+            <div class="f"><label>Seed</label><select id="fSeed"><option>ALL</option></select></div>
+            <div class="f"><label>Leaderboard</label><select id="fMetric"><option value="mAP50">mAP@50</option><option value="mAP5095">mAP@50-95</option><option value="P">Precision</option><option value="R">Recall</option></select></div>
+            <div class="f"><label>Generation</label><select id="fGen"><option>ALL</option><option>legacy</option><option>v2</option></select></div>
+          </div>
+          <div style="margin-top:7px;display:flex;justify-content:flex-end"><button class="btn" id="resetFilters">Reset Filters</button></div>
+        </div>
+        <div class="calTop"><b id="monthLabel" style="font-size:18px;letter-spacing:-0.01em">Month</b><div><button class="btn" id="prevMonth">&lt;</button> <button class="btn" id="nextMonth">&gt;</button></div></div>
+        <div class="w"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
+        <div class="days" id="calendarDays"></div>
+        <div class="legend"><span><i class="plan"></i>Plan</span><span><i class="progress"></i>Progress</span><span><i class="solved"></i>Solved</span></div>
+      </div>
+    </aside>
+    <section class="card center active" id="panelTimeline">
+      <div class="h"><span class="t">Daily Timeline</span><div style="display:flex;gap:6px;align-items:center"><button class="btn" id="jumpLatest">Jump to Latest</button><span class="m" id="selectedDateLabel">-</span></div></div>
+      <div class="b"><div class="strip"><span id="latestSummary">Latest activity: -</span><span class="chip" id="viewModeChip">view: latest</span></div><div id="timelineList"></div></div>
+    </section>
+    <section class="right active" id="panelDetail">
+      <section class="card"><div class="h"><span class="t">Run Leaderboard</span><span class="m" id="lbMeta">0 runs</span></div><div class="b" id="leaderboardList"></div></section>
+      <section class="card"><div class="h"><span class="t">Run Detail</span><span class="m" id="detailId">Select run</span></div><div class="b" id="detailPanel"></div></section>
+    </section>
+  </main>
+  <nav class="tabs" id="mobileTabs"><button data-panel="calendar" class="active">Calendar</button><button data-panel="timeline">Timeline</button><button data-panel="detail">Detail</button></nav>
+</div>
+<script id="inlineMonthData">
+/* Inline fallback data for file:// protocol. Regenerate with: node generate_data.js */
+window._INLINE_MONTHS={"2026-03":{"events":[{"id":"e1","date":"2026-03-01","type":"training","status":"Solved","title":"Legacy batch 1: YOLO26l & YOLOv9m on stratifikasi + sawit-yolo","tags":["legacy","stratifikasi","sawit-yolo","YOLO26l","YOLOv9m"],"notes_md":"Ran 4 experiments on old datasets (dataset-yolo-stratifikasi and sawit-yolo-dataset) using YOLO26l and YOLOv9m. These use old splits with potential image-level leakage.","schedules":[{"text":"Exp1: YOLO26l on stratifikasi","done":true},{"text":"Exp2: YOLO26l on sawit-yolo","done":true},{"text":"Exp3: YOLOv9m on stratifikasi","done":true},{"text":"Exp4: YOLOv9m on sawit-yolo","done":true}],"runs":[{"run_id":"exp1","gen":"legacy","scenario":"stratifikasi","model":"YOLO26l","seed":"-","eval_set":"stratifikasi/test (604 imgs)","summary":"YOLO26l on dataset-yolo-stratifikasi. Lowest tier — B4 very weak.","global_metrics":{"mAP50":0.442,"mAP5095":0.15,"P":0.432,"R":0.518},"class_metrics":{"B1":{"mAP50":0.73,"P":0.557,"R":0.811},"B2":{"mAP50":0.386,"P":0.435,"R":0.424},"B3":{"mAP50":0.443,"P":0.422,"R":0.524},"B4":{"mAP50":0.209,"P":0.315,"R":0.312}},"splits":{"train":{"images":2784,"instances":12720,"global":{"mAP50":0.437,"mAP5095":0.153,"P":0.434,"R":0.488},"classes":{"B1":{"images":1242,"instances":1505,"P":0.552,"R":0.788,"mAP50":0.726,"mAP5095":0.27,"F1":0.64937},"B2":{"images":1712,"instances":2843,"P":0.452,"R":0.405,"mAP50":0.397,"mAP5095":0.142,"F1":0.42697},"B3":{"images":2479,"instances":5890,"P":0.433,"R":0.49,"mAP50":0.427,"mAP5095":0.143,"F1":0.45973},"B4":{"images":1573,"instances":2482,"P":0.298,"R":0.269,"mAP50":0.198,"mAP5095":0.0583,"F1":0.28272}},"speed":{"preprocess":0.6,"inference":23.2,"postprocess":0.1}},"val":{"images":604,"instances":2656,"global":{"mAP50":0.476,"mAP5095":0.17,"P":0.458,"R":0.501},"classes":{"B1":{"images":288,"instances":338,"P":0.567,"R":0.793,"mAP50":0.767,"mAP5095":0.293,"F1":0.6615},"B2":{"images":383,"instances":650,"P":0.507,"R":0.425,"mAP50":0.463,"mAP5095":0.17,"F1":0.4623},"B3":{"images":528,"instances":1201,"P":0.462,"R":0.53,"mAP50":0.47,"mAP5095":0.161,"F1":0.49378},"B4":{"images":317,"instances":467,"P":0.294,"R":0.257,"mAP50":0.204,"mAP5095":0.0572,"F1":0.2742}},"speed":{"preprocess":1.1,"inference":24.5,"postprocess":0.1}},"test":{"images":604,"instances":2611,"global":{"mAP50":0.442,"mAP5095":0.15,"P":0.432,"R":0.518},"classes":{"B1":{"images":280,"instances":334,"P":0.557,"R":0.811,"mAP50":0.73,"mAP5095":0.278,"F1":0.66026},"B2":{"images":336,"instances":580,"P":0.435,"R":0.424,"mAP50":0.386,"mAP5095":0.125,"F1":0.42927},"B3":{"images":530,"instances":1204,"P":0.422,"R":0.524,"mAP50":0.443,"mAP5095":0.144,"F1":0.46768},"B4":{"images":301,"instances":493,"P":0.315,"R":0.312,"mAP50":0.209,"mAP5095":0.055,"F1":0.31342}},"speed":{"preprocess":1,"inference":24.6,"postprocess":0.1}}},"model_info":{"arch":"YOLO26l","layers":190,"params":24748824,"gflops":86.1},"speed":{"preprocess":1,"inference":24.6,"postprocess":0.1}},{"run_id":"exp2","gen":"legacy","scenario":"sawit-yolo","model":"YOLO26l","seed":"-","eval_set":"sawit-yolo/test (400 imgs)","summary":"YOLO26l on sawit-yolo-dataset. Slightly better than stratifikasi on mAP50.","global_metrics":{"mAP50":0.447,"mAP5095":0.164,"P":0.442,"R":0.498},"class_metrics":{"B1":{"mAP50":0.747,"P":0.583,"R":0.786},"B2":{"mAP50":0.347,"P":0.41,"R":0.384},"B3":{"mAP50":0.477,"P":0.459,"R":0.528},"B4":{"mAP50":0.217,"P":0.314,"R":0.296}},"splits":{"train":{"images":2776,"instances":12494,"global":{"mAP50":0.438,"mAP5095":0.154,"P":0.431,"R":0.495},"classes":{"B1":{"images":1235,"instances":1486,"P":0.539,"R":0.791,"mAP50":0.726,"mAP5095":0.272,"F1":0.64112},"B2":{"images":1723,"instances":2926,"P":0.463,"R":0.413,"mAP50":0.407,"mAP5095":0.144,"F1":0.43641},"B3":{"images":2453,"instances":5752,"P":0.425,"R":0.499,"mAP50":0.422,"mAP5095":0.142,"F1":0.45878},"B4":{"images":1493,"instances":2330,"P":0.296,"R":0.279,"mAP50":0.196,"mAP5095":0.057,"F1":0.28696}},"speed":{"preprocess":0.6,"inference":23.7,"postprocess":0.1}},"val":{"images":816,"instances":3647,"global":{"mAP50":0.462,"mAP5095":0.157,"P":0.443,"R":0.503},"classes":{"B1":{"images":362,"instances":437,"P":0.577,"R":0.81,"mAP50":0.753,"mAP5095":0.276,"F1":0.67411},"B2":{"images":472,"instances":774,"P":0.451,"R":0.43,"mAP50":0.431,"mAP5095":0.15,"F1":0.44028},"B3":{"images":716,"instances":1679,"P":0.45,"R":0.51,"mAP50":0.464,"mAP5095":0.148,"F1":0.47807},"B4":{"images":468,"instances":757,"P":0.295,"R":0.262,"mAP50":0.201,"mAP5095":0.0549,"F1":0.27707}},"speed":{"preprocess":0.9,"inference":26.9,"postprocess":0.1}},"test":{"images":400,"instances":1849,"global":{"mAP50":0.447,"mAP5095":0.164,"P":0.442,"R":0.498},"classes":{"B1":{"images":213,"instances":254,"P":0.583,"R":0.786,"mAP50":0.747,"mAP5095":0.296,"F1":0.66913},"B2":{"images":236,"instances":375,"P":0.41,"R":0.384,"mAP50":0.347,"mAP5095":0.129,"F1":0.3967},"B3":{"images":368,"instances":865,"P":0.459,"R":0.528,"mAP50":0.477,"mAP5095":0.169,"F1":0.49137},"B4":{"images":230,"instances":355,"P":0.314,"R":0.296,"mAP50":0.217,"mAP5095":0.0645,"F1":0.30466}},"speed":{"preprocess":1.1,"inference":26.7,"postprocess":0.1}}},"model_info":{"arch":"YOLO26l","layers":190,"params":24748824,"gflops":86.1},"speed":{"preprocess":1.1,"inference":26.7,"postprocess":0.1}},{"run_id":"exp3","gen":"legacy","scenario":"stratifikasi","model":"YOLOv9m","seed":"-","eval_set":"stratifikasi/test (604 imgs)","summary":"YOLOv9m on stratifikasi. Big jump over YOLO26l — recall much higher.","global_metrics":{"mAP50":0.526,"mAP5095":0.242,"P":0.486,"R":0.62},"class_metrics":{"B1":{"mAP50":0.829,"P":0.658,"R":0.883},"B2":{"mAP50":0.385,"P":0.373,"R":0.544},"B3":{"mAP50":0.546,"P":0.46,"R":0.721},"B4":{"mAP50":0.342,"P":0.455,"R":0.331}},"splits":{"train":{"images":2784,"instances":12720,"global":{"mAP50":0.645,"mAP5095":0.351,"P":0.574,"R":0.683},"classes":{"B1":{"images":1242,"instances":1505,"P":0.68,"R":0.902,"mAP50":0.878,"mAP5095":0.535,"F1":0.77511},"B2":{"images":1712,"instances":2843,"P":0.494,"R":0.651,"mAP50":0.556,"mAP5095":0.308,"F1":0.56176},"B3":{"images":2479,"instances":5890,"P":0.542,"R":0.776,"mAP50":0.651,"mAP5095":0.339,"F1":0.63841},"B4":{"images":1573,"instances":2482,"P":0.58,"R":0.405,"mAP50":0.496,"mAP5095":0.221,"F1":0.47666}},"speed":{"preprocess":0.7,"inference":21.3,"postprocess":0.8}},"val":{"images":604,"instances":2656,"global":{"mAP50":0.535,"mAP5095":0.252,"P":0.484,"R":0.629},"classes":{"B1":{"images":288,"instances":338,"P":0.615,"R":0.852,"mAP50":0.825,"mAP5095":0.429,"F1":0.71465},"B2":{"images":383,"instances":650,"P":0.428,"R":0.6,"mAP50":0.443,"mAP5095":0.206,"F1":0.49976},"B3":{"images":528,"instances":1201,"P":0.47,"R":0.739,"mAP50":0.553,"mAP5095":0.244,"F1":0.57438},"B4":{"images":317,"instances":467,"P":0.421,"R":0.325,"mAP50":0.32,"mAP5095":0.13,"F1":0.36695}},"speed":{"preprocess":1,"inference":20.3,"postprocess":0.9}},"test":{"images":604,"instances":2611,"global":{"mAP50":0.526,"mAP5095":0.242,"P":0.486,"R":0.62},"classes":{"B1":{"images":280,"instances":334,"P":0.658,"R":0.883,"mAP50":0.829,"mAP5095":0.426,"F1":0.75426},"B2":{"images":336,"instances":580,"P":0.373,"R":0.544,"mAP50":0.385,"mAP5095":0.181,"F1":0.44228},"B3":{"images":530,"instances":1204,"P":0.46,"R":0.721,"mAP50":0.546,"mAP5095":0.234,"F1":0.5613},"B4":{"images":301,"instances":493,"P":0.455,"R":0.331,"mAP50":0.342,"mAP5095":0.128,"F1":0.38281}},"speed":{"preprocess":1.1,"inference":21.5,"postprocess":0.9}}},"model_info":{"arch":"YOLOv9m","layers":151,"params":20015884,"gflops":76.5},"speed":{"preprocess":1.1,"inference":21.5,"postprocess":0.9}},{"run_id":"exp4","gen":"legacy","scenario":"sawit-yolo","model":"YOLOv9m","seed":"-","eval_set":"sawit-yolo/test (400 imgs)","summary":"YOLOv9m on sawit-yolo. Best among batch 1 — strong B1 and B3.","global_metrics":{"mAP50":0.613,"mAP5095":0.315,"P":0.556,"R":0.677},"class_metrics":{"B1":{"mAP50":0.89,"P":0.733,"R":0.898},"B2":{"mAP50":0.448,"P":0.405,"R":0.621},"B3":{"mAP50":0.637,"P":0.522,"R":0.771},"B4":{"mAP50":0.477,"P":0.565,"R":0.418}},"splits":{"train":{"images":2776,"instances":12494,"global":{"mAP50":0.604,"mAP5095":0.312,"P":0.544,"R":0.659},"classes":{"B1":{"images":1235,"instances":1486,"P":0.659,"R":0.883,"mAP50":0.854,"mAP5095":0.491,"F1":0.75465},"B2":{"images":1723,"instances":2926,"P":0.466,"R":0.613,"mAP50":0.51,"mAP5095":0.267,"F1":0.52953},"B3":{"images":2453,"instances":5752,"P":0.516,"R":0.756,"mAP50":0.609,"mAP5095":0.3,"F1":0.613},"B4":{"images":1493,"instances":2330,"P":0.536,"R":0.385,"mAP50":0.441,"mAP5095":0.19,"F1":0.44797}},"speed":{"preprocess":0.7,"inference":19.6,"postprocess":0.8}},"val":{"images":816,"instances":3647,"global":{"mAP50":0.635,"mAP5095":0.34,"P":0.564,"R":0.678},"classes":{"B1":{"images":362,"instances":437,"P":0.669,"R":0.911,"mAP50":0.879,"mAP5095":0.528,"F1":0.7717},"B2":{"images":472,"instances":774,"P":0.484,"R":0.652,"mAP50":0.545,"mAP5095":0.299,"F1":0.55597},"B3":{"images":716,"instances":1679,"P":0.541,"R":0.783,"mAP50":0.654,"mAP5095":0.327,"F1":0.64},"B4":{"images":468,"instances":757,"P":0.561,"R":0.367,"mAP50":0.463,"mAP5095":0.205,"F1":0.44381}},"speed":{"preprocess":0.9,"inference":22.9,"postprocess":0.8}},"test":{"images":400,"instances":1849,"global":{"mAP50":0.613,"mAP5095":0.315,"P":0.556,"R":0.677},"classes":{"B1":{"images":213,"instances":254,"P":0.733,"R":0.898,"mAP50":0.89,"mAP5095":0.506,"F1":0.80728},"B2":{"images":236,"instances":375,"P":0.405,"R":0.621,"mAP50":0.448,"mAP5095":0.234,"F1":0.49025},"B3":{"images":368,"instances":865,"P":0.522,"R":0.771,"mAP50":0.637,"mAP5095":0.321,"F1":0.62257},"B4":{"images":230,"instances":355,"P":0.565,"R":0.418,"mAP50":0.477,"mAP5095":0.2,"F1":0.4805}},"speed":{"preprocess":1.3,"inference":24.4,"postprocess":0.9}}},"model_info":{"arch":"YOLOv9m","layers":151,"params":20015884,"gflops":76.5},"speed":{"preprocess":1.3,"inference":24.4,"postprocess":0.9}}]},{"id":"e2","date":"2026-03-02","type":"training","status":"Solved","title":"Legacy batch 2: damimas-full + YOLOv9c on all old datasets","tags":["legacy","damimas-full","YOLOv9c","YOLO26l","YOLOv9m"],"notes_md":"Ran 5 more experiments: YOLO26l & YOLOv9m on damimas-full, plus YOLOv9c on all 3 old datasets. YOLOv9c on damimas-full achieved best overall mAP50.","schedules":[{"text":"Exp5: YOLO26l on damimas-full","done":true},{"text":"Exp6: YOLOv9m on damimas-full","done":true},{"text":"Exp7: YOLOv9c on damimas-full","done":true},{"text":"Exp8: YOLOv9c on stratifikasi","done":true},{"text":"Exp9: YOLOv9c on sawit-yolo","done":true}],"runs":[{"run_id":"exp5","gen":"legacy","scenario":"damimas-full","model":"YOLO26l","seed":"-","eval_set":"damimas-full/test (518 imgs)","summary":"YOLO26l on yolo-damimas-full. Clean DAMIMAS-only data helps — better B4 than old datasets.","global_metrics":{"mAP50":0.594,"mAP5095":0.314,"P":0.515,"R":0.631},"class_metrics":{"B1":{"mAP50":0.843,"P":0.654,"R":0.857},"B2":{"mAP50":0.55,"P":0.542,"R":0.506},"B3":{"mAP50":0.572,"P":0.467,"R":0.67},"B4":{"mAP50":0.409,"P":0.398,"R":0.489}},"splits":{"train":{"images":2419,"instances":8001,"global":{"mAP50":0.538,"mAP5095":0.28,"P":0.479,"R":0.568},"classes":{"B1":{"images":912,"instances":963,"P":0.544,"R":0.857,"mAP50":0.786,"mAP5095":0.444,"F1":0.66516},"B2":{"images":1360,"instances":1983,"P":0.519,"R":0.411,"mAP50":0.468,"mAP5095":0.241,"F1":0.45887},"B3":{"images":2012,"instances":4187,"P":0.554,"R":0.644,"mAP50":0.628,"mAP5095":0.319,"F1":0.59584},"B4":{"images":759,"instances":868,"P":0.299,"R":0.361,"mAP50":0.269,"mAP5095":0.115,"F1":0.3271}},"speed":{"preprocess":0.7,"inference":23.9,"postprocess":0.1}},"val":{"images":518,"instances":3201,"global":{"mAP50":0.619,"mAP5095":0.335,"P":0.539,"R":0.638},"classes":{"B1":{"images":432,"instances":623,"P":0.682,"R":0.833,"mAP50":0.848,"mAP5095":0.494,"F1":0.74991},"B2":{"images":405,"instances":752,"P":0.536,"R":0.548,"mAP50":0.539,"mAP5095":0.292,"F1":0.54195},"B3":{"images":467,"instances":932,"P":0.427,"R":0.666,"mAP50":0.561,"mAP5095":0.308,"F1":0.52065},"B4":{"images":451,"instances":894,"P":0.51,"R":0.506,"mAP50":0.526,"mAP5095":0.244,"F1":0.50829}},"speed":{"preprocess":1.1,"inference":26.4,"postprocess":0.1}},"test":{"images":518,"instances":2702,"global":{"mAP50":0.594,"mAP5095":0.314,"P":0.515,"R":0.631},"classes":{"B1":{"images":366,"instances":448,"P":0.654,"R":0.857,"mAP50":0.843,"mAP5095":0.468,"F1":0.74215},"B2":{"images":394,"instances":695,"P":0.542,"R":0.506,"mAP50":0.55,"mAP5095":0.299,"F1":0.52357},"B3":{"images":471,"instances":1044,"P":0.467,"R":0.67,"mAP50":0.572,"mAP5095":0.297,"F1":0.55028},"B4":{"images":359,"instances":515,"P":0.398,"R":0.489,"mAP50":0.409,"mAP5095":0.192,"F1":0.43918}},"speed":{"preprocess":1,"inference":27.5,"postprocess":0.1}}},"model_info":{"arch":"YOLO26l","layers":190,"params":24748824,"gflops":86.1},"speed":{"preprocess":1,"inference":27.5,"postprocess":0.1}},{"run_id":"exp6","gen":"legacy","scenario":"damimas-full","model":"YOLOv9m","seed":"-","eval_set":"damimas-full/test (518 imgs)","summary":"YOLOv9m on damimas-full. Lower mAP50-95 than YOLO26l here surprisingly.","global_metrics":{"mAP50":0.573,"mAP5095":0.218,"P":0.533,"R":0.626},"class_metrics":{"B1":{"mAP50":0.845,"P":0.737,"R":0.853},"B2":{"mAP50":0.527,"P":0.506,"R":0.59},"B3":{"mAP50":0.534,"P":0.439,"R":0.724},"B4":{"mAP50":0.388,"P":0.449,"R":0.338}},"splits":{"train":{"images":2419,"instances":8001,"global":{"mAP50":0.516,"mAP5095":0.204,"P":0.462,"R":0.58},"classes":{"B1":{"images":912,"instances":963,"P":0.603,"R":0.856,"mAP50":0.8,"mAP5095":0.338,"F1":0.70792},"B2":{"images":1360,"instances":1983,"P":0.452,"R":0.522,"mAP50":0.462,"mAP5095":0.191,"F1":0.48441},"B3":{"images":2012,"instances":4187,"P":0.509,"R":0.695,"mAP50":0.598,"mAP5095":0.225,"F1":0.58789},"B4":{"images":759,"instances":868,"P":0.283,"R":0.247,"mAP50":0.204,"mAP5095":0.0619,"F1":0.26358}},"speed":{"preprocess":0.8,"inference":17.3,"postprocess":1}},"val":{"images":518,"instances":3201,"global":{"mAP50":0.568,"mAP5095":0.204,"P":0.51,"R":0.642},"classes":{"B1":{"images":432,"instances":623,"P":0.718,"R":0.823,"mAP50":0.833,"mAP5095":0.33,"F1":0.76708},"B2":{"images":405,"instances":752,"P":0.462,"R":0.643,"mAP50":0.505,"mAP5095":0.183,"F1":0.53748},"B3":{"images":467,"instances":932,"P":0.344,"R":0.74,"mAP50":0.501,"mAP5095":0.171,"F1":0.46935},"B4":{"images":451,"instances":894,"P":0.515,"R":0.36,"mAP50":0.432,"mAP5095":0.132,"F1":0.42384}},"speed":{"preprocess":1.3,"inference":18.4,"postprocess":1.5}},"test":{"images":518,"instances":2702,"global":{"mAP50":0.573,"mAP5095":0.218,"P":0.533,"R":0.626},"classes":{"B1":{"images":366,"instances":448,"P":0.737,"R":0.853,"mAP50":0.845,"mAP5095":0.35,"F1":0.79084},"B2":{"images":394,"instances":695,"P":0.506,"R":0.59,"mAP50":0.527,"mAP5095":0.208,"F1":0.5451},"B3":{"images":471,"instances":1044,"P":0.439,"R":0.724,"mAP50":0.534,"mAP5095":0.191,"F1":0.54668},"B4":{"images":359,"instances":515,"P":0.449,"R":0.338,"mAP50":0.388,"mAP5095":0.122,"F1":0.38575}},"speed":{"preprocess":1.3,"inference":18.8,"postprocess":1.2}}},"model_info":{"arch":"YOLOv9m","layers":151,"params":20015884,"gflops":76.5},"speed":{"preprocess":1.3,"inference":18.8,"postprocess":1.2}},{"run_id":"exp7","gen":"legacy","scenario":"damimas-full","model":"YOLOv9c","seed":"-","eval_set":"damimas-full/test (518 imgs)","summary":"YOLOv9c on damimas-full — BEST legacy run. mAP50=65.0%, strong across all classes including B4.","global_metrics":{"mAP50":0.65,"mAP5095":0.328,"P":0.586,"R":0.718},"class_metrics":{"B1":{"mAP50":0.913,"P":0.775,"R":0.915},"B2":{"mAP50":0.563,"P":0.544,"R":0.642},"B3":{"mAP50":0.623,"P":0.505,"R":0.787},"B4":{"mAP50":0.501,"P":0.519,"R":0.528}},"splits":{"train":{"images":2419,"instances":8001,"global":{"mAP50":0.577,"mAP5095":0.29,"P":0.49,"R":0.653},"classes":{"B1":{"images":912,"instances":963,"P":0.583,"R":0.913,"mAP50":0.83,"mAP5095":0.451,"F1":0.71121},"B2":{"images":1360,"instances":1983,"P":0.477,"R":0.545,"mAP50":0.492,"mAP5095":0.246,"F1":0.50866},"B3":{"images":2012,"instances":4187,"P":0.577,"R":0.762,"mAP50":0.675,"mAP5095":0.327,"F1":0.6565},"B4":{"images":759,"instances":868,"P":0.324,"R":0.394,"mAP50":0.31,"mAP5095":0.135,"F1":0.35572}},"speed":{"preprocess":0.7,"inference":22.4,"postprocess":0.7}},"val":{"images":518,"instances":3201,"global":{"mAP50":0.67,"mAP5095":0.341,"P":0.587,"R":0.728},"classes":{"B1":{"images":432,"instances":623,"P":0.779,"R":0.88,"mAP50":0.899,"mAP5095":0.495,"F1":0.82616},"B2":{"images":405,"instances":752,"P":0.512,"R":0.666,"mAP50":0.545,"mAP5095":0.282,"F1":0.57908},"B3":{"images":467,"instances":932,"P":0.425,"R":0.817,"mAP50":0.61,"mAP5095":0.309,"F1":0.55918},"B4":{"images":451,"instances":894,"P":0.631,"R":0.547,"mAP50":0.627,"mAP5095":0.28,"F1":0.5859}},"speed":{"preprocess":1.2,"inference":24.9,"postprocess":0.8}},"test":{"images":518,"instances":2702,"global":{"mAP50":0.65,"mAP5095":0.328,"P":0.586,"R":0.718},"classes":{"B1":{"images":366,"instances":448,"P":0.775,"R":0.915,"mAP50":0.913,"mAP5095":0.494,"F1":0.83955},"B2":{"images":394,"instances":695,"P":0.544,"R":0.642,"mAP50":0.563,"mAP5095":0.283,"F1":0.58906},"B3":{"images":471,"instances":1044,"P":0.505,"R":0.787,"mAP50":0.623,"mAP5095":0.308,"F1":0.6153},"B4":{"images":359,"instances":515,"P":0.519,"R":0.528,"mAP50":0.501,"mAP5095":0.226,"F1":0.52379}},"speed":{"preprocess":1.2,"inference":25.8,"postprocess":0.8}}},"model_info":{"arch":"YOLOv9c","layers":156,"params":25322332,"gflops":102.3},"speed":{"preprocess":1.2,"inference":25.8,"postprocess":0.8}},{"run_id":"exp8","gen":"legacy","scenario":"stratifikasi","model":"YOLOv9c","seed":"-","eval_set":"stratifikasi/test (604 imgs)","summary":"YOLOv9c on stratifikasi. Decent but below damimas-full performance.","global_metrics":{"mAP50":0.508,"mAP5095":0.171,"P":0.496,"R":0.589},"class_metrics":{"B1":{"mAP50":0.811,"P":0.661,"R":0.882},"B2":{"mAP50":0.417,"P":0.403,"R":0.528},"B3":{"mAP50":0.516,"P":0.477,"R":0.598},"B4":{"mAP50":0.286,"P":0.442,"R":0.347}},"splits":{"train":{"images":2784,"instances":12720,"global":{"mAP50":0.505,"mAP5095":0.173,"P":0.492,"R":0.593},"classes":{"B1":{"images":1242,"instances":1505,"P":0.622,"R":0.843,"mAP50":0.768,"mAP5095":0.281,"F1":0.71553},"B2":{"images":1712,"instances":2843,"P":0.449,"R":0.572,"mAP50":0.443,"mAP5095":0.156,"F1":0.50313},"B3":{"images":2479,"instances":5890,"P":0.491,"R":0.615,"mAP50":0.505,"mAP5095":0.169,"F1":0.54629},"B4":{"images":1573,"instances":2482,"P":0.406,"R":0.344,"mAP50":0.303,"mAP5095":0.0865,"F1":0.37263}},"speed":{"preprocess":0.6,"inference":21.8,"postprocess":0.7}},"val":{"images":604,"instances":2656,"global":{"mAP50":0.535,"mAP5095":0.192,"P":0.527,"R":0.589},"classes":{"B1":{"images":288,"instances":338,"P":0.669,"R":0.864,"mAP50":0.815,"mAP5095":0.314,"F1":0.75437},"B2":{"images":383,"instances":650,"P":0.52,"R":0.568,"mAP50":0.504,"mAP5095":0.183,"F1":0.54276},"B3":{"images":528,"instances":1201,"P":0.514,"R":0.619,"mAP50":0.535,"mAP5095":0.19,"F1":0.56172},"B4":{"images":317,"instances":467,"P":0.403,"R":0.306,"mAP50":0.287,"mAP5095":0.0802,"F1":0.34817}},"speed":{"preprocess":1,"inference":22.6,"postprocess":0.7}},"test":{"images":604,"instances":2611,"global":{"mAP50":0.508,"mAP5095":0.171,"P":0.496,"R":0.589},"classes":{"B1":{"images":280,"instances":334,"P":0.661,"R":0.882,"mAP50":0.811,"mAP5095":0.293,"F1":0.75552},"B2":{"images":336,"instances":580,"P":0.403,"R":0.528,"mAP50":0.417,"mAP5095":0.137,"F1":0.45713},"B3":{"images":530,"instances":1204,"P":0.477,"R":0.598,"mAP50":0.516,"mAP5095":0.175,"F1":0.53067},"B4":{"images":301,"instances":493,"P":0.442,"R":0.347,"mAP50":0.286,"mAP5095":0.0773,"F1":0.38856}},"speed":{"preprocess":0.9,"inference":23.1,"postprocess":0.7}}},"model_info":{"arch":"YOLOv9c","layers":156,"params":25322332,"gflops":102.3},"speed":{"preprocess":0.9,"inference":23.1,"postprocess":0.7}},{"run_id":"exp9","gen":"legacy","scenario":"sawit-yolo","model":"YOLOv9c","seed":"-","eval_set":"sawit-yolo/test (400 imgs)","summary":"YOLOv9c on sawit-yolo. B4 better than stratifikasi but still weak.","global_metrics":{"mAP50":0.522,"mAP5095":0.185,"P":0.483,"R":0.607},"class_metrics":{"B1":{"mAP50":0.805,"P":0.639,"R":0.831},"B2":{"mAP50":0.384,"P":0.379,"R":0.552},"B3":{"mAP50":0.547,"P":0.506,"R":0.645},"B4":{"mAP50":0.349,"P":0.407,"R":0.398}},"splits":{"train":{"images":2776,"instances":12494,"global":{"mAP50":0.503,"mAP5095":0.173,"P":0.495,"R":0.588},"classes":{"B1":{"images":1235,"instances":1486,"P":0.627,"R":0.847,"mAP50":0.773,"mAP5095":0.286,"F1":0.72031},"B2":{"images":1723,"instances":2926,"P":0.461,"R":0.558,"mAP50":0.453,"mAP5095":0.158,"F1":0.50491},"B3":{"images":2453,"instances":5752,"P":0.488,"R":0.612,"mAP50":0.501,"mAP5095":0.168,"F1":0.54299},"B4":{"images":1493,"instances":2330,"P":0.403,"R":0.334,"mAP50":0.284,"mAP5095":0.0805,"F1":0.36519}},"speed":{"preprocess":0.7,"inference":23.3,"postprocess":0.8}},"val":{"images":816,"instances":3647,"global":{"mAP50":0.527,"mAP5095":0.178,"P":0.516,"R":0.597},"classes":{"B1":{"images":362,"instances":437,"P":0.656,"R":0.879,"mAP50":0.797,"mAP5095":0.284,"F1":0.75101},"B2":{"images":472,"instances":774,"P":0.457,"R":0.582,"mAP50":0.466,"mAP5095":0.164,"F1":0.51211},"B3":{"images":716,"instances":1679,"P":0.503,"R":0.601,"mAP50":0.523,"mAP5095":0.179,"F1":0.54791},"B4":{"images":468,"instances":757,"P":0.446,"R":0.328,"mAP50":0.324,"mAP5095":0.0861,"F1":0.37789}},"speed":{"preprocess":1,"inference":26.6,"postprocess":0.8}},"test":{"images":400,"instances":1849,"global":{"mAP50":0.522,"mAP5095":0.185,"P":0.483,"R":0.607},"classes":{"B1":{"images":213,"instances":254,"P":0.639,"R":0.831,"mAP50":0.805,"mAP5095":0.303,"F1":0.72207},"B2":{"images":236,"instances":375,"P":0.379,"R":0.552,"mAP50":0.384,"mAP5095":0.138,"F1":0.44975},"B3":{"images":368,"instances":865,"P":0.506,"R":0.645,"mAP50":0.547,"mAP5095":0.193,"F1":0.56721},"B4":{"images":230,"instances":355,"P":0.407,"R":0.398,"mAP50":0.349,"mAP5095":0.106,"F1":0.4026}},"speed":{"preprocess":1.2,"inference":28.1,"postprocess":0.8}}},"model_info":{"arch":"YOLOv9c","layers":156,"params":25322332,"gflops":102.3},"speed":{"preprocess":1.2,"inference":28.1,"postprocess":0.8}}]},{"id":"e3","date":"2026-03-03","type":"discussion","status":"Solved","title":"Meeting: lock split strategy with lecturer","tags":["meeting","policy","split"],"notes_md":"Lecturer wants comparison with SAME test set:\n- Train all (damimas+lonsum) → test\n- Train damimas only → test\n- Train lonsum only → test\n\nComposition: damimas split separately, lonsum split separately, combined = merge of both.\nUse 2 seeds (42, 123) and 2 models (YOLO26 and YOLOv9).\nAnalyze per-class performance.\nTree-level split to prevent leakage.","schedules":[{"text":"Lock split policy: tree-level","done":true},{"text":"Define 3 scenarios","done":true},{"text":"Agree on 2 seeds + 2 models","done":true}],"runs":[]},{"id":"e4","date":"2026-03-04","type":"dataset-prep","status":"Solved","title":"Dataset preparation: tree-level split for v2 experiments","tags":["dataset","split","no-leakage","v2"],"notes_md":"Created 3 datasets with tree-level split (no image leakage):\n- DAMIMAS: 854 trees → 3596 images (train:2504, val:560, test:532)\n- LONSUM: 99 trees → 396 images (train:276, val:60, test:60)\n- COMBINED: merge of both → 3992 images (train:2780, val:620, test:592)\n\nAll verified: no tree appears in multiple splits.","schedules":[{"text":"Split DAMIMAS by tree","done":true},{"text":"Split LONSUM by tree","done":true},{"text":"Merge into combined dataset","done":true},{"text":"Verify no leakage","done":true}],"runs":[]}]}};
+</script>
+<script>
+/* === State === */
+const S={date:null,month:null,viewMode:"latest",status:"ALL",type:"ALL",scenario:"ALL",model:"ALL",seed:"ALL",metric:"mAP50",gen:"ALL",event:null,run:null,mobilePanel:"calendar",detailTab:"metrics",splitView:"test"};
+const DF=new Intl.DateTimeFormat("en-US",{day:"2-digit",month:"short",year:"numeric"}),MF=new Intl.DateTimeFormat("en-US",{month:"long",year:"numeric"});
+const E=id=>document.getElementById(id);
+const U={projectTitle:E("projectTitle"),projectSub:E("projectSub"),kUpdated:E("kUpdated"),kEvents:E("kEvents"),kRuns:E("kRuns"),kSolved:E("kSolved"),fStatus:E("fStatus"),fType:E("fType"),fScenario:E("fScenario"),fModel:E("fModel"),fSeed:E("fSeed"),fMetric:E("fMetric"),fGen:E("fGen"),resetFilters:E("resetFilters"),prevMonth:E("prevMonth"),nextMonth:E("nextMonth"),monthLabel:E("monthLabel"),calendarDays:E("calendarDays"),selectedDateLabel:E("selectedDateLabel"),latestSummary:E("latestSummary"),viewModeChip:E("viewModeChip"),timelineList:E("timelineList"),jumpLatest:E("jumpLatest"),lbMeta:E("lbMeta"),leaderboardList:E("leaderboardList"),detailId:E("detailId"),detailPanel:E("detailPanel"),mobileTabs:E("mobileTabs"),panelCalendar:E("panelCalendar"),panelTimeline:E("panelTimeline"),panelDetail:E("panelDetail")};
+const toDate=iso=>{const[a,b,c]=iso.split("-").map(Number);return new Date(a,b-1,c)};
+const pct=v=>(typeof v==="number"&&!Number.isNaN(v)?(v*100).toFixed(1)+"%":"N/A");
+const sClass=s=>s&&s.toLowerCase()==="solved"?"solved":(s&&s.toLowerCase()==="progress"?"progress":"plan");
 
-    <script>
-        const DATA = {
-            "YOLO26l": {
-                color: "#f59e0b",
-                datasets: {
-                    "Stratified": {
-                        train:{mAP50:.437,mAP5095:.153,P:.434,R:.488,classes:{B1:{mAP50:.726,P:.552,R:.788},B2:{mAP50:.397,P:.452,R:.405},B3:{mAP50:.427,P:.433,R:.490},B4:{mAP50:.198,P:.298,R:.269}}},
-                        val:{mAP50:.476,mAP5095:.170,P:.458,R:.501,classes:{B1:{mAP50:.767,P:.567,R:.793},B2:{mAP50:.463,P:.507,R:.425},B3:{mAP50:.470,P:.462,R:.530},B4:{mAP50:.204,P:.294,R:.257}}},
-                        test:{mAP50:.442,mAP5095:.150,P:.432,R:.518,classes:{B1:{mAP50:.730,P:.557,R:.811},B2:{mAP50:.386,P:.435,R:.424},B3:{mAP50:.443,P:.422,R:.524},B4:{mAP50:.209,P:.315,R:.312}}}
-                    },
-                    "Original": {
-                        train:{mAP50:.438,mAP5095:.154,P:.431,R:.495,classes:{B1:{mAP50:.726,P:.539,R:.791},B2:{mAP50:.407,P:.463,R:.413},B3:{mAP50:.422,P:.425,R:.499},B4:{mAP50:.196,P:.296,R:.279}}},
-                        val:{mAP50:.462,mAP5095:.157,P:.443,R:.503,classes:{B1:{mAP50:.753,P:.577,R:.810},B2:{mAP50:.431,P:.451,R:.430},B3:{mAP50:.464,P:.450,R:.510},B4:{mAP50:.201,P:.295,R:.262}}},
-                        test:{mAP50:.447,mAP5095:.164,P:.442,R:.498,classes:{B1:{mAP50:.747,P:.583,R:.786},B2:{mAP50:.347,P:.410,R:.384},B3:{mAP50:.477,P:.459,R:.528},B4:{mAP50:.217,P:.314,R:.296}}}
-                    },
-                    "Damimas Full": {
-                        train:{mAP50:.538,mAP5095:.280,P:.479,R:.568,classes:{B1:{mAP50:.786,P:.544,R:.857},B2:{mAP50:.468,P:.519,R:.411},B3:{mAP50:.628,P:.554,R:.644},B4:{mAP50:.269,P:.299,R:.361}}},
-                        val:{mAP50:.619,mAP5095:.335,P:.539,R:.638,classes:{B1:{mAP50:.848,P:.682,R:.833},B2:{mAP50:.539,P:.536,R:.548},B3:{mAP50:.561,P:.427,R:.666},B4:{mAP50:.526,P:.510,R:.506}}},
-                        test:{mAP50:.594,mAP5095:.314,P:.515,R:.631,classes:{B1:{mAP50:.843,P:.654,R:.857},B2:{mAP50:.550,P:.542,R:.506},B3:{mAP50:.572,P:.467,R:.670},B4:{mAP50:.409,P:.398,R:.489}}}
-                    }
-                }
-            },
-            "YOLOv9m": {
-                color: "#0ea5e9",
-                datasets: {
-                    "Stratified": {
-                        train:{mAP50:.645,mAP5095:.351,P:.574,R:.683,classes:{B1:{mAP50:.878,P:.680,R:.902},B2:{mAP50:.556,P:.494,R:.651},B3:{mAP50:.651,P:.542,R:.776},B4:{mAP50:.496,P:.580,R:.405}}},
-                        val:{mAP50:.535,mAP5095:.252,P:.484,R:.629,classes:{B1:{mAP50:.825,P:.615,R:.852},B2:{mAP50:.443,P:.428,R:.600},B3:{mAP50:.553,P:.470,R:.739},B4:{mAP50:.320,P:.421,R:.325}}},
-                        test:{mAP50:.526,mAP5095:.242,P:.486,R:.620,classes:{B1:{mAP50:.829,P:.658,R:.883},B2:{mAP50:.385,P:.373,R:.544},B3:{mAP50:.546,P:.460,R:.721},B4:{mAP50:.342,P:.455,R:.331}}}
-                    },
-                    "Original": {
-                        train:{mAP50:.604,mAP5095:.312,P:.544,R:.659,classes:{B1:{mAP50:.854,P:.659,R:.883},B2:{mAP50:.510,P:.466,R:.613},B3:{mAP50:.609,P:.516,R:.756},B4:{mAP50:.441,P:.536,R:.385}}},
-                        val:{mAP50:.635,mAP5095:.340,P:.564,R:.678,classes:{B1:{mAP50:.879,P:.669,R:.911},B2:{mAP50:.545,P:.484,R:.652},B3:{mAP50:.654,P:.541,R:.783},B4:{mAP50:.463,P:.561,R:.367}}},
-                        test:{mAP50:.613,mAP5095:.315,P:.556,R:.677,classes:{B1:{mAP50:.890,P:.733,R:.898},B2:{mAP50:.448,P:.405,R:.621},B3:{mAP50:.637,P:.522,R:.771},B4:{mAP50:.477,P:.565,R:.418}}}
-                    },
-                    "Damimas Full": {
-                        train:{mAP50:.516,mAP5095:.204,P:.462,R:.580,classes:{B1:{mAP50:.800,P:.603,R:.856},B2:{mAP50:.452,R:.522},B3:{mAP50:.598,P:.509,R:.695},B4:{mAP50:.204,P:.283,R:.247}}},
-                        val:{mAP50:.568,mAP5095:.204,P:.510,R:.642,classes:{B1:{mAP50:.833,P:.718,R:.823},B2:{mAP50:.505,P:.462,R:.643},B3:{mAP50:.501,P:.344,R:.740},B4:{mAP50:.432,P:.515,R:.360}}},
-                        test:{mAP50:.573,mAP5095:.218,P:.533,R:.626,classes:{B1:{mAP50:.845,P:.737,R:.853},B2:{mAP50:.527,P:.506,R:.590},B3:{mAP50:.534,P:.439,R:.724},B4:{mAP50:.388,P:.449,R:.338}}}
-                    }
-                }
-            },
-            "YOLOv9c": {
-                color: "#10b981",
-                datasets: {
-                    "Stratified": {
-                        train:{mAP50:.505,mAP5095:.173,P:.492,R:.593,classes:{B1:{mAP50:.768,P:.622,R:.843},B2:{mAP50:.443,P:.449,R:.572},B3:{mAP50:.505,P:.491,R:.615},B4:{mAP50:.303,P:.406,R:.344}}},
-                        val:{mAP50:.535,mAP5095:.192,P:.527,R:.589,classes:{B1:{mAP50:.815,P:.669,R:.864},B2:{mAP50:.504,P:.52,R:.568},B3:{mAP50:.535,P:.514,R:.619},B4:{mAP50:.287,P:.403,R:.306}}},
-                        test:{mAP50:.508,mAP5095:.171,P:.496,R:.589,classes:{B1:{mAP50:.811,P:.661,R:.882},B2:{mAP50:.417,P:.403,R:.528},B3:{mAP50:.516,P:.477,R:.598},B4:{mAP50:.286,P:.442,R:.347}}}
-                    },
-                    "Original": {
-                        train:{mAP50:.503,mAP5095:.173,P:.495,R:.588,classes:{B1:{mAP50:.773,P:.627,R:.847},B2:{mAP50:.453,P:.461,R:.558},B3:{mAP50:.501,P:.488,R:.612},B4:{mAP50:.284,P:.403,R:.334}}},
-                        val:{mAP50:.527,mAP5095:.178,P:.516,R:.597,classes:{B1:{mAP50:.797,P:.656,R:.879},B2:{mAP50:.466,P:.457,R:.582},B3:{mAP50:.503,P:.503,R:.601},B4:{mAP50:.324,P:.446,R:.328}}},
-                        test:{mAP50:.522,mAP5095:.185,P:.483,R:.607,classes:{B1:{mAP50:.805,P:.639,R:.831},B2:{mAP50:.384,P:.379,R:.552},B3:{mAP50:.547,P:.506,R:.645},B4:{mAP50:.349,P:.407,R:.398}}}
-                    },
-                    "Damimas Full": {
-                        train:{mAP50:.577,mAP5095:.290,P:.490,R:.653,classes:{B1:{mAP50:.830,P:.583,R:.913},B2:{mAP50:.492,P:.477,R:.545},B3:{mAP50:.675,P:.577,R:.762},B4:{mAP50:.310,P:.324,R:.394}}},
-                        val:{mAP50:.670,mAP5095:.341,P:.587,R:.728,classes:{B1:{mAP50:.899,P:.779,R:.880},B2:{mAP50:.545,P:.512,R:.666},B3:{mAP50:.610,P:.425,R:.817},B4:{mAP50:.627,P:.631,R:.547}}},
-                        test:{mAP50:.650,mAP5095:.328,P:.586,R:.718,classes:{B1:{mAP50:.913,P:.775,R:.915},B2:{mAP50:.563,P:.544,R:.642},B3:{mAP50:.505,P:.505,R:.787},B4:{mAP50:.501,P:.519,R:.528}}}
-                    }
-                }
-            }
-        };
+/* === Data Store === */
+let manifest=null;
+const monthCache={};
+let allEvents=[];
 
-        const FLAT = [];
-        for (const [m, mD] of Object.entries(DATA)) {
-            for (const [ds, metrics] of Object.entries(mD.datasets)) {
-                FLAT.push({ id:`${m}_${ds}`, model:m, dataset:ds, color:mD.color, data:metrics });
-            }
-        }
+/* Inline fallback for file:// protocol */
+const INLINE_MANIFEST={"months":["2026-03"],"meta":{"project_title":"YOLO Research Logbook","subtitle":"9 legacy experiments completed \u2014 preparing tree-level split for new v2 runs","last_updated":"2026-03-04"},"rules":{"test_set":"shared test (v2)","seeds":[42,123]}};
+let INLINE_DATA=null;
 
-        const State = { split: 'test', metric: 'mAP50', modelA: 'YOLO26l', modelB: 'YOLOv9m', dataset: 'Damimas Full', showAll: false };
-        const pct = v => (v * 100).toFixed(1) + '%';
-        const LABELS = { mAP50:'mAP@50', mAP5095:'mAP@50-95', P:'Precision', R:'Recall' };
+async function loadInlineData(){
+  if(INLINE_DATA)return;
+  // Lazy-load inline data only when fetch fails
+  INLINE_DATA={};
+  /* The inline month data will be loaded via the embedded script tag below */
+}
 
-        function init() {
-            const mels = Object.keys(DATA);
-            document.getElementById('model-a-select').innerHTML = mels.map(m=>`<option ${m===State.modelA?'selected':''}>${m}</option>`).join('');
-            document.getElementById('model-b-select').innerHTML = mels.map(m=>`<option ${m===State.modelB?'selected':''}>${m}</option>`).join('');
-            render();
-        }
+async function loadManifest(){
+  try{
+    const r=await fetch("data/index.json");
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    manifest=await r.json();
+  }catch{
+    console.warn("fetch failed (file:// mode?), using inline data");
+    manifest=INLINE_MANIFEST;
+  }
+}
 
-        function render() {
-            updateLeaderboard();
-            updateComparison();
-            updateHeatmap();
-        }
+async function loadMonth(ym){
+  if(monthCache[ym])return monthCache[ym];
+  try{
+    const r=await fetch("data/"+ym+".json");
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    monthCache[ym]=d;
+    return d;
+  }catch{
+    // Fallback to inline data
+    if(window._INLINE_MONTHS&&window._INLINE_MONTHS[ym]){
+      monthCache[ym]=window._INLINE_MONTHS[ym];
+      return monthCache[ym];
+    }
+    return null;
+  }
+}
 
-        function updateLeaderboard() {
-            const sorted = [...FLAT].sort((a,b) => b.data[State.split][State.metric] - a.data[State.split][State.metric]);
-            const max = sorted[0].data[State.split][State.metric];
-            document.getElementById('leaderboard').innerHTML = sorted.map((d, i) => `
-                <div class="lb-item">
-                    <div class="lb-rank">${i+1}</div>
-                    <div class="lb-info">
-                        <span class="lb-name">${d.model}</span>
-                        <span class="lb-ds">${d.dataset}</span>
-                        <div class="progress-bar"><div class="progress-fill" style="width:${(d.data[State.split][State.metric]/max*100)}%; background:${d.color}"></div></div>
-                    </div>
-                    <div class="lb-val">${pct(d.data[State.split][State.metric])}</div>
-                </div>
-            `).join('');
-        }
+function rebuildAllEvents(){
+  allEvents=[];
+  for(const ym of Object.keys(monthCache)){
+    const d=monthCache[ym];
+    if(d&&d.events)allEvents.push(...d.events);
+  }
+  allEvents.sort((a,b)=>a.date.localeCompare(b.date));
+}
 
-        function updateComparison() {
-            const dA = DATA[State.modelA].datasets[State.dataset][State.split];
-            const dB = DATA[State.modelB].datasets[State.dataset][State.split];
-            const valA = dA[State.metric], valB = dB[State.metric];
+const latestDate=()=>{if(!allEvents.length)return new Date().toISOString().slice(0,10);return allEvents[allEvents.length-1].date};
+function resetFilters(){S.status="ALL";S.type="ALL";S.scenario="ALL";S.model="ALL";S.seed="ALL";S.metric="mAP50";S.gen="ALL";U.fStatus.value=S.status;U.fType.value=S.type;U.fScenario.value=S.scenario;U.fModel.value=S.model;U.fSeed.value=S.seed;U.fMetric.value=S.metric;U.fGen.value=S.gen}
 
-            document.getElementById('val-a').innerText = pct(valA);
-            document.getElementById('val-b').innerText = pct(valB);
-            document.getElementById('label-a').innerText = LABELS[State.metric];
-            document.getElementById('label-b').innerText = LABELS[State.metric];
-            document.getElementById('card-a').className = 'vs-box' + (valA > valB ? ' winner' : '');
-            document.getElementById('card-b').className = 'vs-box' + (valB > valA ? ' winner' : '');
-            
-            const diff = (valA - valB) * 100;
-            const diffEl = document.getElementById('vs-diff');
-            diffEl.innerText = (diff > 0 ? '+' : '') + diff.toFixed(1) + 'pp';
-            diffEl.style.color = diff > 0 ? DATA[State.modelA].color : DATA[State.modelB].color;
+const passEvt=e=>(S.status==="ALL"||e.status===S.status)&&(S.type==="ALL"||e.type===S.type);
+const passRun=r=>{
+  if(S.scenario!=="ALL"&&r.scenario!==S.scenario)return false;
+  if(S.model!=="ALL"&&r.model!==S.model)return false;
+  if(S.seed!=="ALL"&&String(r.seed)!==S.seed)return false;
+  if(S.gen!=="ALL"&&(r.gen||"legacy")!==S.gen)return false;
+  return true;
+};
+const getEvents=()=>allEvents.filter(e=>e.date===S.date).filter(passEvt);
+const getRuns=ev=>ev.flatMap(e=>(e.runs||[]).filter(passRun).map(r=>({...r,_eventId:e.id,_eventTitle:e.title})));
 
-            drawRadar(dA, dB, DATA[State.modelA].color, DATA[State.modelB].color);
-        }
+/* === Heatmap color === */
+function hmColor(v,min=0,max=1){
+  const t=Math.max(0,Math.min(1,(v-min)/(max-min)));
+  // red (0) -> yellow (0.5) -> green (1)
+  const r=t<.5?220:Math.round(220-220*(t-.5)*2);
+  const g=t<.5?Math.round(80+140*t*2):220;
+  const b=60;
+  return `rgb(${r},${g},${b})`;
+}
+function hmCell(v,fmt="pct"){
+  if(v==null||isNaN(v))return'<td class="hm">N/A</td>';
+  const display=fmt==="pct"?pct(v):String(v);
+  const nv=fmt==="pct"?v:0; // only color pct values
+  const color=fmt==="pct"?hmColor(v,0,1):"transparent";
+  const barW=fmt==="pct"?Math.round(v*100):0;
+  return'<td class="hm" style="color:'+color+'">'+display+'<div class="hm-bar" style="width:'+barW+'%;background:'+color+'"></div></td>';
+}
 
-        function drawRadar(dA, dB, colA, colB) {
-            const metrics = ['mAP50', 'mAP5095', 'P', 'R'], cx = 140, cy = 110, r = 80;
-            const angle = i => -Math.PI/2 + (i * 2 * Math.PI / 4);
-            const getPt = (v, i) => [cx + r * (v/0.95) * Math.cos(angle(i)), cy + r * (v/0.95) * Math.sin(angle(i))];
+/* === Draw Functions === */
+function drawHead(){
+  if(!manifest)return;
+  U.projectTitle.textContent=manifest.meta.project_title;
+  U.projectSub.textContent=manifest.meta.subtitle;
+  U.kUpdated.textContent=DF.format(toDate(manifest.meta.last_updated));
+  U.kEvents.textContent=String(allEvents.length);
+  const totalRuns=allEvents.reduce((n,e)=>n+(e.runs||[]).length,0);
+  U.kRuns.textContent=String(totalRuns);
+  const solved=allEvents.filter(e=>e.status==="Solved").length;
+  U.kSolved.textContent=allEvents.length?((solved/allEvents.length)*100).toFixed(0)+"%":"0%";
+}
 
-            let svg = '';
-            for(let j=1; j<=4; j++) {
-                const pts = [0,1,2,3].map(i => [cx + r*(j/4)*Math.cos(angle(i)), cy + r*(j/4)*Math.sin(angle(i))].join(',')).join(' ');
-                svg += `<polygon points="${pts}" fill="none" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2,2"/>`;
-            }
-            const poly = (d, col) => `<polygon points="${metrics.map((m,i)=>getPt(d[m],i).join(',')).join(' ')}" fill="${col}" fill-opacity="0.1" stroke="${col}" stroke-width="2"/>`;
-            svg += poly(dB, colB) + poly(dA, colA);
-            
-            metrics.forEach((m, i) => {
-                const [tx, ty] = [cx + (r+18)*Math.cos(angle(i)), cy + (r+12)*Math.sin(angle(i))];
-                svg += `<text x="${tx}" y="${ty}" font-size="9" font-weight="700" fill="#94a3b8" text-anchor="middle" dominant-baseline="middle">${LABELS[m]}</text>`;
-            });
+function drawCalendar(){
+  const y=S.month.getFullYear(),m=S.month.getMonth(),fd=new Date(y,m,1).getDay(),dm=new Date(y,m+1,0).getDate();
+  U.monthLabel.textContent=MF.format(new Date(y,m,1));
+  U.calendarDays.innerHTML="";
+  for(let i=0;i<fd;i++){const x=document.createElement("div");x.className="day off";U.calendarDays.appendChild(x)}
+  for(let d=1;d<=dm;d++){
+    const iso=[y,String(m+1).padStart(2,"0"),String(d).padStart(2,"0")].join("-");
+    const b=document.createElement("button");
+    b.className="day"+(iso===S.date?" sel":"");
+    b.innerHTML='<div class="n">'+d+'</div><div class="dots"></div>';
+    allEvents.filter(e=>e.date===iso).map(e=>sClass(e.status)).filter((v,i,a)=>a.indexOf(v)===i).forEach(c=>{
+      const dot=document.createElement("i");dot.className="dot "+c;b.querySelector(".dots").appendChild(dot);
+    });
+    b.onclick=()=>{S.viewMode="selectedDate";S.date=iso;S.event=null;S.run=null;render()};
+    U.calendarDays.appendChild(b);
+  }
+}
 
-            document.getElementById('radar-svg').innerHTML = svg;
-        }
+function drawTimeline(ev){
+  U.selectedDateLabel.textContent=DF.format(toDate(S.date));
+  U.viewModeChip.textContent="view: "+(S.viewMode==="latest"?"latest":"selected date");
+  const ld=latestDate(),le=allEvents.filter(e=>e.date===ld);
+  U.latestSummary.textContent="Latest activity: "+DF.format(toDate(ld))+" | "+le.length+" event(s)";
+  if(!ev.length){U.timelineList.innerHTML='<div class="empty"><div>No event on this date with current filters.</div><button class="btn" data-action="reset">Reset filters</button></div>';return}
+  if(!S.event||!ev.some(e=>e.id===S.event)){S.event=ev[0].id;S.run=null}
+  U.timelineList.innerHTML=ev.map(e=>{
+    const runCount=(e.runs||[]).length;
+    const legacyCount=(e.runs||[]).filter(r=>(r.gen||"legacy")==="legacy").length;
+    const genBadge=legacyCount>0?'<span class="badge badge-legacy">LEGACY</span>':'';
+    return'<article class="event'+(e.id===S.event?' sel':'')+'" data-event="'+e.id+'"><div class="eh"><h3 class="et">'+e.title+'</h3><span class="badge '+(sClass(e.status)==='plan'?'bp':(sClass(e.status)==='progress'?'bpr':'bs'))+'">'+e.status+'</span></div><div class="meta"><span>'+e.type+'</span><span>'+runCount+' runs</span>'+genBadge+'</div><div class="tags">'+(e.tags||[]).map(t=>'<span class="tag">'+t+'</span>').join("")+'</div></article>';
+  }).join("");
+  [...U.timelineList.querySelectorAll("[data-event]")].forEach(n=>n.onclick=()=>{S.event=n.getAttribute("data-event");S.run=null;render()});
+}
 
-        function updateHeatmap() {
-            const cls = ['B1','B2','B3','B4'];
-            let html = `<table class="hm-table"><tr><th style="width:140px"></th>` + cls.map(c=>`<th class="hm-th">${c}</th>`).join('') + `</tr>`;
-            
-            const modelsToShow = State.showAll ? FLAT : [
-                { model: State.modelA, dataset: State.dataset, color: DATA[State.modelA].color, data: DATA[State.modelA].datasets[State.dataset] },
-                { model: State.modelB, dataset: State.dataset, color: DATA[State.modelB].color, data: DATA[State.modelB].datasets[State.dataset] }
-            ];
+function drawLb(rs){
+  U.lbMeta.textContent=rs.length+" runs";
+  if(!rs.length){U.leaderboardList.innerHTML='<div class="empty"><div>No runs on this date.</div></div>';S.run=null;return}
+  const s=[...rs].sort((a,b)=>(b.global_metrics[S.metric]||-1)-(a.global_metrics[S.metric]||-1));
+  if(!S.run||!s.some(r=>r.run_id===S.run))S.run=s[0].run_id;
+  U.leaderboardList.innerHTML=s.map((r,i)=>{
+    const genBadge=(r.gen||"legacy")==="legacy"?'<span class="badge badge-legacy" style="margin-left:4px">legacy</span>':'<span class="badge badge-v2" style="margin-left:4px">v2</span>';
+    return'<article class="run'+(r.run_id===S.run?' sel':'')+'" data-run="'+r.run_id+'"><div class="rk">'+(i+1)+'</div><div><div class="rn">'+r.model+' | '+r.scenario+genBadge+'</div><div class="rs">'+r._eventTitle+'</div></div><div class="rv">'+pct(r.global_metrics[S.metric])+'</div></article>';
+  }).join("");
+  [...U.leaderboardList.querySelectorAll("[data-run]")].forEach(n=>n.onclick=()=>{const r=rs.find(x=>x.run_id===n.getAttribute("data-run"));if(r){S.run=r.run_id;S.event=r._eventId;render()}});
+}
 
-            modelsToShow.forEach(d => {
-                const splitData = d.data[State.split] || d.data;
-                html += `<tr><td class="hm-row-head" style="border-left-color: ${d.color}">${d.model}<small>${d.dataset}</small></td>`;
-                
-                cls.forEach(c => {
-                    const classData = splitData.classes[c];
-                    const v = classData ? classData[State.metric] : null;
+/* === Chart instances === */
+let barChart=null,radarChart=null,overfitChart=null;
 
-                    if (v === null || v === undefined) {
-                        html += `<td class="hm-cell" style="background:#f1f5f9; color:#cbd5e1; font-size:0.6rem">N/A</td>`;
-                    } else {
-                        const alpha = 0.05 + v * 0.8;
-                        const rgba = hexToRgba(d.color, alpha);
-                        html += `<td class="hm-cell" style="background:${rgba}; color:${v>0.6?'white':'inherit'}" 
-                                     onmouseenter="tip(event,'${d.model} ${c}','${pct(v)}')" 
-                                     onmouseleave="tip()">${pct(v)}</td>`;
-                    }
-                });
-                html += `</tr>`;
-            });
-            document.getElementById('heatmap').innerHTML = html + `</table>`;
-            
-            const btn = document.getElementById('show-all-btn');
-            btn.innerText = State.showAll ? 'SHOW FOCUSED' : 'SHOW ALL';
-            btn.classList.toggle('active', State.showAll);
-        }
+function destroyCharts(){
+  if(barChart){barChart.destroy();barChart=null}
+  if(radarChart){radarChart.destroy();radarChart=null}
+  if(overfitChart){overfitChart.destroy();overfitChart=null}
+}
 
-        function hexToRgba(hex, alpha) {
-            const r = parseInt(hex.slice(1, 3), 16);
-            const g = parseInt(hex.slice(3, 5), 16);
-            const b = parseInt(hex.slice(5, 7), 16);
-            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-        }
+/* === Detail Panel === */
+function drawDetail(ev,rs){
+  destroyCharts();
+  const e=ev.find(x=>x.id===S.event)||ev[0]||null;
+  let r=rs.find(x=>x.run_id===S.run)||null;
 
-        function tip(e,t,v){const el=document.getElementById('tooltip'); if(!e){el.style.opacity=0;return;} el.innerHTML=`<b>${t}</b>: ${v}`; el.style.left=e.clientX+12+'px'; el.style.top=e.clientY-12+'px'; el.style.opacity=1;}
+  if(!e&&!r){U.detailId.textContent="No event";U.detailPanel.innerHTML='<div class="empty"><div>Pick a date with events.</div><button class="btn" data-action="jumpLatest">Jump to latest</button></div>';return}
 
-        document.getElementById('split-tabs').onclick = e => { if(e.target.dataset.split){ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); e.target.classList.add('active'); State.split=e.target.dataset.split; render(); } };
-        document.getElementById('metric-select').onchange = e => { State.metric=e.target.value; render(); };
-        document.getElementById('dataset-select').onchange = e => { State.dataset = e.target.value; render(); };
-        document.getElementById('model-a-select').onchange = e => { State.modelA = e.target.value; render(); };
-        document.getElementById('model-b-select').onchange = e => { State.modelB = e.target.value; render(); };
-        document.getElementById('show-all-btn').onclick = () => { State.showAll = !State.showAll; updateHeatmap(); };
+  if(!r){
+    const ev2=e||allEvents.find(x=>x.id===S.event);
+    if(ev2){
+      U.detailId.textContent=ev2.id;
+      U.detailPanel.innerHTML='<div class="blk"><h5>Event Notes</h5><pre>'+(ev2.notes_md||"-")+'</pre></div><div class="blk"><h5>Schedule</h5>'+(ev2.schedules||[]).map(s=>'<div style="font-size:12px">'+(s.done?'[x] ':'[ ] ')+s.text+'</div>').join("")+'</div>';
+      return;
+    }
+    U.detailId.textContent="No run";U.detailPanel.innerHTML='<div class="empty">No run selected.</div>';return;
+  }
 
-        init();
-    </script>
+  U.detailId.textContent=r.run_id;
+  const genBadge=(r.gen||"legacy")==="legacy"?'<span class="badge badge-legacy">LEGACY — old split, potential leakage</span>':'<span class="badge badge-v2">V2 — tree-level split, no leakage</span>';
+  const parentEvent=allEvents.find(x=>x.id===r._eventId)||e;
+
+  // Overfitting detection
+  let overfitWarning='';
+  if(r.splits&&r.splits.train&&r.splits.test){
+    const gap=(r.splits.train.global.mAP50-r.splits.test.global.mAP50)*100;
+    if(gap>15){
+      overfitWarning='<div class="strip warn" style="margin-bottom:8px"><span class="badge badge-warn">Possible overfit (train-test gap: '+gap.toFixed(1)+'%)</span></div>';
+    }
+  }
+
+  // Detail tabs
+  const tabsHtml='<div class="dtabs">'+
+    ['metrics','charts','notes'].map(t=>'<button class="dtab'+(S.detailTab===t?' active':'')+'" data-dtab="'+t+'">'+t.charAt(0).toUpperCase()+t.slice(1)+'</button>').join('')+
+    '</div>';
+
+  let content='';
+  if(S.detailTab==='metrics'){
+    content=buildMetricsTab(r,parentEvent,genBadge,overfitWarning);
+  }else if(S.detailTab==='charts'){
+    content=buildChartsTab(r,rs);
+  }else{
+    content=buildNotesTab(r,parentEvent);
+  }
+
+  U.detailPanel.innerHTML=tabsHtml+content;
+
+  // Bind detail tab clicks
+  [...U.detailPanel.querySelectorAll("[data-dtab]")].forEach(b=>b.onclick=()=>{S.detailTab=b.getAttribute("data-dtab");drawDetail(ev,rs)});
+  // Bind split selector
+  [...U.detailPanel.querySelectorAll("[data-split]")].forEach(b=>b.onclick=()=>{S.splitView=b.getAttribute("data-split");drawDetail(ev,rs)});
+
+  // Init charts if on charts tab
+  if(S.detailTab==='charts'){
+    initCharts(r,rs);
+  }
+}
+
+function buildMetricsTab(r,parentEvent,genBadge,overfitWarning){
+  const hasSplits=r.splits&&Object.keys(r.splits).length>0;
+  const splitName=S.splitView;
+  const splitData=hasSplits&&r.splits[splitName]?r.splits[splitName]:null;
+
+  // Model info strip
+  let modelHtml='';
+  const mi=r.model_info||(splitData?splitData.model_info:null);
+  if(mi){
+    modelHtml='<div class="model-strip"><span>Model: <b>'+r.model+'</b></span><span>Layers: <b>'+mi.layers+'</b></span><span>Params: <b>'+(mi.params/1e6).toFixed(1)+'M</b></span><span>GFLOPs: <b>'+mi.gflops+'</b></span></div>';
+  }
+
+  // Speed strip
+  let speedHtml='';
+  const spd=r.speed||(splitData?splitData.speed:null);
+  if(spd){
+    const total=(spd.preprocess+spd.inference+spd.postprocess).toFixed(1);
+    speedHtml='<div class="speed-strip"><span>Speed:</span><span>pre <b>'+spd.preprocess+'ms</b></span><span>inf <b>'+spd.inference+'ms</b></span><span>post <b>'+spd.postprocess+'ms</b></span><span>total <b>'+total+'ms/img</b></span></div>';
+  }
+
+  // Split selector
+  let splitSel='';
+  if(hasSplits){
+    splitSel='<div class="split-sel">'+['train','val','test'].map(s=>{
+      const has=!!r.splits[s];
+      return has?'<button class="split-btn'+(S.splitView===s?' active':'')+'" data-split="'+s+'">'+s+'</button>':'';
+    }).join('')+'</div>';
+  }
+
+  // Global metrics from current split
+  const g=splitData?splitData.global:r.global_metrics;
+  const globalHtml='<div class="mg"><div class="mb"><div>mAP@50</div><b>'+pct(g.mAP50)+'</b></div><div class="mb"><div>mAP@50-95</div><b>'+pct(g.mAP5095)+'</b></div><div class="mb"><div>Precision</div><b>'+pct(g.P)+'</b></div><div class="mb"><div>Recall</div><b>'+pct(g.R)+'</b></div></div>';
+
+  // Per-class table with F1, instances, heatmap
+  const classes=["B1","B2","B3","B4"];
+  const classData=splitData?splitData.classes:r.class_metrics;
+  const hasF1=classData&&Object.values(classData).some(c=>c.F1!=null);
+  const hasInst=classData&&Object.values(classData).some(c=>c.instances!=null);
+
+  let tableHead='<tr><th>Class</th><th>mAP@50</th><th>P</th><th>R</th>';
+  if(hasF1)tableHead+='<th>F1</th>';
+  if(hasInst)tableHead+='<th>Imgs</th><th>Inst</th>';
+  tableHead+='</tr>';
+
+  const rows=classes.map(c=>{
+    const v=classData&&classData[c]?classData[c]:null;
+    if(!v)return'<tr><td>'+c+'</td><td colspan="6">N/A</td></tr>';
+    let row='<tr><td><b>'+c+'</b></td>'+hmCell(v.mAP50)+hmCell(v.P)+hmCell(v.R);
+    if(hasF1)row+=hmCell(v.F1);
+    if(hasInst)row+='<td>'+((v.images!=null)?v.images:'')+'</td><td>'+((v.instances!=null)?v.instances:'')+'</td>';
+    return row+'</tr>';
+  }).join('');
+
+  // Split images/instances summary
+  let splitInfo='';
+  if(splitData&&splitData.images!=null){
+    splitInfo='<div style="font-size:10px;color:var(--muted);margin-bottom:4px">'+splitName.toUpperCase()+': '+splitData.images+' images, '+splitData.instances+' instances</div>';
+  }
+
+  return'<div style="margin-bottom:8px">'+genBadge+'</div>'+
+    overfitWarning+modelHtml+speedHtml+splitSel+splitInfo+globalHtml+
+    '<table><thead>'+tableHead+'</thead><tbody>'+rows+'</tbody></table>';
+}
+
+function buildChartsTab(r,rs){
+  return'<div class="chart-box"><h5 style="font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Per-Class Comparison (Bar)</h5><canvas id="barChartCanvas"></canvas></div>'+
+    '<div class="chart-box"><h5 style="font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Class Profile (Radar)</h5><canvas id="radarChartCanvas"></canvas></div>'+
+    '<div class="chart-box"><h5 style="font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Train vs Val vs Test (Overfit Check)</h5><canvas id="overfitChartCanvas"></canvas></div>';
+}
+
+function buildNotesTab(r,parentEvent){
+  return'<div class="blk"><h5>Run Insight</h5><pre>'+(r.summary||"-")+'</pre></div>'+
+    '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;margin-top:8px">eval: '+r.eval_set+'</div>'+
+    (parentEvent?'<div class="blk"><h5>Event Notes ('+parentEvent.title+')</h5><pre>'+(parentEvent.notes_md||"-")+'</pre></div>':'')+
+    (parentEvent&&parentEvent.schedules?'<div class="blk"><h5>Schedule</h5>'+(parentEvent.schedules||[]).map(s=>'<div style="font-size:12px">'+(s.done?'[x] ':'[ ] ')+s.text+'</div>').join("")+'</div>':'');
+}
+
+function initCharts(r,rs){
+  const metric=S.metric;
+  const classes=["B1","B2","B3","B4"];
+  const colors=['#1a8f60','#136e9c','#c57913','#8e3b8e'];
+
+  // Bar chart: compare runs on this date for selected metric per class
+  const barCanvas=document.getElementById("barChartCanvas");
+  if(barCanvas&&rs.length>=1){
+    const datasets=rs.slice(0,6).map((run,i)=>({
+      label:run.model+' / '+run.scenario,
+      data:classes.map(c=>{
+        const splitData=run.splits&&run.splits[S.splitView]?run.splits[S.splitView].classes:run.class_metrics;
+        const v=splitData&&splitData[c]?splitData[c][metric]:null;
+        return v!=null?(v*100):0;
+      }),
+      backgroundColor:colors[i%colors.length]+'88',
+      borderColor:colors[i%colors.length],
+      borderWidth:1
+    }));
+    barChart=new Chart(barCanvas,{type:'bar',data:{labels:classes,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{beginAtZero:true,max:100,title:{display:true,text:metric+' %',font:{size:10}}}}}});
+  }
+
+  // Radar chart: current run class profile
+  const radarCanvas=document.getElementById("radarChartCanvas");
+  if(radarCanvas&&r.splits){
+    const splitData=r.splits[S.splitView]?r.splits[S.splitView].classes:r.class_metrics;
+    if(splitData){
+      const metrics=['mAP50','P','R'];
+      const hasF1=Object.values(splitData).some(c=>c.F1!=null);
+      if(hasF1)metrics.push('F1');
+      const radarLabels=classes;
+      const radarDatasets=metrics.map((m,i)=>({
+        label:m,
+        data:classes.map(c=>splitData[c]&&splitData[c][m]!=null?(splitData[c][m]*100):0),
+        borderColor:colors[i%colors.length],
+        backgroundColor:colors[i%colors.length]+'22',
+        pointRadius:3,
+        borderWidth:2
+      }));
+      radarChart=new Chart(radarCanvas,{type:'radar',data:{labels:radarLabels,datasets:radarDatasets},options:{responsive:true,maintainAspectRatio:false,scales:{r:{beginAtZero:true,max:100,ticks:{font:{size:9}}}},plugins:{legend:{labels:{font:{size:10}}}}}});
+    }
+  }
+
+  // Overfit chart: train vs val vs test per class
+  const overfitCanvas=document.getElementById("overfitChartCanvas");
+  if(overfitCanvas&&r.splits){
+    const splitNames=['train','val','test'];
+    const splitColors=['#c57913','#136e9c','#1a8f60'];
+    const datasets2=splitNames.filter(s=>r.splits[s]).map((s,i)=>({
+      label:s.toUpperCase(),
+      data:classes.map(c=>r.splits[s].classes[c]?r.splits[s].classes[c].mAP50*100:0),
+      backgroundColor:splitColors[i]+'88',
+      borderColor:splitColors[i],
+      borderWidth:1
+    }));
+    overfitChart=new Chart(overfitCanvas,{type:'bar',data:{labels:classes,datasets:datasets2},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{beginAtZero:true,max:100,title:{display:true,text:'mAP@50 %',font:{size:10}}}}}});
+  }
+}
+
+/* === Layout === */
+function syncMobile(){
+  const mobile=window.matchMedia("(max-width:920px)").matches;
+  if(!mobile){U.panelCalendar.classList.add("active");U.panelTimeline.classList.add("active");U.panelDetail.classList.add("active");return}
+  U.panelCalendar.classList.toggle("active",S.mobilePanel==="calendar");
+  U.panelTimeline.classList.toggle("active",S.mobilePanel==="timeline");
+  U.panelDetail.classList.toggle("active",S.mobilePanel==="detail");
+  [...U.mobileTabs.querySelectorAll("button")].forEach(b=>b.classList.toggle("active",b.getAttribute("data-panel")===S.mobilePanel));
+}
+
+function updateHash(){history.replaceState(null,"","#"+S.date)}
+function render(){drawHead();drawCalendar();const ev=getEvents(),rs=getRuns(ev);drawTimeline(ev);drawLb(rs);drawDetail(ev,rs);syncMobile();updateHash()}
+
+function bind(){
+  if(manifest&&manifest.rules&&manifest.rules.seeds){
+    manifest.rules.seeds.forEach(seed=>{const o=document.createElement("option");o.value=String(seed);o.textContent=String(seed);U.fSeed.appendChild(o)});
+  }
+  const oD=document.createElement("option");oD.value="-";oD.textContent="- (legacy)";U.fSeed.appendChild(oD);
+
+  U.fStatus.onchange=e=>{S.status=e.target.value;render()};
+  U.fType.onchange=e=>{S.type=e.target.value;render()};
+  U.fScenario.onchange=e=>{S.scenario=e.target.value;render()};
+  U.fModel.onchange=e=>{S.model=e.target.value;render()};
+  U.fSeed.onchange=e=>{S.seed=e.target.value;render()};
+  U.fMetric.onchange=e=>{S.metric=e.target.value;render()};
+  U.fGen.onchange=e=>{S.gen=e.target.value;render()};
+  U.resetFilters.onclick=()=>{resetFilters();render()};
+  U.jumpLatest.onclick=()=>{S.viewMode="latest";S.date=latestDate();S.month=toDate(S.date);S.event=null;S.run=null;render()};
+  U.prevMonth.onclick=async()=>{
+    S.month=new Date(S.month.getFullYear(),S.month.getMonth()-1,1);
+    const ym=S.month.getFullYear()+"-"+String(S.month.getMonth()+1).padStart(2,"0");
+    await loadMonth(ym);
+    rebuildAllEvents();
+    drawCalendar();
+  };
+  U.nextMonth.onclick=async()=>{
+    S.month=new Date(S.month.getFullYear(),S.month.getMonth()+1,1);
+    const ym=S.month.getFullYear()+"-"+String(S.month.getMonth()+1).padStart(2,"0");
+    await loadMonth(ym);
+    rebuildAllEvents();
+    drawCalendar();
+  };
+  U.mobileTabs.onclick=e=>{if(!(e.target instanceof HTMLElement))return;const p=e.target.getAttribute("data-panel");if(!p)return;S.mobilePanel=p;syncMobile()};
+  document.addEventListener("click",e=>{if(!(e.target instanceof HTMLElement))return;const act=e.target.getAttribute("data-action");if(act==="reset"){resetFilters();render()}if(act==="jumpLatest"){S.viewMode="latest";S.date=latestDate();S.month=toDate(S.date);S.event=null;S.run=null;render()}});
+  window.addEventListener("resize",syncMobile);
+}
+
+function readHash(){
+  const h=location.hash.replace("#","");
+  if(/^\d{4}-\d{2}-\d{2}$/.test(h)){S.date=h;S.viewMode="selectedDate";S.month=toDate(h)}
+  else{S.date=latestDate();S.month=toDate(S.date)}
+}
+
+async function init(){
+  await loadManifest();
+  // Load all available months
+  for(const ym of manifest.months){
+    await loadMonth(ym);
+  }
+  rebuildAllEvents();
+  readHash();
+  bind();
+  render();
+  window.addEventListener("hashchange",()=>{readHash();S.event=null;S.run=null;render()});
+}
+
+init();
+</script>
 </body>
 </html>

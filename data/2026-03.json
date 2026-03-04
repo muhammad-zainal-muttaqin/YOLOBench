@@ -1,0 +1,2020 @@
+{
+  "events": [
+    {
+      "id": "e1",
+      "date": "2026-03-01",
+      "type": "training",
+      "status": "Solved",
+      "title": "Legacy batch 1: YOLO26l & YOLOv9m on stratifikasi + sawit-yolo",
+      "tags": [
+        "legacy",
+        "stratifikasi",
+        "sawit-yolo",
+        "YOLO26l",
+        "YOLOv9m"
+      ],
+      "notes_md": "Ran 4 experiments on old datasets (dataset-yolo-stratifikasi and sawit-yolo-dataset) using YOLO26l and YOLOv9m. These use old splits with potential image-level leakage.",
+      "schedules": [
+        {
+          "text": "Exp1: YOLO26l on stratifikasi",
+          "done": true
+        },
+        {
+          "text": "Exp2: YOLO26l on sawit-yolo",
+          "done": true
+        },
+        {
+          "text": "Exp3: YOLOv9m on stratifikasi",
+          "done": true
+        },
+        {
+          "text": "Exp4: YOLOv9m on sawit-yolo",
+          "done": true
+        }
+      ],
+      "runs": [
+        {
+          "run_id": "exp1",
+          "gen": "legacy",
+          "scenario": "stratifikasi",
+          "model": "YOLO26l",
+          "seed": "-",
+          "eval_set": "stratifikasi/test (604 imgs)",
+          "summary": "YOLO26l on dataset-yolo-stratifikasi. Lowest tier — B4 very weak.",
+          "global_metrics": {
+            "mAP50": 0.442,
+            "mAP5095": 0.15,
+            "P": 0.432,
+            "R": 0.518
+          },
+          "class_metrics": {
+            "B1": {
+              "mAP50": 0.73,
+              "P": 0.557,
+              "R": 0.811
+            },
+            "B2": {
+              "mAP50": 0.386,
+              "P": 0.435,
+              "R": 0.424
+            },
+            "B3": {
+              "mAP50": 0.443,
+              "P": 0.422,
+              "R": 0.524
+            },
+            "B4": {
+              "mAP50": 0.209,
+              "P": 0.315,
+              "R": 0.312
+            }
+          },
+          "splits": {
+            "train": {
+              "images": 2784,
+              "instances": 12720,
+              "global": {
+                "mAP50": 0.437,
+                "mAP5095": 0.153,
+                "P": 0.434,
+                "R": 0.488
+              },
+              "classes": {
+                "B1": {
+                  "images": 1242,
+                  "instances": 1505,
+                  "P": 0.552,
+                  "R": 0.788,
+                  "mAP50": 0.726,
+                  "mAP5095": 0.27,
+                  "F1": 0.64937
+                },
+                "B2": {
+                  "images": 1712,
+                  "instances": 2843,
+                  "P": 0.452,
+                  "R": 0.405,
+                  "mAP50": 0.397,
+                  "mAP5095": 0.142,
+                  "F1": 0.42697
+                },
+                "B3": {
+                  "images": 2479,
+                  "instances": 5890,
+                  "P": 0.433,
+                  "R": 0.49,
+                  "mAP50": 0.427,
+                  "mAP5095": 0.143,
+                  "F1": 0.45973
+                },
+                "B4": {
+                  "images": 1573,
+                  "instances": 2482,
+                  "P": 0.298,
+                  "R": 0.269,
+                  "mAP50": 0.198,
+                  "mAP5095": 0.0583,
+                  "F1": 0.28272
+                }
+              },
+              "speed": {
+                "preprocess": 0.6,
+                "inference": 23.2,
+                "postprocess": 0.1
+              }
+            },
+            "val": {
+              "images": 604,
+              "instances": 2656,
+              "global": {
+                "mAP50": 0.476,
+                "mAP5095": 0.17,
+                "P": 0.458,
+                "R": 0.501
+              },
+              "classes": {
+                "B1": {
+                  "images": 288,
+                  "instances": 338,
+                  "P": 0.567,
+                  "R": 0.793,
+                  "mAP50": 0.767,
+                  "mAP5095": 0.293,
+                  "F1": 0.6615
+                },
+                "B2": {
+                  "images": 383,
+                  "instances": 650,
+                  "P": 0.507,
+                  "R": 0.425,
+                  "mAP50": 0.463,
+                  "mAP5095": 0.17,
+                  "F1": 0.4623
+                },
+                "B3": {
+                  "images": 528,
+                  "instances": 1201,
+                  "P": 0.462,
+                  "R": 0.53,
+                  "mAP50": 0.47,
+                  "mAP5095": 0.161,
+                  "F1": 0.49378
+                },
+                "B4": {
+                  "images": 317,
+                  "instances": 467,
+                  "P": 0.294,
+                  "R": 0.257,
+                  "mAP50": 0.204,
+                  "mAP5095": 0.0572,
+                  "F1": 0.2742
+                }
+              },
+              "speed": {
+                "preprocess": 1.1,
+                "inference": 24.5,
+                "postprocess": 0.1
+              }
+            },
+            "test": {
+              "images": 604,
+              "instances": 2611,
+              "global": {
+                "mAP50": 0.442,
+                "mAP5095": 0.15,
+                "P": 0.432,
+                "R": 0.518
+              },
+              "classes": {
+                "B1": {
+                  "images": 280,
+                  "instances": 334,
+                  "P": 0.557,
+                  "R": 0.811,
+                  "mAP50": 0.73,
+                  "mAP5095": 0.278,
+                  "F1": 0.66026
+                },
+                "B2": {
+                  "images": 336,
+                  "instances": 580,
+                  "P": 0.435,
+                  "R": 0.424,
+                  "mAP50": 0.386,
+                  "mAP5095": 0.125,
+                  "F1": 0.42927
+                },
+                "B3": {
+                  "images": 530,
+                  "instances": 1204,
+                  "P": 0.422,
+                  "R": 0.524,
+                  "mAP50": 0.443,
+                  "mAP5095": 0.144,
+                  "F1": 0.46768
+                },
+                "B4": {
+                  "images": 301,
+                  "instances": 493,
+                  "P": 0.315,
+                  "R": 0.312,
+                  "mAP50": 0.209,
+                  "mAP5095": 0.055,
+                  "F1": 0.31342
+                }
+              },
+              "speed": {
+                "preprocess": 1,
+                "inference": 24.6,
+                "postprocess": 0.1
+              }
+            }
+          },
+          "model_info": {
+            "arch": "YOLO26l",
+            "layers": 190,
+            "params": 24748824,
+            "gflops": 86.1
+          },
+          "speed": {
+            "preprocess": 1,
+            "inference": 24.6,
+            "postprocess": 0.1
+          }
+        },
+        {
+          "run_id": "exp2",
+          "gen": "legacy",
+          "scenario": "sawit-yolo",
+          "model": "YOLO26l",
+          "seed": "-",
+          "eval_set": "sawit-yolo/test (400 imgs)",
+          "summary": "YOLO26l on sawit-yolo-dataset. Slightly better than stratifikasi on mAP50.",
+          "global_metrics": {
+            "mAP50": 0.447,
+            "mAP5095": 0.164,
+            "P": 0.442,
+            "R": 0.498
+          },
+          "class_metrics": {
+            "B1": {
+              "mAP50": 0.747,
+              "P": 0.583,
+              "R": 0.786
+            },
+            "B2": {
+              "mAP50": 0.347,
+              "P": 0.41,
+              "R": 0.384
+            },
+            "B3": {
+              "mAP50": 0.477,
+              "P": 0.459,
+              "R": 0.528
+            },
+            "B4": {
+              "mAP50": 0.217,
+              "P": 0.314,
+              "R": 0.296
+            }
+          },
+          "splits": {
+            "train": {
+              "images": 2776,
+              "instances": 12494,
+              "global": {
+                "mAP50": 0.438,
+                "mAP5095": 0.154,
+                "P": 0.431,
+                "R": 0.495
+              },
+              "classes": {
+                "B1": {
+                  "images": 1235,
+                  "instances": 1486,
+                  "P": 0.539,
+                  "R": 0.791,
+                  "mAP50": 0.726,
+                  "mAP5095": 0.272,
+                  "F1": 0.64112
+                },
+                "B2": {
+                  "images": 1723,
+                  "instances": 2926,
+                  "P": 0.463,
+                  "R": 0.413,
+                  "mAP50": 0.407,
+                  "mAP5095": 0.144,
+                  "F1": 0.43641
+                },
+                "B3": {
+                  "images": 2453,
+                  "instances": 5752,
+                  "P": 0.425,
+                  "R": 0.499,
+                  "mAP50": 0.422,
+                  "mAP5095": 0.142,
+                  "F1": 0.45878
+                },
+                "B4": {
+                  "images": 1493,
+                  "instances": 2330,
+                  "P": 0.296,
+                  "R": 0.279,
+                  "mAP50": 0.196,
+                  "mAP5095": 0.057,
+                  "F1": 0.28696
+                }
+              },
+              "speed": {
+                "preprocess": 0.6,
+                "inference": 23.7,
+                "postprocess": 0.1
+              }
+            },
+            "val": {
+              "images": 816,
+              "instances": 3647,
+              "global": {
+                "mAP50": 0.462,
+                "mAP5095": 0.157,
+                "P": 0.443,
+                "R": 0.503
+              },
+              "classes": {
+                "B1": {
+                  "images": 362,
+                  "instances": 437,
+                  "P": 0.577,
+                  "R": 0.81,
+                  "mAP50": 0.753,
+                  "mAP5095": 0.276,
+                  "F1": 0.67411
+                },
+                "B2": {
+                  "images": 472,
+                  "instances": 774,
+                  "P": 0.451,
+                  "R": 0.43,
+                  "mAP50": 0.431,
+                  "mAP5095": 0.15,
+                  "F1": 0.44028
+                },
+                "B3": {
+                  "images": 716,
+                  "instances": 1679,
+                  "P": 0.45,
+                  "R": 0.51,
+                  "mAP50": 0.464,
+                  "mAP5095": 0.148,
+                  "F1": 0.47807
+                },
+                "B4": {
+                  "images": 468,
+                  "instances": 757,
+                  "P": 0.295,
+                  "R": 0.262,
+                  "mAP50": 0.201,
+                  "mAP5095": 0.0549,
+                  "F1": 0.27707
+                }
+              },
+              "speed": {
+                "preprocess": 0.9,
+                "inference": 26.9,
+                "postprocess": 0.1
+              }
+            },
+            "test": {
+              "images": 400,
+              "instances": 1849,
+              "global": {
+                "mAP50": 0.447,
+                "mAP5095": 0.164,
+                "P": 0.442,
+                "R": 0.498
+              },
+              "classes": {
+                "B1": {
+                  "images": 213,
+                  "instances": 254,
+                  "P": 0.583,
+                  "R": 0.786,
+                  "mAP50": 0.747,
+                  "mAP5095": 0.296,
+                  "F1": 0.66913
+                },
+                "B2": {
+                  "images": 236,
+                  "instances": 375,
+                  "P": 0.41,
+                  "R": 0.384,
+                  "mAP50": 0.347,
+                  "mAP5095": 0.129,
+                  "F1": 0.3967
+                },
+                "B3": {
+                  "images": 368,
+                  "instances": 865,
+                  "P": 0.459,
+                  "R": 0.528,
+                  "mAP50": 0.477,
+                  "mAP5095": 0.169,
+                  "F1": 0.49137
+                },
+                "B4": {
+                  "images": 230,
+                  "instances": 355,
+                  "P": 0.314,
+                  "R": 0.296,
+                  "mAP50": 0.217,
+                  "mAP5095": 0.0645,
+                  "F1": 0.30466
+                }
+              },
+              "speed": {
+                "preprocess": 1.1,
+                "inference": 26.7,
+                "postprocess": 0.1
+              }
+            }
+          },
+          "model_info": {
+            "arch": "YOLO26l",
+            "layers": 190,
+            "params": 24748824,
+            "gflops": 86.1
+          },
+          "speed": {
+            "preprocess": 1.1,
+            "inference": 26.7,
+            "postprocess": 0.1
+          }
+        },
+        {
+          "run_id": "exp3",
+          "gen": "legacy",
+          "scenario": "stratifikasi",
+          "model": "YOLOv9m",
+          "seed": "-",
+          "eval_set": "stratifikasi/test (604 imgs)",
+          "summary": "YOLOv9m on stratifikasi. Big jump over YOLO26l — recall much higher.",
+          "global_metrics": {
+            "mAP50": 0.526,
+            "mAP5095": 0.242,
+            "P": 0.486,
+            "R": 0.62
+          },
+          "class_metrics": {
+            "B1": {
+              "mAP50": 0.829,
+              "P": 0.658,
+              "R": 0.883
+            },
+            "B2": {
+              "mAP50": 0.385,
+              "P": 0.373,
+              "R": 0.544
+            },
+            "B3": {
+              "mAP50": 0.546,
+              "P": 0.46,
+              "R": 0.721
+            },
+            "B4": {
+              "mAP50": 0.342,
+              "P": 0.455,
+              "R": 0.331
+            }
+          },
+          "splits": {
+            "train": {
+              "images": 2784,
+              "instances": 12720,
+              "global": {
+                "mAP50": 0.645,
+                "mAP5095": 0.351,
+                "P": 0.574,
+                "R": 0.683
+              },
+              "classes": {
+                "B1": {
+                  "images": 1242,
+                  "instances": 1505,
+                  "P": 0.68,
+                  "R": 0.902,
+                  "mAP50": 0.878,
+                  "mAP5095": 0.535,
+                  "F1": 0.77511
+                },
+                "B2": {
+                  "images": 1712,
+                  "instances": 2843,
+                  "P": 0.494,
+                  "R": 0.651,
+                  "mAP50": 0.556,
+                  "mAP5095": 0.308,
+                  "F1": 0.56176
+                },
+                "B3": {
+                  "images": 2479,
+                  "instances": 5890,
+                  "P": 0.542,
+                  "R": 0.776,
+                  "mAP50": 0.651,
+                  "mAP5095": 0.339,
+                  "F1": 0.63841
+                },
+                "B4": {
+                  "images": 1573,
+                  "instances": 2482,
+                  "P": 0.58,
+                  "R": 0.405,
+                  "mAP50": 0.496,
+                  "mAP5095": 0.221,
+                  "F1": 0.47666
+                }
+              },
+              "speed": {
+                "preprocess": 0.7,
+                "inference": 21.3,
+                "postprocess": 0.8
+              }
+            },
+            "val": {
+              "images": 604,
+              "instances": 2656,
+              "global": {
+                "mAP50": 0.535,
+                "mAP5095": 0.252,
+                "P": 0.484,
+                "R": 0.629
+              },
+              "classes": {
+                "B1": {
+                  "images": 288,
+                  "instances": 338,
+                  "P": 0.615,
+                  "R": 0.852,
+                  "mAP50": 0.825,
+                  "mAP5095": 0.429,
+                  "F1": 0.71465
+                },
+                "B2": {
+                  "images": 383,
+                  "instances": 650,
+                  "P": 0.428,
+                  "R": 0.6,
+                  "mAP50": 0.443,
+                  "mAP5095": 0.206,
+                  "F1": 0.49976
+                },
+                "B3": {
+                  "images": 528,
+                  "instances": 1201,
+                  "P": 0.47,
+                  "R": 0.739,
+                  "mAP50": 0.553,
+                  "mAP5095": 0.244,
+                  "F1": 0.57438
+                },
+                "B4": {
+                  "images": 317,
+                  "instances": 467,
+                  "P": 0.421,
+                  "R": 0.325,
+                  "mAP50": 0.32,
+                  "mAP5095": 0.13,
+                  "F1": 0.36695
+                }
+              },
+              "speed": {
+                "preprocess": 1,
+                "inference": 20.3,
+                "postprocess": 0.9
+              }
+            },
+            "test": {
+              "images": 604,
+              "instances": 2611,
+              "global": {
+                "mAP50": 0.526,
+                "mAP5095": 0.242,
+                "P": 0.486,
+                "R": 0.62
+              },
+              "classes": {
+                "B1": {
+                  "images": 280,
+                  "instances": 334,
+                  "P": 0.658,
+                  "R": 0.883,
+                  "mAP50": 0.829,
+                  "mAP5095": 0.426,
+                  "F1": 0.75426
+                },
+                "B2": {
+                  "images": 336,
+                  "instances": 580,
+                  "P": 0.373,
+                  "R": 0.544,
+                  "mAP50": 0.385,
+                  "mAP5095": 0.181,
+                  "F1": 0.44228
+                },
+                "B3": {
+                  "images": 530,
+                  "instances": 1204,
+                  "P": 0.46,
+                  "R": 0.721,
+                  "mAP50": 0.546,
+                  "mAP5095": 0.234,
+                  "F1": 0.5613
+                },
+                "B4": {
+                  "images": 301,
+                  "instances": 493,
+                  "P": 0.455,
+                  "R": 0.331,
+                  "mAP50": 0.342,
+                  "mAP5095": 0.128,
+                  "F1": 0.38281
+                }
+              },
+              "speed": {
+                "preprocess": 1.1,
+                "inference": 21.5,
+                "postprocess": 0.9
+              }
+            }
+          },
+          "model_info": {
+            "arch": "YOLOv9m",
+            "layers": 151,
+            "params": 20015884,
+            "gflops": 76.5
+          },
+          "speed": {
+            "preprocess": 1.1,
+            "inference": 21.5,
+            "postprocess": 0.9
+          }
+        },
+        {
+          "run_id": "exp4",
+          "gen": "legacy",
+          "scenario": "sawit-yolo",
+          "model": "YOLOv9m",
+          "seed": "-",
+          "eval_set": "sawit-yolo/test (400 imgs)",
+          "summary": "YOLOv9m on sawit-yolo. Best among batch 1 — strong B1 and B3.",
+          "global_metrics": {
+            "mAP50": 0.613,
+            "mAP5095": 0.315,
+            "P": 0.556,
+            "R": 0.677
+          },
+          "class_metrics": {
+            "B1": {
+              "mAP50": 0.89,
+              "P": 0.733,
+              "R": 0.898
+            },
+            "B2": {
+              "mAP50": 0.448,
+              "P": 0.405,
+              "R": 0.621
+            },
+            "B3": {
+              "mAP50": 0.637,
+              "P": 0.522,
+              "R": 0.771
+            },
+            "B4": {
+              "mAP50": 0.477,
+              "P": 0.565,
+              "R": 0.418
+            }
+          },
+          "splits": {
+            "train": {
+              "images": 2776,
+              "instances": 12494,
+              "global": {
+                "mAP50": 0.604,
+                "mAP5095": 0.312,
+                "P": 0.544,
+                "R": 0.659
+              },
+              "classes": {
+                "B1": {
+                  "images": 1235,
+                  "instances": 1486,
+                  "P": 0.659,
+                  "R": 0.883,
+                  "mAP50": 0.854,
+                  "mAP5095": 0.491,
+                  "F1": 0.75465
+                },
+                "B2": {
+                  "images": 1723,
+                  "instances": 2926,
+                  "P": 0.466,
+                  "R": 0.613,
+                  "mAP50": 0.51,
+                  "mAP5095": 0.267,
+                  "F1": 0.52953
+                },
+                "B3": {
+                  "images": 2453,
+                  "instances": 5752,
+                  "P": 0.516,
+                  "R": 0.756,
+                  "mAP50": 0.609,
+                  "mAP5095": 0.3,
+                  "F1": 0.613
+                },
+                "B4": {
+                  "images": 1493,
+                  "instances": 2330,
+                  "P": 0.536,
+                  "R": 0.385,
+                  "mAP50": 0.441,
+                  "mAP5095": 0.19,
+                  "F1": 0.44797
+                }
+              },
+              "speed": {
+                "preprocess": 0.7,
+                "inference": 19.6,
+                "postprocess": 0.8
+              }
+            },
+            "val": {
+              "images": 816,
+              "instances": 3647,
+              "global": {
+                "mAP50": 0.635,
+                "mAP5095": 0.34,
+                "P": 0.564,
+                "R": 0.678
+              },
+              "classes": {
+                "B1": {
+                  "images": 362,
+                  "instances": 437,
+                  "P": 0.669,
+                  "R": 0.911,
+                  "mAP50": 0.879,
+                  "mAP5095": 0.528,
+                  "F1": 0.7717
+                },
+                "B2": {
+                  "images": 472,
+                  "instances": 774,
+                  "P": 0.484,
+                  "R": 0.652,
+                  "mAP50": 0.545,
+                  "mAP5095": 0.299,
+                  "F1": 0.55597
+                },
+                "B3": {
+                  "images": 716,
+                  "instances": 1679,
+                  "P": 0.541,
+                  "R": 0.783,
+                  "mAP50": 0.654,
+                  "mAP5095": 0.327,
+                  "F1": 0.64
+                },
+                "B4": {
+                  "images": 468,
+                  "instances": 757,
+                  "P": 0.561,
+                  "R": 0.367,
+                  "mAP50": 0.463,
+                  "mAP5095": 0.205,
+                  "F1": 0.44381
+                }
+              },
+              "speed": {
+                "preprocess": 0.9,
+                "inference": 22.9,
+                "postprocess": 0.8
+              }
+            },
+            "test": {
+              "images": 400,
+              "instances": 1849,
+              "global": {
+                "mAP50": 0.613,
+                "mAP5095": 0.315,
+                "P": 0.556,
+                "R": 0.677
+              },
+              "classes": {
+                "B1": {
+                  "images": 213,
+                  "instances": 254,
+                  "P": 0.733,
+                  "R": 0.898,
+                  "mAP50": 0.89,
+                  "mAP5095": 0.506,
+                  "F1": 0.80728
+                },
+                "B2": {
+                  "images": 236,
+                  "instances": 375,
+                  "P": 0.405,
+                  "R": 0.621,
+                  "mAP50": 0.448,
+                  "mAP5095": 0.234,
+                  "F1": 0.49025
+                },
+                "B3": {
+                  "images": 368,
+                  "instances": 865,
+                  "P": 0.522,
+                  "R": 0.771,
+                  "mAP50": 0.637,
+                  "mAP5095": 0.321,
+                  "F1": 0.62257
+                },
+                "B4": {
+                  "images": 230,
+                  "instances": 355,
+                  "P": 0.565,
+                  "R": 0.418,
+                  "mAP50": 0.477,
+                  "mAP5095": 0.2,
+                  "F1": 0.4805
+                }
+              },
+              "speed": {
+                "preprocess": 1.3,
+                "inference": 24.4,
+                "postprocess": 0.9
+              }
+            }
+          },
+          "model_info": {
+            "arch": "YOLOv9m",
+            "layers": 151,
+            "params": 20015884,
+            "gflops": 76.5
+          },
+          "speed": {
+            "preprocess": 1.3,
+            "inference": 24.4,
+            "postprocess": 0.9
+          }
+        }
+      ]
+    },
+    {
+      "id": "e2",
+      "date": "2026-03-02",
+      "type": "training",
+      "status": "Solved",
+      "title": "Legacy batch 2: damimas-full + YOLOv9c on all old datasets",
+      "tags": [
+        "legacy",
+        "damimas-full",
+        "YOLOv9c",
+        "YOLO26l",
+        "YOLOv9m"
+      ],
+      "notes_md": "Ran 5 more experiments: YOLO26l & YOLOv9m on damimas-full, plus YOLOv9c on all 3 old datasets. YOLOv9c on damimas-full achieved best overall mAP50.",
+      "schedules": [
+        {
+          "text": "Exp5: YOLO26l on damimas-full",
+          "done": true
+        },
+        {
+          "text": "Exp6: YOLOv9m on damimas-full",
+          "done": true
+        },
+        {
+          "text": "Exp7: YOLOv9c on damimas-full",
+          "done": true
+        },
+        {
+          "text": "Exp8: YOLOv9c on stratifikasi",
+          "done": true
+        },
+        {
+          "text": "Exp9: YOLOv9c on sawit-yolo",
+          "done": true
+        }
+      ],
+      "runs": [
+        {
+          "run_id": "exp5",
+          "gen": "legacy",
+          "scenario": "damimas-full",
+          "model": "YOLO26l",
+          "seed": "-",
+          "eval_set": "damimas-full/test (518 imgs)",
+          "summary": "YOLO26l on yolo-damimas-full. Clean DAMIMAS-only data helps — better B4 than old datasets.",
+          "global_metrics": {
+            "mAP50": 0.594,
+            "mAP5095": 0.314,
+            "P": 0.515,
+            "R": 0.631
+          },
+          "class_metrics": {
+            "B1": {
+              "mAP50": 0.843,
+              "P": 0.654,
+              "R": 0.857
+            },
+            "B2": {
+              "mAP50": 0.55,
+              "P": 0.542,
+              "R": 0.506
+            },
+            "B3": {
+              "mAP50": 0.572,
+              "P": 0.467,
+              "R": 0.67
+            },
+            "B4": {
+              "mAP50": 0.409,
+              "P": 0.398,
+              "R": 0.489
+            }
+          },
+          "splits": {
+            "train": {
+              "images": 2419,
+              "instances": 8001,
+              "global": {
+                "mAP50": 0.538,
+                "mAP5095": 0.28,
+                "P": 0.479,
+                "R": 0.568
+              },
+              "classes": {
+                "B1": {
+                  "images": 912,
+                  "instances": 963,
+                  "P": 0.544,
+                  "R": 0.857,
+                  "mAP50": 0.786,
+                  "mAP5095": 0.444,
+                  "F1": 0.66516
+                },
+                "B2": {
+                  "images": 1360,
+                  "instances": 1983,
+                  "P": 0.519,
+                  "R": 0.411,
+                  "mAP50": 0.468,
+                  "mAP5095": 0.241,
+                  "F1": 0.45887
+                },
+                "B3": {
+                  "images": 2012,
+                  "instances": 4187,
+                  "P": 0.554,
+                  "R": 0.644,
+                  "mAP50": 0.628,
+                  "mAP5095": 0.319,
+                  "F1": 0.59584
+                },
+                "B4": {
+                  "images": 759,
+                  "instances": 868,
+                  "P": 0.299,
+                  "R": 0.361,
+                  "mAP50": 0.269,
+                  "mAP5095": 0.115,
+                  "F1": 0.3271
+                }
+              },
+              "speed": {
+                "preprocess": 0.7,
+                "inference": 23.9,
+                "postprocess": 0.1
+              }
+            },
+            "val": {
+              "images": 518,
+              "instances": 3201,
+              "global": {
+                "mAP50": 0.619,
+                "mAP5095": 0.335,
+                "P": 0.539,
+                "R": 0.638
+              },
+              "classes": {
+                "B1": {
+                  "images": 432,
+                  "instances": 623,
+                  "P": 0.682,
+                  "R": 0.833,
+                  "mAP50": 0.848,
+                  "mAP5095": 0.494,
+                  "F1": 0.74991
+                },
+                "B2": {
+                  "images": 405,
+                  "instances": 752,
+                  "P": 0.536,
+                  "R": 0.548,
+                  "mAP50": 0.539,
+                  "mAP5095": 0.292,
+                  "F1": 0.54195
+                },
+                "B3": {
+                  "images": 467,
+                  "instances": 932,
+                  "P": 0.427,
+                  "R": 0.666,
+                  "mAP50": 0.561,
+                  "mAP5095": 0.308,
+                  "F1": 0.52065
+                },
+                "B4": {
+                  "images": 451,
+                  "instances": 894,
+                  "P": 0.51,
+                  "R": 0.506,
+                  "mAP50": 0.526,
+                  "mAP5095": 0.244,
+                  "F1": 0.50829
+                }
+              },
+              "speed": {
+                "preprocess": 1.1,
+                "inference": 26.4,
+                "postprocess": 0.1
+              }
+            },
+            "test": {
+              "images": 518,
+              "instances": 2702,
+              "global": {
+                "mAP50": 0.594,
+                "mAP5095": 0.314,
+                "P": 0.515,
+                "R": 0.631
+              },
+              "classes": {
+                "B1": {
+                  "images": 366,
+                  "instances": 448,
+                  "P": 0.654,
+                  "R": 0.857,
+                  "mAP50": 0.843,
+                  "mAP5095": 0.468,
+                  "F1": 0.74215
+                },
+                "B2": {
+                  "images": 394,
+                  "instances": 695,
+                  "P": 0.542,
+                  "R": 0.506,
+                  "mAP50": 0.55,
+                  "mAP5095": 0.299,
+                  "F1": 0.52357
+                },
+                "B3": {
+                  "images": 471,
+                  "instances": 1044,
+                  "P": 0.467,
+                  "R": 0.67,
+                  "mAP50": 0.572,
+                  "mAP5095": 0.297,
+                  "F1": 0.55028
+                },
+                "B4": {
+                  "images": 359,
+                  "instances": 515,
+                  "P": 0.398,
+                  "R": 0.489,
+                  "mAP50": 0.409,
+                  "mAP5095": 0.192,
+                  "F1": 0.43918
+                }
+              },
+              "speed": {
+                "preprocess": 1,
+                "inference": 27.5,
+                "postprocess": 0.1
+              }
+            }
+          },
+          "model_info": {
+            "arch": "YOLO26l",
+            "layers": 190,
+            "params": 24748824,
+            "gflops": 86.1
+          },
+          "speed": {
+            "preprocess": 1,
+            "inference": 27.5,
+            "postprocess": 0.1
+          }
+        },
+        {
+          "run_id": "exp6",
+          "gen": "legacy",
+          "scenario": "damimas-full",
+          "model": "YOLOv9m",
+          "seed": "-",
+          "eval_set": "damimas-full/test (518 imgs)",
+          "summary": "YOLOv9m on damimas-full. Lower mAP50-95 than YOLO26l here surprisingly.",
+          "global_metrics": {
+            "mAP50": 0.573,
+            "mAP5095": 0.218,
+            "P": 0.533,
+            "R": 0.626
+          },
+          "class_metrics": {
+            "B1": {
+              "mAP50": 0.845,
+              "P": 0.737,
+              "R": 0.853
+            },
+            "B2": {
+              "mAP50": 0.527,
+              "P": 0.506,
+              "R": 0.59
+            },
+            "B3": {
+              "mAP50": 0.534,
+              "P": 0.439,
+              "R": 0.724
+            },
+            "B4": {
+              "mAP50": 0.388,
+              "P": 0.449,
+              "R": 0.338
+            }
+          },
+          "splits": {
+            "train": {
+              "images": 2419,
+              "instances": 8001,
+              "global": {
+                "mAP50": 0.516,
+                "mAP5095": 0.204,
+                "P": 0.462,
+                "R": 0.58
+              },
+              "classes": {
+                "B1": {
+                  "images": 912,
+                  "instances": 963,
+                  "P": 0.603,
+                  "R": 0.856,
+                  "mAP50": 0.8,
+                  "mAP5095": 0.338,
+                  "F1": 0.70792
+                },
+                "B2": {
+                  "images": 1360,
+                  "instances": 1983,
+                  "P": 0.452,
+                  "R": 0.522,
+                  "mAP50": 0.462,
+                  "mAP5095": 0.191,
+                  "F1": 0.48441
+                },
+                "B3": {
+                  "images": 2012,
+                  "instances": 4187,
+                  "P": 0.509,
+                  "R": 0.695,
+                  "mAP50": 0.598,
+                  "mAP5095": 0.225,
+                  "F1": 0.58789
+                },
+                "B4": {
+                  "images": 759,
+                  "instances": 868,
+                  "P": 0.283,
+                  "R": 0.247,
+                  "mAP50": 0.204,
+                  "mAP5095": 0.0619,
+                  "F1": 0.26358
+                }
+              },
+              "speed": {
+                "preprocess": 0.8,
+                "inference": 17.3,
+                "postprocess": 1
+              }
+            },
+            "val": {
+              "images": 518,
+              "instances": 3201,
+              "global": {
+                "mAP50": 0.568,
+                "mAP5095": 0.204,
+                "P": 0.51,
+                "R": 0.642
+              },
+              "classes": {
+                "B1": {
+                  "images": 432,
+                  "instances": 623,
+                  "P": 0.718,
+                  "R": 0.823,
+                  "mAP50": 0.833,
+                  "mAP5095": 0.33,
+                  "F1": 0.76708
+                },
+                "B2": {
+                  "images": 405,
+                  "instances": 752,
+                  "P": 0.462,
+                  "R": 0.643,
+                  "mAP50": 0.505,
+                  "mAP5095": 0.183,
+                  "F1": 0.53748
+                },
+                "B3": {
+                  "images": 467,
+                  "instances": 932,
+                  "P": 0.344,
+                  "R": 0.74,
+                  "mAP50": 0.501,
+                  "mAP5095": 0.171,
+                  "F1": 0.46935
+                },
+                "B4": {
+                  "images": 451,
+                  "instances": 894,
+                  "P": 0.515,
+                  "R": 0.36,
+                  "mAP50": 0.432,
+                  "mAP5095": 0.132,
+                  "F1": 0.42384
+                }
+              },
+              "speed": {
+                "preprocess": 1.3,
+                "inference": 18.4,
+                "postprocess": 1.5
+              }
+            },
+            "test": {
+              "images": 518,
+              "instances": 2702,
+              "global": {
+                "mAP50": 0.573,
+                "mAP5095": 0.218,
+                "P": 0.533,
+                "R": 0.626
+              },
+              "classes": {
+                "B1": {
+                  "images": 366,
+                  "instances": 448,
+                  "P": 0.737,
+                  "R": 0.853,
+                  "mAP50": 0.845,
+                  "mAP5095": 0.35,
+                  "F1": 0.79084
+                },
+                "B2": {
+                  "images": 394,
+                  "instances": 695,
+                  "P": 0.506,
+                  "R": 0.59,
+                  "mAP50": 0.527,
+                  "mAP5095": 0.208,
+                  "F1": 0.5451
+                },
+                "B3": {
+                  "images": 471,
+                  "instances": 1044,
+                  "P": 0.439,
+                  "R": 0.724,
+                  "mAP50": 0.534,
+                  "mAP5095": 0.191,
+                  "F1": 0.54668
+                },
+                "B4": {
+                  "images": 359,
+                  "instances": 515,
+                  "P": 0.449,
+                  "R": 0.338,
+                  "mAP50": 0.388,
+                  "mAP5095": 0.122,
+                  "F1": 0.38575
+                }
+              },
+              "speed": {
+                "preprocess": 1.3,
+                "inference": 18.8,
+                "postprocess": 1.2
+              }
+            }
+          },
+          "model_info": {
+            "arch": "YOLOv9m",
+            "layers": 151,
+            "params": 20015884,
+            "gflops": 76.5
+          },
+          "speed": {
+            "preprocess": 1.3,
+            "inference": 18.8,
+            "postprocess": 1.2
+          }
+        },
+        {
+          "run_id": "exp7",
+          "gen": "legacy",
+          "scenario": "damimas-full",
+          "model": "YOLOv9c",
+          "seed": "-",
+          "eval_set": "damimas-full/test (518 imgs)",
+          "summary": "YOLOv9c on damimas-full — BEST legacy run. mAP50=65.0%, strong across all classes including B4.",
+          "global_metrics": {
+            "mAP50": 0.65,
+            "mAP5095": 0.328,
+            "P": 0.586,
+            "R": 0.718
+          },
+          "class_metrics": {
+            "B1": {
+              "mAP50": 0.913,
+              "P": 0.775,
+              "R": 0.915
+            },
+            "B2": {
+              "mAP50": 0.563,
+              "P": 0.544,
+              "R": 0.642
+            },
+            "B3": {
+              "mAP50": 0.623,
+              "P": 0.505,
+              "R": 0.787
+            },
+            "B4": {
+              "mAP50": 0.501,
+              "P": 0.519,
+              "R": 0.528
+            }
+          },
+          "splits": {
+            "train": {
+              "images": 2419,
+              "instances": 8001,
+              "global": {
+                "mAP50": 0.577,
+                "mAP5095": 0.29,
+                "P": 0.49,
+                "R": 0.653
+              },
+              "classes": {
+                "B1": {
+                  "images": 912,
+                  "instances": 963,
+                  "P": 0.583,
+                  "R": 0.913,
+                  "mAP50": 0.83,
+                  "mAP5095": 0.451,
+                  "F1": 0.71121
+                },
+                "B2": {
+                  "images": 1360,
+                  "instances": 1983,
+                  "P": 0.477,
+                  "R": 0.545,
+                  "mAP50": 0.492,
+                  "mAP5095": 0.246,
+                  "F1": 0.50866
+                },
+                "B3": {
+                  "images": 2012,
+                  "instances": 4187,
+                  "P": 0.577,
+                  "R": 0.762,
+                  "mAP50": 0.675,
+                  "mAP5095": 0.327,
+                  "F1": 0.6565
+                },
+                "B4": {
+                  "images": 759,
+                  "instances": 868,
+                  "P": 0.324,
+                  "R": 0.394,
+                  "mAP50": 0.31,
+                  "mAP5095": 0.135,
+                  "F1": 0.35572
+                }
+              },
+              "speed": {
+                "preprocess": 0.7,
+                "inference": 22.4,
+                "postprocess": 0.7
+              }
+            },
+            "val": {
+              "images": 518,
+              "instances": 3201,
+              "global": {
+                "mAP50": 0.67,
+                "mAP5095": 0.341,
+                "P": 0.587,
+                "R": 0.728
+              },
+              "classes": {
+                "B1": {
+                  "images": 432,
+                  "instances": 623,
+                  "P": 0.779,
+                  "R": 0.88,
+                  "mAP50": 0.899,
+                  "mAP5095": 0.495,
+                  "F1": 0.82616
+                },
+                "B2": {
+                  "images": 405,
+                  "instances": 752,
+                  "P": 0.512,
+                  "R": 0.666,
+                  "mAP50": 0.545,
+                  "mAP5095": 0.282,
+                  "F1": 0.57908
+                },
+                "B3": {
+                  "images": 467,
+                  "instances": 932,
+                  "P": 0.425,
+                  "R": 0.817,
+                  "mAP50": 0.61,
+                  "mAP5095": 0.309,
+                  "F1": 0.55918
+                },
+                "B4": {
+                  "images": 451,
+                  "instances": 894,
+                  "P": 0.631,
+                  "R": 0.547,
+                  "mAP50": 0.627,
+                  "mAP5095": 0.28,
+                  "F1": 0.5859
+                }
+              },
+              "speed": {
+                "preprocess": 1.2,
+                "inference": 24.9,
+                "postprocess": 0.8
+              }
+            },
+            "test": {
+              "images": 518,
+              "instances": 2702,
+              "global": {
+                "mAP50": 0.65,
+                "mAP5095": 0.328,
+                "P": 0.586,
+                "R": 0.718
+              },
+              "classes": {
+                "B1": {
+                  "images": 366,
+                  "instances": 448,
+                  "P": 0.775,
+                  "R": 0.915,
+                  "mAP50": 0.913,
+                  "mAP5095": 0.494,
+                  "F1": 0.83955
+                },
+                "B2": {
+                  "images": 394,
+                  "instances": 695,
+                  "P": 0.544,
+                  "R": 0.642,
+                  "mAP50": 0.563,
+                  "mAP5095": 0.283,
+                  "F1": 0.58906
+                },
+                "B3": {
+                  "images": 471,
+                  "instances": 1044,
+                  "P": 0.505,
+                  "R": 0.787,
+                  "mAP50": 0.623,
+                  "mAP5095": 0.308,
+                  "F1": 0.6153
+                },
+                "B4": {
+                  "images": 359,
+                  "instances": 515,
+                  "P": 0.519,
+                  "R": 0.528,
+                  "mAP50": 0.501,
+                  "mAP5095": 0.226,
+                  "F1": 0.52379
+                }
+              },
+              "speed": {
+                "preprocess": 1.2,
+                "inference": 25.8,
+                "postprocess": 0.8
+              }
+            }
+          },
+          "model_info": {
+            "arch": "YOLOv9c",
+            "layers": 156,
+            "params": 25322332,
+            "gflops": 102.3
+          },
+          "speed": {
+            "preprocess": 1.2,
+            "inference": 25.8,
+            "postprocess": 0.8
+          }
+        },
+        {
+          "run_id": "exp8",
+          "gen": "legacy",
+          "scenario": "stratifikasi",
+          "model": "YOLOv9c",
+          "seed": "-",
+          "eval_set": "stratifikasi/test (604 imgs)",
+          "summary": "YOLOv9c on stratifikasi. Decent but below damimas-full performance.",
+          "global_metrics": {
+            "mAP50": 0.508,
+            "mAP5095": 0.171,
+            "P": 0.496,
+            "R": 0.589
+          },
+          "class_metrics": {
+            "B1": {
+              "mAP50": 0.811,
+              "P": 0.661,
+              "R": 0.882
+            },
+            "B2": {
+              "mAP50": 0.417,
+              "P": 0.403,
+              "R": 0.528
+            },
+            "B3": {
+              "mAP50": 0.516,
+              "P": 0.477,
+              "R": 0.598
+            },
+            "B4": {
+              "mAP50": 0.286,
+              "P": 0.442,
+              "R": 0.347
+            }
+          },
+          "splits": {
+            "train": {
+              "images": 2784,
+              "instances": 12720,
+              "global": {
+                "mAP50": 0.505,
+                "mAP5095": 0.173,
+                "P": 0.492,
+                "R": 0.593
+              },
+              "classes": {
+                "B1": {
+                  "images": 1242,
+                  "instances": 1505,
+                  "P": 0.622,
+                  "R": 0.843,
+                  "mAP50": 0.768,
+                  "mAP5095": 0.281,
+                  "F1": 0.71553
+                },
+                "B2": {
+                  "images": 1712,
+                  "instances": 2843,
+                  "P": 0.449,
+                  "R": 0.572,
+                  "mAP50": 0.443,
+                  "mAP5095": 0.156,
+                  "F1": 0.50313
+                },
+                "B3": {
+                  "images": 2479,
+                  "instances": 5890,
+                  "P": 0.491,
+                  "R": 0.615,
+                  "mAP50": 0.505,
+                  "mAP5095": 0.169,
+                  "F1": 0.54629
+                },
+                "B4": {
+                  "images": 1573,
+                  "instances": 2482,
+                  "P": 0.406,
+                  "R": 0.344,
+                  "mAP50": 0.303,
+                  "mAP5095": 0.0865,
+                  "F1": 0.37263
+                }
+              },
+              "speed": {
+                "preprocess": 0.6,
+                "inference": 21.8,
+                "postprocess": 0.7
+              }
+            },
+            "val": {
+              "images": 604,
+              "instances": 2656,
+              "global": {
+                "mAP50": 0.535,
+                "mAP5095": 0.192,
+                "P": 0.527,
+                "R": 0.589
+              },
+              "classes": {
+                "B1": {
+                  "images": 288,
+                  "instances": 338,
+                  "P": 0.669,
+                  "R": 0.864,
+                  "mAP50": 0.815,
+                  "mAP5095": 0.314,
+                  "F1": 0.75437
+                },
+                "B2": {
+                  "images": 383,
+                  "instances": 650,
+                  "P": 0.52,
+                  "R": 0.568,
+                  "mAP50": 0.504,
+                  "mAP5095": 0.183,
+                  "F1": 0.54276
+                },
+                "B3": {
+                  "images": 528,
+                  "instances": 1201,
+                  "P": 0.514,
+                  "R": 0.619,
+                  "mAP50": 0.535,
+                  "mAP5095": 0.19,
+                  "F1": 0.56172
+                },
+                "B4": {
+                  "images": 317,
+                  "instances": 467,
+                  "P": 0.403,
+                  "R": 0.306,
+                  "mAP50": 0.287,
+                  "mAP5095": 0.0802,
+                  "F1": 0.34817
+                }
+              },
+              "speed": {
+                "preprocess": 1,
+                "inference": 22.6,
+                "postprocess": 0.7
+              }
+            },
+            "test": {
+              "images": 604,
+              "instances": 2611,
+              "global": {
+                "mAP50": 0.508,
+                "mAP5095": 0.171,
+                "P": 0.496,
+                "R": 0.589
+              },
+              "classes": {
+                "B1": {
+                  "images": 280,
+                  "instances": 334,
+                  "P": 0.661,
+                  "R": 0.882,
+                  "mAP50": 0.811,
+                  "mAP5095": 0.293,
+                  "F1": 0.75552
+                },
+                "B2": {
+                  "images": 336,
+                  "instances": 580,
+                  "P": 0.403,
+                  "R": 0.528,
+                  "mAP50": 0.417,
+                  "mAP5095": 0.137,
+                  "F1": 0.45713
+                },
+                "B3": {
+                  "images": 530,
+                  "instances": 1204,
+                  "P": 0.477,
+                  "R": 0.598,
+                  "mAP50": 0.516,
+                  "mAP5095": 0.175,
+                  "F1": 0.53067
+                },
+                "B4": {
+                  "images": 301,
+                  "instances": 493,
+                  "P": 0.442,
+                  "R": 0.347,
+                  "mAP50": 0.286,
+                  "mAP5095": 0.0773,
+                  "F1": 0.38856
+                }
+              },
+              "speed": {
+                "preprocess": 0.9,
+                "inference": 23.1,
+                "postprocess": 0.7
+              }
+            }
+          },
+          "model_info": {
+            "arch": "YOLOv9c",
+            "layers": 156,
+            "params": 25322332,
+            "gflops": 102.3
+          },
+          "speed": {
+            "preprocess": 0.9,
+            "inference": 23.1,
+            "postprocess": 0.7
+          }
+        },
+        {
+          "run_id": "exp9",
+          "gen": "legacy",
+          "scenario": "sawit-yolo",
+          "model": "YOLOv9c",
+          "seed": "-",
+          "eval_set": "sawit-yolo/test (400 imgs)",
+          "summary": "YOLOv9c on sawit-yolo. B4 better than stratifikasi but still weak.",
+          "global_metrics": {
+            "mAP50": 0.522,
+            "mAP5095": 0.185,
+            "P": 0.483,
+            "R": 0.607
+          },
+          "class_metrics": {
+            "B1": {
+              "mAP50": 0.805,
+              "P": 0.639,
+              "R": 0.831
+            },
+            "B2": {
+              "mAP50": 0.384,
+              "P": 0.379,
+              "R": 0.552
+            },
+            "B3": {
+              "mAP50": 0.547,
+              "P": 0.506,
+              "R": 0.645
+            },
+            "B4": {
+              "mAP50": 0.349,
+              "P": 0.407,
+              "R": 0.398
+            }
+          },
+          "splits": {
+            "train": {
+              "images": 2776,
+              "instances": 12494,
+              "global": {
+                "mAP50": 0.503,
+                "mAP5095": 0.173,
+                "P": 0.495,
+                "R": 0.588
+              },
+              "classes": {
+                "B1": {
+                  "images": 1235,
+                  "instances": 1486,
+                  "P": 0.627,
+                  "R": 0.847,
+                  "mAP50": 0.773,
+                  "mAP5095": 0.286,
+                  "F1": 0.72031
+                },
+                "B2": {
+                  "images": 1723,
+                  "instances": 2926,
+                  "P": 0.461,
+                  "R": 0.558,
+                  "mAP50": 0.453,
+                  "mAP5095": 0.158,
+                  "F1": 0.50491
+                },
+                "B3": {
+                  "images": 2453,
+                  "instances": 5752,
+                  "P": 0.488,
+                  "R": 0.612,
+                  "mAP50": 0.501,
+                  "mAP5095": 0.168,
+                  "F1": 0.54299
+                },
+                "B4": {
+                  "images": 1493,
+                  "instances": 2330,
+                  "P": 0.403,
+                  "R": 0.334,
+                  "mAP50": 0.284,
+                  "mAP5095": 0.0805,
+                  "F1": 0.36519
+                }
+              },
+              "speed": {
+                "preprocess": 0.7,
+                "inference": 23.3,
+                "postprocess": 0.8
+              }
+            },
+            "val": {
+              "images": 816,
+              "instances": 3647,
+              "global": {
+                "mAP50": 0.527,
+                "mAP5095": 0.178,
+                "P": 0.516,
+                "R": 0.597
+              },
+              "classes": {
+                "B1": {
+                  "images": 362,
+                  "instances": 437,
+                  "P": 0.656,
+                  "R": 0.879,
+                  "mAP50": 0.797,
+                  "mAP5095": 0.284,
+                  "F1": 0.75101
+                },
+                "B2": {
+                  "images": 472,
+                  "instances": 774,
+                  "P": 0.457,
+                  "R": 0.582,
+                  "mAP50": 0.466,
+                  "mAP5095": 0.164,
+                  "F1": 0.51211
+                },
+                "B3": {
+                  "images": 716,
+                  "instances": 1679,
+                  "P": 0.503,
+                  "R": 0.601,
+                  "mAP50": 0.523,
+                  "mAP5095": 0.179,
+                  "F1": 0.54791
+                },
+                "B4": {
+                  "images": 468,
+                  "instances": 757,
+                  "P": 0.446,
+                  "R": 0.328,
+                  "mAP50": 0.324,
+                  "mAP5095": 0.0861,
+                  "F1": 0.37789
+                }
+              },
+              "speed": {
+                "preprocess": 1,
+                "inference": 26.6,
+                "postprocess": 0.8
+              }
+            },
+            "test": {
+              "images": 400,
+              "instances": 1849,
+              "global": {
+                "mAP50": 0.522,
+                "mAP5095": 0.185,
+                "P": 0.483,
+                "R": 0.607
+              },
+              "classes": {
+                "B1": {
+                  "images": 213,
+                  "instances": 254,
+                  "P": 0.639,
+                  "R": 0.831,
+                  "mAP50": 0.805,
+                  "mAP5095": 0.303,
+                  "F1": 0.72207
+                },
+                "B2": {
+                  "images": 236,
+                  "instances": 375,
+                  "P": 0.379,
+                  "R": 0.552,
+                  "mAP50": 0.384,
+                  "mAP5095": 0.138,
+                  "F1": 0.44975
+                },
+                "B3": {
+                  "images": 368,
+                  "instances": 865,
+                  "P": 0.506,
+                  "R": 0.645,
+                  "mAP50": 0.547,
+                  "mAP5095": 0.193,
+                  "F1": 0.56721
+                },
+                "B4": {
+                  "images": 230,
+                  "instances": 355,
+                  "P": 0.407,
+                  "R": 0.398,
+                  "mAP50": 0.349,
+                  "mAP5095": 0.106,
+                  "F1": 0.4026
+                }
+              },
+              "speed": {
+                "preprocess": 1.2,
+                "inference": 28.1,
+                "postprocess": 0.8
+              }
+            }
+          },
+          "model_info": {
+            "arch": "YOLOv9c",
+            "layers": 156,
+            "params": 25322332,
+            "gflops": 102.3
+          },
+          "speed": {
+            "preprocess": 1.2,
+            "inference": 28.1,
+            "postprocess": 0.8
+          }
+        }
+      ]
+    },
+    {
+      "id": "e3",
+      "date": "2026-03-03",
+      "type": "discussion",
+      "status": "Solved",
+      "title": "Meeting: lock split strategy with lecturer",
+      "tags": [
+        "meeting",
+        "policy",
+        "split"
+      ],
+      "notes_md": "Lecturer wants comparison with SAME test set:\n- Train all (damimas+lonsum) → test\n- Train damimas only → test\n- Train lonsum only → test\n\nComposition: damimas split separately, lonsum split separately, combined = merge of both.\nUse 2 seeds (42, 123) and 2 models (YOLO26 and YOLOv9).\nAnalyze per-class performance.\nTree-level split to prevent leakage.",
+      "schedules": [
+        {
+          "text": "Lock split policy: tree-level",
+          "done": true
+        },
+        {
+          "text": "Define 3 scenarios",
+          "done": true
+        },
+        {
+          "text": "Agree on 2 seeds + 2 models",
+          "done": true
+        }
+      ],
+      "runs": []
+    },
+    {
+      "id": "e4",
+      "date": "2026-03-04",
+      "type": "dataset-prep",
+      "status": "Solved",
+      "title": "Dataset preparation: tree-level split for v2 experiments",
+      "tags": [
+        "dataset",
+        "split",
+        "no-leakage",
+        "v2"
+      ],
+      "notes_md": "Created 3 datasets with tree-level split (no image leakage):\n- DAMIMAS: 854 trees → 3596 images (train:2504, val:560, test:532)\n- LONSUM: 99 trees → 396 images (train:276, val:60, test:60)\n- COMBINED: merge of both → 3992 images (train:2780, val:620, test:592)\n\nAll verified: no tree appears in multiple splits.",
+      "schedules": [
+        {
+          "text": "Split DAMIMAS by tree",
+          "done": true
+        },
+        {
+          "text": "Split LONSUM by tree",
+          "done": true
+        },
+        {
+          "text": "Merge into combined dataset",
+          "done": true
+        },
+        {
+          "text": "Verify no leakage",
+          "done": true
+        }
+      ],
+      "runs": []
+    }
+  ]
+}
