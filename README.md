@@ -47,6 +47,32 @@ cd YOLOBench
 # Open index.html in browser (works offline via inline data fallback)
 ```
 
+## Same-Test Comparison + 1-Canvas Output (Kaggle)
+
+Use this when you need fair comparison on the exact same test set (for example: train `all_data` vs `damimas_only` vs `lonsum_only`, all tested on `dataset_combined_test`).
+
+Script: `scripts/compare_same_test.py`
+
+```bash
+pip install -q ultralytics pyyaml opencv-python
+
+python scripts/compare_same_test.py \
+  --dataset-root /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test \
+  --model "train_all_data=/kaggle/input/models/mzainalmuttaqin2/model-test-4th-march-2026/tensorflow2/default/1/Model-4th March 2026/combined/yv9c_42.pt" \
+  --model "train_damimas_only=/kaggle/input/models/mzainalmuttaqin2/model-test-4th-march-2026/tensorflow2/default/1/Model-4th March 2026/damimas/yv9c_42.pt" \
+  --model "train_lonsum_only=/kaggle/input/models/mzainalmuttaqin2/model-test-4th-march-2026/tensorflow2/default/1/Model-4th March 2026/lonsum/yv9c_42.pt" \
+  --classes B1,B2,B3,B4 \
+  --samples 8 \
+  --outdir /kaggle/working/compare_same_test
+```
+
+Outputs:
+- `global_metrics.csv` -> global metric comparison (`mAP50`, `mAP50-95`, `P`, `R`)
+- `per_class_metrics.csv` -> per-class performance (`B1` to `B4`)
+- `canvases/*.jpg` -> side-by-side 1 canvas (`Ground Truth + all selected models`) for each sampled image
+- `canvas_manifest.csv` -> mapping image to generated canvas
+- `README_results.md` -> quick summary of output locations
+
 ## Data Structure
 
 ```

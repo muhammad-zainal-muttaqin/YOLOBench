@@ -1,0 +1,10 @@
+names:
+  0: B1
+  1: B2
+  2: B3
+  3: B4
+nc: 4
+path: /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test
+test: images/test
+train: images/test
+val: images/test
