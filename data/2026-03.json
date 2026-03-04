@@ -41,34 +41,6 @@
           "seed": "-",
           "eval_set": "stratifikasi/test (604 imgs)",
           "summary": "YOLO26l on dataset-yolo-stratifikasi. Lowest tier — B4 very weak.",
-          "global_metrics": {
-            "mAP50": 0.442,
-            "mAP5095": 0.15,
-            "P": 0.432,
-            "R": 0.518
-          },
-          "class_metrics": {
-            "B1": {
-              "mAP50": 0.73,
-              "P": 0.557,
-              "R": 0.811
-            },
-            "B2": {
-              "mAP50": 0.386,
-              "P": 0.435,
-              "R": 0.424
-            },
-            "B3": {
-              "mAP50": 0.443,
-              "P": 0.422,
-              "R": 0.524
-            },
-            "B4": {
-              "mAP50": 0.209,
-              "P": 0.315,
-              "R": 0.312
-            }
-          },
           "splits": {
             "train": {
               "images": 2784,
@@ -250,34 +222,6 @@
           "seed": "-",
           "eval_set": "sawit-yolo/test (400 imgs)",
           "summary": "YOLO26l on sawit-yolo-dataset. Slightly better than stratifikasi on mAP50.",
-          "global_metrics": {
-            "mAP50": 0.447,
-            "mAP5095": 0.164,
-            "P": 0.442,
-            "R": 0.498
-          },
-          "class_metrics": {
-            "B1": {
-              "mAP50": 0.747,
-              "P": 0.583,
-              "R": 0.786
-            },
-            "B2": {
-              "mAP50": 0.347,
-              "P": 0.41,
-              "R": 0.384
-            },
-            "B3": {
-              "mAP50": 0.477,
-              "P": 0.459,
-              "R": 0.528
-            },
-            "B4": {
-              "mAP50": 0.217,
-              "P": 0.314,
-              "R": 0.296
-            }
-          },
           "splits": {
             "train": {
               "images": 2776,
@@ -459,34 +403,6 @@
           "seed": "-",
           "eval_set": "stratifikasi/test (604 imgs)",
           "summary": "YOLOv9m on stratifikasi. Big jump over YOLO26l — recall much higher.",
-          "global_metrics": {
-            "mAP50": 0.526,
-            "mAP5095": 0.242,
-            "P": 0.486,
-            "R": 0.62
-          },
-          "class_metrics": {
-            "B1": {
-              "mAP50": 0.829,
-              "P": 0.658,
-              "R": 0.883
-            },
-            "B2": {
-              "mAP50": 0.385,
-              "P": 0.373,
-              "R": 0.544
-            },
-            "B3": {
-              "mAP50": 0.546,
-              "P": 0.46,
-              "R": 0.721
-            },
-            "B4": {
-              "mAP50": 0.342,
-              "P": 0.455,
-              "R": 0.331
-            }
-          },
           "splits": {
             "train": {
               "images": 2784,
@@ -668,34 +584,6 @@
           "seed": "-",
           "eval_set": "sawit-yolo/test (400 imgs)",
           "summary": "YOLOv9m on sawit-yolo. Best among batch 1 — strong B1 and B3.",
-          "global_metrics": {
-            "mAP50": 0.613,
-            "mAP5095": 0.315,
-            "P": 0.556,
-            "R": 0.677
-          },
-          "class_metrics": {
-            "B1": {
-              "mAP50": 0.89,
-              "P": 0.733,
-              "R": 0.898
-            },
-            "B2": {
-              "mAP50": 0.448,
-              "P": 0.405,
-              "R": 0.621
-            },
-            "B3": {
-              "mAP50": 0.637,
-              "P": 0.522,
-              "R": 0.771
-            },
-            "B4": {
-              "mAP50": 0.477,
-              "P": 0.565,
-              "R": 0.418
-            }
-          },
           "splits": {
             "train": {
               "images": 2776,
@@ -916,34 +804,6 @@
           "seed": "-",
           "eval_set": "damimas-full/test (518 imgs)",
           "summary": "YOLO26l on yolo-damimas-full. Clean DAMIMAS-only data helps — better B4 than old datasets.",
-          "global_metrics": {
-            "mAP50": 0.594,
-            "mAP5095": 0.314,
-            "P": 0.515,
-            "R": 0.631
-          },
-          "class_metrics": {
-            "B1": {
-              "mAP50": 0.843,
-              "P": 0.654,
-              "R": 0.857
-            },
-            "B2": {
-              "mAP50": 0.55,
-              "P": 0.542,
-              "R": 0.506
-            },
-            "B3": {
-              "mAP50": 0.572,
-              "P": 0.467,
-              "R": 0.67
-            },
-            "B4": {
-              "mAP50": 0.409,
-              "P": 0.398,
-              "R": 0.489
-            }
-          },
           "splits": {
             "train": {
               "images": 2419,
@@ -1125,34 +985,6 @@
           "seed": "-",
           "eval_set": "damimas-full/test (518 imgs)",
           "summary": "YOLOv9m on damimas-full. Lower mAP50-95 than YOLO26l here surprisingly.",
-          "global_metrics": {
-            "mAP50": 0.573,
-            "mAP5095": 0.218,
-            "P": 0.533,
-            "R": 0.626
-          },
-          "class_metrics": {
-            "B1": {
-              "mAP50": 0.845,
-              "P": 0.737,
-              "R": 0.853
-            },
-            "B2": {
-              "mAP50": 0.527,
-              "P": 0.506,
-              "R": 0.59
-            },
-            "B3": {
-              "mAP50": 0.534,
-              "P": 0.439,
-              "R": 0.724
-            },
-            "B4": {
-              "mAP50": 0.388,
-              "P": 0.449,
-              "R": 0.338
-            }
-          },
           "splits": {
             "train": {
               "images": 2419,
@@ -1334,34 +1166,6 @@
           "seed": "-",
           "eval_set": "damimas-full/test (518 imgs)",
           "summary": "YOLOv9c on damimas-full — BEST legacy run. mAP50=65.0%, strong across all classes including B4.",
-          "global_metrics": {
-            "mAP50": 0.65,
-            "mAP5095": 0.328,
-            "P": 0.586,
-            "R": 0.718
-          },
-          "class_metrics": {
-            "B1": {
-              "mAP50": 0.913,
-              "P": 0.775,
-              "R": 0.915
-            },
-            "B2": {
-              "mAP50": 0.563,
-              "P": 0.544,
-              "R": 0.642
-            },
-            "B3": {
-              "mAP50": 0.623,
-              "P": 0.505,
-              "R": 0.787
-            },
-            "B4": {
-              "mAP50": 0.501,
-              "P": 0.519,
-              "R": 0.528
-            }
-          },
           "splits": {
             "train": {
               "images": 2419,
@@ -1543,34 +1347,6 @@
           "seed": "-",
           "eval_set": "stratifikasi/test (604 imgs)",
           "summary": "YOLOv9c on stratifikasi. Decent but below damimas-full performance.",
-          "global_metrics": {
-            "mAP50": 0.508,
-            "mAP5095": 0.171,
-            "P": 0.496,
-            "R": 0.589
-          },
-          "class_metrics": {
-            "B1": {
-              "mAP50": 0.811,
-              "P": 0.661,
-              "R": 0.882
-            },
-            "B2": {
-              "mAP50": 0.417,
-              "P": 0.403,
-              "R": 0.528
-            },
-            "B3": {
-              "mAP50": 0.516,
-              "P": 0.477,
-              "R": 0.598
-            },
-            "B4": {
-              "mAP50": 0.286,
-              "P": 0.442,
-              "R": 0.347
-            }
-          },
           "splits": {
             "train": {
               "images": 2784,
@@ -1752,34 +1528,6 @@
           "seed": "-",
           "eval_set": "sawit-yolo/test (400 imgs)",
           "summary": "YOLOv9c on sawit-yolo. B4 better than stratifikasi but still weak.",
-          "global_metrics": {
-            "mAP50": 0.522,
-            "mAP5095": 0.185,
-            "P": 0.483,
-            "R": 0.607
-          },
-          "class_metrics": {
-            "B1": {
-              "mAP50": 0.805,
-              "P": 0.639,
-              "R": 0.831
-            },
-            "B2": {
-              "mAP50": 0.384,
-              "P": 0.379,
-              "R": 0.552
-            },
-            "B3": {
-              "mAP50": 0.547,
-              "P": 0.506,
-              "R": 0.645
-            },
-            "B4": {
-              "mAP50": 0.349,
-              "P": 0.407,
-              "R": 0.398
-            }
-          },
           "splits": {
             "train": {
               "images": 2776,
