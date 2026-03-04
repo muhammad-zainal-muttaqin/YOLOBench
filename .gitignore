@@ -17,5 +17,8 @@ Thumbs.db
 *.swp
 *.swo
 
+# Test results (too large for Cloudflare Pages)
+Test/
+
 # Local environment
 .env
