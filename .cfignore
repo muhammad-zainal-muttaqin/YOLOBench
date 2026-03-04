@@ -1,0 +1,3 @@
+# Exclude large test results from Cloudflare Pages deployment
+Test/
+scripts/__pycache__/
