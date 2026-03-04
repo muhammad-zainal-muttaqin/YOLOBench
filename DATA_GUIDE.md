@@ -121,7 +121,7 @@ Setiap event merepresentasikan **satu kegiatan/aktivitas** dalam satu hari.
 | `status` | Ya | `"Plan"`, `"Progress"`, `"Solved"` | Case-sensitive (huruf pertama kapital). |
 | `title` | Ya | String | Singkat, deskriptif. |
 | `tags` | Ya | Array of string | Untuk filtering. Masukkan gen (`legacy`/`v2`), model, dataset. |
-| `notes_md` | Ya | String (markdown) | Penjelasan detail. Gunakan `\n` untuk newline dalam JSON. |
+| `notes_md` | Ya | String (markdown) | Penjelasan detail. Gunakan `\n` untuk newline dalam JSON. **Dirender sebagai Markdown** (heading, tabel, bold, list, code block, gambar). Lihat [Panduan Markdown](#panduan-markdown-untuk-notes_md-dan-summary). |
 | `schedules` | Opsional | Array of `{text, done}` | Checklist tasks. `done`: `true`/`false`. |
 | `runs` | Opsional | Array of Run objects | Bisa `[]` kosong untuk event tanpa eksperimen. |
 
@@ -375,6 +375,34 @@ Cross-eval: 0.599 on legacy damimas-only test. Beats legacy yv9c_640 on combined
 
 ---
 
+## Panduan Markdown untuk `notes_md` dan `summary`
+
+Dashboard merender `notes_md` (event) dan `summary` (run) sebagai **GitHub-Flavored Markdown** menggunakan [marked.js](https://github.com/markedjs/marked). Fitur yang didukung:
+
+- **Heading**: `## Heading 2`, `### Heading 3`
+- **Tabel**: sintaks GFM standar (`| col1 | col2 |`)
+- **Bold/italic**: `**bold**`, `*italic*`
+- **List**: `- item` atau `1. item`
+- **Code block**: `` ``` `` fenced code blocks
+- **Inline code**: `` `code` ``
+- **Gambar**: `![alt](path/to/image.png)` — gambar di repo otomatis served oleh Cloudflare Pages
+- **Blockquote**: `> quote`
+
+### Catatan khusus:
+- **Tilde `~` aman digunakan** — strikethrough (`~~text~~`) dinonaktifkan di dashboard karena kita sering pakai `~` untuk nilai perkiraan (e.g. `~50%`). Semua `~` ditampilkan apa adanya.
+- Gunakan `\n` untuk newline di dalam string JSON.
+- Untuk tabel di JSON, pastikan separator (`|---|---|`) ada di baris sendiri.
+
+---
+
+## Bahasa Dashboard
+
+UI dashboard menggunakan **Bahasa Indonesia**. Ketika menulis `notes_md` dan `summary`:
+- Boleh menggunakan Bahasa Indonesia atau Inggris (atau campuran)
+- Istilah teknis, nama model, nama dataset tetap dalam bahasa asli (e.g. mAP50, YOLO26l, damimas_only, tree-level split, leakage)
+
+---
+
 ## Catatan Penting
 
 1. **ID harus unik dan sequential** — Cek ID terakhir sebelum menambah.
@@ -384,3 +412,4 @@ Cross-eval: 0.599 on legacy damimas-only test. Beats legacy yv9c_640 on combined
 5. **Selalu jalankan `update_inline.js`** setelah edit data — Agar offline mode tetap kerja.
 6. **Jangan lupa update `last_updated`** di manifest.
 7. **Validasi JSON** — Pastikan tidak ada trailing comma atau syntax error.
+8. **Markdown dirender** — `notes_md` dan `summary` ditampilkan sebagai rendered Markdown, bukan raw text. Tulis dengan format yang rapi.
