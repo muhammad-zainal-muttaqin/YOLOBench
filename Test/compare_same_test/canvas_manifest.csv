@@ -1,0 +1,9 @@
+index,image_path,canvas_path,gt_boxes,gt_B1,gt_B2,gt_B3,gt_B4
+1,/kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/images/test/DAMIMAS_A21B_0551_3.jpg,/kaggle/working/compare_same_test/canvases/canvas_01_DAMIMAS_A21B_0551_3.jpg,8,1,2,4,1
+2,/kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/images/test/DAMIMAS_A21B_0490_4.jpg,/kaggle/working/compare_same_test/canvases/canvas_02_DAMIMAS_A21B_0490_4.jpg,8,2,1,1,4
+3,/kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/images/test/DAMIMAS_A21B_0497_4.jpg,/kaggle/working/compare_same_test/canvases/canvas_03_DAMIMAS_A21B_0497_4.jpg,8,1,1,5,1
+4,/kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/images/test/DAMIMAS_A21B_0275_3.jpg,/kaggle/working/compare_same_test/canvases/canvas_04_DAMIMAS_A21B_0275_3.jpg,8,2,4,1,1
+5,/kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/images/test/DAMIMAS_A21B_0716_1.jpg,/kaggle/working/compare_same_test/canvases/canvas_05_DAMIMAS_A21B_0716_1.jpg,8,1,1,4,2
+6,/kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/images/test/DAMIMAS_A21B_0749_1.jpg,/kaggle/working/compare_same_test/canvases/canvas_06_DAMIMAS_A21B_0749_1.jpg,8,2,1,4,1
+7,/kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/images/test/DAMIMAS_A21B_0551_4.jpg,/kaggle/working/compare_same_test/canvases/canvas_07_DAMIMAS_A21B_0551_4.jpg,8,2,2,3,1
+8,/kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/images/test/DAMIMAS_A21B_0551_2.jpg,/kaggle/working/compare_same_test/canvases/canvas_08_DAMIMAS_A21B_0551_2.jpg,8,2,2,2,2
