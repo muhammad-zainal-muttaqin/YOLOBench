@@ -343,6 +343,38 @@ Map baris `all` → `global`, baris per-class → `classes.XX`. Hitung F1 = 2*P*
 
 ---
 
+## Analisis & Insight Wajib
+
+Setiap kali data eksperimen baru ditambahkan, **wajib** menyertakan analisis mendalam:
+
+### Event `notes_md` harus berisi:
+1. **Ringkasan temuan utama** — apa yang dipelajari dari batch eksperimen ini
+2. **Perbandingan dengan eksperimen sebelumnya** — bandingkan dengan run legacy/v2 yang sudah ada. Jika ada cross-evaluation (model ditest pada test set berbeda), buat tabel perbandingan
+3. **Dekomposisi gap** — jika ada perbedaan performa yang signifikan, jelaskan faktor penyebabnya (leakage, domain shift, data size, dsb.) beserta kontribusi masing-masing
+4. **Insight per-class** — kelas mana yang paling bagus/buruk dan kenapa
+5. **Kesimpulan & rekomendasi** — apa langkah selanjutnya, apa yang perlu diperbaiki
+
+### Run `summary` harus berisi:
+1. **Info training** — trained on apa, berapa data
+2. **Skor utama** — mAP50 dan mAP50-95 pada test set
+3. **Cross-evaluation** — jika tersedia, skor pada test set lain (misal legacy vs v2) dan delta-nya
+4. **Perbandingan langsung** — bandingkan dengan run serupa (seed lain, model lain, legacy equivalent)
+5. **Highlight spesifik** — apa yang unik dari run ini (best/worst, anomali, temuan menarik)
+
+### Contoh summary yang BAIK:
+```
+"YOLOv9c seed42 trained on damimas_only. BEST V2 MODEL: mAP50=0.505, mAP50-95=0.230.
+Cross-eval: 0.599 on legacy damimas-only test. Beats legacy yv9c_640 on combined test
+(0.505 vs 0.483). mAP50-95 jauh lebih baik (0.230 vs 0.161) — localization quality superior."
+```
+
+### Contoh summary yang BURUK (jangan seperti ini):
+```
+"YOLOv9c seed42 on damimas. mAP50=0.505."
+```
+
+---
+
 ## Catatan Penting
 
 1. **ID harus unik dan sequential** — Cek ID terakhir sebelum menambah.
