@@ -2056,6 +2056,21 @@
           }
         }
       ]
+    },
+    {
+      "id": "e6",
+      "date": "2026-03-05",
+      "type": "discussion",
+      "status": "Plan",
+      "title": "Presentasi hasil evaluasi v2 ke dosen",
+      "tags": ["presentasi", "v2", "evaluation"],
+      "notes_md": "Presentasi hasil evaluasi v2 (12 runs) yang dilakukan tanggal 4 Maret.\n\nTopik utama:\n- Perbandingan v2 vs legacy (cross-evaluation)\n- Analisis per-kelas B1/B2/B3/B4 across 3 skenario\n- Dekomposisi gap: leakage removal vs domain shift\n- Rekomendasi langkah selanjutnya",
+      "schedules": [
+        { "text": "Siapkan dashboard untuk presentasi", "done": false },
+        { "text": "Presentasi hasil ke dosen", "done": false },
+        { "text": "Catat feedback & next steps", "done": false }
+      ],
+      "runs": []
     }
   ]
 }
