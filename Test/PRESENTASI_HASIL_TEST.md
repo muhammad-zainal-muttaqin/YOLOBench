@@ -1,4 +1,4 @@
-# Laporan Hasil Testing Model Deteksi Pohon Kelapa Sawit
+# Laporan Hasil Testing Model Deteksi Kematangan Tandan Buah Segar (TBS) Kelapa Sawit
 
 ## Perbandingan Lengkap: Legacy vs v2 (Combined, DAMIMAS, LONSUM)
 
@@ -24,7 +24,7 @@
 
 ## 1. Pendahuluan
 
-Laporan ini menyajikan hasil evaluasi menyeluruh terhadap 14 model deteksi pohon kelapa sawit berbasis YOLO. Model-model ini dikelompokkan menjadi:
+Laporan ini menyajikan hasil evaluasi menyeluruh terhadap 14 model deteksi kematangan Tandan Buah Segar (TBS) kelapa sawit berbasis YOLO. Kelas B1–B4 merepresentasikan tingkat kematangan tandan, di mana B1 = paling matang (siap panen ~1 bulan) hingga B4 = paling muda (~4 bulan dari panen). Model-model ini dikelompokkan menjadi:
 
 - **Combined v2** — Dilatih dengan dataset gabungan DAMIMAS + LONSUM (4 varian)
 - **DAMIMAS v2** — Dilatih khusus dengan dataset DAMIMAS (4 varian)
@@ -36,12 +36,12 @@ Setiap grup v2 memiliki 4 varian dari kombinasi:
 - **Seed:** 42 vs 123
 
 Keempat kelas deteksi:
-| Kelas | Deskripsi |
-|-------|-----------|
-| **B1** | Pohon kelapa sawit kategori Besar 1 (paling mudah dikenali) |
-| **B2** | Pohon kelapa sawit kategori Besar 2 |
-| **B3** | Pohon kelapa sawit kategori Besar 3 |
-| **B4** | Pohon kelapa sawit kategori Besar 4 (paling sulit dikenali) |
+| Kelas | Deskripsi | Estimasi Panen |
+|-------|-----------|----------------|
+| **B1** | Tandan Buah Segar (TBS) paling matang, siap panen | ~1 bulan lagi |
+| **B2** | TBS cukup matang, mendekati siap panen | ~2 bulan lagi |
+| **B3** | TBS setengah matang, masih perlu waktu | ~3 bulan lagi |
+| **B4** | TBS paling muda/tidak matang, masih sangat hijau | ~4 bulan lagi |
 
 ---
 
@@ -183,17 +183,17 @@ Data berikut diekstrak dari confusion matrix ternormalisasi (diagonal = recall p
 
 ### 5.2 Analisis Per Jenis Pohon
 
-#### B1 (Pohon Besar — Easiest)
+#### B1 (TBS Paling Matang — Easiest)
 
 ![Confusion Matrix Grid](runs/compare_canvases/grid_confusion_matrix_normalized.png)
 
-- **Kelas paling mudah dideteksi** di semua model
+- **Kelas paling mudah dideteksi** di semua model — tandan matang memiliki warna oranye-merah yang khas
 - Recall rata-rata Combined/DAMIMAS: **0.72–0.78**
 - `legacy_yv9c_640` memimpin: **0.80**
 - LONSUM sangat rendah: 0.19–0.64 (karena domain gap)
-- **Kesimpulan:** Semua model v2 non-LONSUM mampu mengenali B1 dengan baik (>70%)
+- **Kesimpulan:** Semua model v2 non-LONSUM mampu mengenali TBS matang dengan baik (>70%)
 
-#### B2 (Pohon Menengah-Besar)
+#### B2 (TBS Cukup Matang — ~2 Bulan)
 
 - **Kelas problematik** — banyak salah prediksi ke B3 atau background
 - Recall terbaik: **0.38** (damimas_yv9c_42 dan damimas_yv9c_123)
@@ -202,32 +202,32 @@ Data berikut diekstrak dari confusion matrix ternormalisasi (diagonal = recall p
 - Banyak B2 yang terklasifikasi sebagai B3 (confusing pair)
 - **Kesimpulan:** B2 butuh perbaikan signifikan — menjadi bottleneck performa keseluruhan
 
-#### B3 (Pohon Menengah)
+#### B3 (TBS Setengah Matang — ~3 Bulan)
 
 - Recall berkisar **0.33–0.48** di model non-LONSUM
 - `legacy_yv9c_640` terbaik: **0.48**
 - Combined_yv9c_42 menyusul: **0.47**
-- Banyak B3 true yang masuk ke background (miss rate 37–45%)
-- **Kesimpulan:** B3 cukup menantang, banyak false negative (diprediksi sebagai background)
+- Banyak tandan B3 yang masuk ke background (miss rate 37–45%)
+- **Kesimpulan:** B3 (tandan setengah matang) cukup menantang — warna transisi antara hijau dan oranye membuatnya ambigu
 
-#### B4 (Pohon Kecil — Hardest)
+#### B4 (TBS Paling Muda — Hardest)
 
 - **Kelas paling sulit** di semua model tanpa terkecuali
 - Recall terbaik: **0.28** (combined_yv9c_42)
 - Mayoritas B4 diprediksi sebagai background (miss rate 47–87%)
 - LONSUM paling parah: hanya 0.02–0.07
-- Bahkan model terbaik hanya mengenali ~1 dari 4 pohon B4
-- **Kesimpulan:** B4 adalah tantangan utama — ukuran kecil menyulitkan deteksi
+- Bahkan model terbaik hanya mengenali ~1 dari 4 tandan B4
+- **Kesimpulan:** B4 (tandan paling muda) adalah tantangan utama — warna hijau mirip daun sehingga sulit dibedakan dari background
 
 ### 5.3 Pola Kesalahan Umum
 
 Berdasarkan confusion matrix, pola kesalahan yang konsisten:
 
-1. **B4 → Background (47–87%):** Mayoritas pohon kecil (B4) tidak terdeteksi sama sekali
-2. **B3 → Background (37–60%):** Banyak pohon B3 juga terlewat
-3. **B2 → B3 (20–35%):** Banyak B2 salah diklasifikasi sebagai B3
+1. **B4 → Background (47–87%):** Mayoritas tandan muda (B4) tidak terdeteksi — warna hijau menyatu dengan kanopi
+2. **B3 → Background (37–60%):** Banyak tandan B3 juga terlewat
+3. **B2 → B3 (20–35%):** Banyak B2 salah diklasifikasi sebagai B3 — tingkat kematangan yang berdekatan sulit dibedakan
 4. **B2 → Background (27–58%):** B2 juga sering tidak terdeteksi
-5. **B1 relatif stabil:** Hanya 9–19% B1 yang terlewat ke background
+5. **B1 relatif stabil:** Hanya 9–19% tandan matang (B1) yang terlewat — warna oranye-merah sangat distingtif
 
 ---
 
@@ -371,19 +371,19 @@ Detail canvas per gambar tersedia di: `compare_same_test/canvases/`
 5. **LONSUM gagal generalisasi:** Model LONSUM memiliki domain gap besar terhadap test set gabungan (mAP50 hanya 0.21–0.31)
 
 6. **Hierarki kesulitan per kelas: B1 >> B3 > B2 > B4**
-   - B1: recall 0.70–0.80 (mudah)
-   - B3: recall 0.33–0.48 (sedang)
-   - B2: recall 0.21–0.38 (sulit, banyak confuse dengan B3)
-   - B4: recall 0.02–0.28 (sangat sulit, sering hilang ke background)
+   - B1 (matang): recall 0.70–0.80 (mudah — warna khas oranye-merah)
+   - B3 (3 bulan): recall 0.33–0.48 (sedang)
+   - B2 (2 bulan): recall 0.21–0.38 (sulit, banyak confuse dengan B3)
+   - B4 (paling muda): recall 0.02–0.28 (sangat sulit — warna hijau menyatu dengan daun)
 
 ### 9.2 Rekomendasi
 
 | Prioritas | Rekomendasi | Alasan |
 |-----------|-------------|--------|
 | **Tinggi** | Gunakan `combined_yv9c_123` atau `damimas_yv9c_42` untuk deployment | Performa terbaik secara keseluruhan |
-| **Tinggi** | Fokus perbaikan pada deteksi B4 | Recall hanya 0.28 — mayoritas pohon kecil tidak terdeteksi |
+| **Tinggi** | Fokus perbaikan pada deteksi B4 | Recall hanya 0.28 — mayoritas tandan muda tidak terdeteksi |
 | **Sedang** | Perbaiki diferensiasi B2 vs B3 | Banyak salah klasifikasi antar kedua kelas ini |
-| **Sedang** | Tambah augmentasi untuk objek kecil (B4) | Mosaic, copy-paste augmentation bisa membantu |
+| **Sedang** | Tambah augmentasi untuk tandan muda (B4) | Mosaic, copy-paste augmentation, dan color jittering bisa membantu |
 | **Rendah** | Investigasi domain gap LONSUM | Jika deployment di area LONSUM, perlu data lebih banyak atau fine-tuning |
 
 ### 9.3 Catatan Seed
