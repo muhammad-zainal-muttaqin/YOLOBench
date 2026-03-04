@@ -324,35 +324,10 @@ Berdasarkan confusion matrix, pola kesalahan yang konsisten:
 
 ![Grid Batch 2 Predictions](runs/compare_2col/grid2_val_batch2_pred.jpg)
 
-### 8.4 Master Canvas — Perbandingan Visual Per Gambar
+### 8.4 Catatan
 
-![Master Canvas](compare_same_test/canvases_2col/master_canvas_2col.jpg)
-
-**Canvas ini menampilkan 8 gambar test yang sama, diprediksi oleh semua 14 model secara berdampingan.**
-
-### 8.5 Canvas Per Gambar (Detail)
-
-| # | Gambar Test | GT Boxes | B1 | B2 | B3 | B4 |
-|---|------------|----------|-----|-----|-----|-----|
-| 1 | DAMIMAS_A21B_0551_3 | 8 | 1 | 2 | 4 | 1 |
-| 2 | DAMIMAS_A21B_0490_4 | 8 | 2 | 1 | 1 | 4 |
-| 3 | DAMIMAS_A21B_0497_4 | 8 | 1 | 1 | 5 | 1 |
-| 4 | DAMIMAS_A21B_0275_3 | 8 | 2 | 4 | 1 | 1 |
-| 5 | DAMIMAS_A21B_0716_1 | 8 | 1 | 1 | 4 | 2 |
-| 6 | DAMIMAS_A21B_0749_1 | 8 | 2 | 1 | 4 | 1 |
-| 7 | DAMIMAS_A21B_0551_4 | 8 | 2 | 2 | 3 | 1 |
-| 8 | DAMIMAS_A21B_0551_2 | 8 | 2 | 2 | 2 | 2 |
-
-Detail canvas per gambar tersedia di: `compare_same_test/canvases/`
-
-![Canvas 1](compare_same_test/canvases_2col/canvas_01_DAMIMAS_A21B_0551_3.jpg)
-![Canvas 2](compare_same_test/canvases_2col/canvas_02_DAMIMAS_A21B_0490_4.jpg)
-![Canvas 3](compare_same_test/canvases_2col/canvas_03_DAMIMAS_A21B_0497_4.jpg)
-![Canvas 4](compare_same_test/canvases_2col/canvas_04_DAMIMAS_A21B_0275_3.jpg)
-![Canvas 5](compare_same_test/canvases_2col/canvas_05_DAMIMAS_A21B_0716_1.jpg)
-![Canvas 6](compare_same_test/canvases_2col/canvas_06_DAMIMAS_A21B_0749_1.jpg)
-![Canvas 7](compare_same_test/canvases_2col/canvas_07_DAMIMAS_A21B_0551_4.jpg)
-![Canvas 8](compare_same_test/canvases_2col/canvas_08_DAMIMAS_A21B_0551_2.jpg)
+> Canvas perbandingan per gambar test (GT vs 14 model) tersedia di `compare_same_test/canvases/` namun resolusi per cell rendah karena di-generate langsung sebagai grid 5x3 di Kaggle.
+> Untuk perbandingan visual yang lebih jelas, gunakan grid batch predictions di atas (8.1–8.3) yang resolusinya tinggi.
 
 ---
 
