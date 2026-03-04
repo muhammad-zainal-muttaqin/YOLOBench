@@ -280,7 +280,7 @@ Berdasarkan confusion matrix, pola kesalahan yang konsisten:
 
 ### 7.1 Grid F1 Curve — Semua Model
 
-![Grid BoxF1 Curve](runs/compare_canvases/grid_BoxF1_curve.png)
+![Grid BoxF1 Curve](runs/compare_2col/grid2_BoxF1_curve.png)
 
 **Interpretasi:**
 - Kurva F1 menunjukkan keseimbangan precision-recall pada berbagai threshold confidence
@@ -290,7 +290,7 @@ Berdasarkan confusion matrix, pola kesalahan yang konsisten:
 
 ### 7.2 Grid PR Curve — Semua Model
 
-![Grid BoxPR Curve](runs/compare_canvases/grid_BoxPR_curve.png)
+![Grid BoxPR Curve](runs/compare_2col/grid2_BoxPR_curve.png)
 
 **Interpretasi:**
 - Area di bawah kurva PR = mAP50
@@ -300,7 +300,7 @@ Berdasarkan confusion matrix, pola kesalahan yang konsisten:
 
 ### 7.3 Grid Confusion Matrix Ternormalisasi
 
-![Grid Confusion Matrix](runs/compare_canvases/grid_confusion_matrix_normalized.png)
+![Grid Confusion Matrix](runs/compare_2col/grid2_confusion_matrix_normalized.png)
 
 **Interpretasi:**
 - Diagonal yang lebih gelap/tinggi = performa lebih baik
@@ -314,15 +314,15 @@ Berdasarkan confusion matrix, pola kesalahan yang konsisten:
 
 ### 8.1 Grid Prediksi Batch 0
 
-![Grid Batch 0 Predictions](runs/compare_canvases/grid_val_batch0_pred.jpg)
+![Grid Batch 0 Predictions](runs/compare_2col/grid2_val_batch0_pred.jpg)
 
 ### 8.2 Grid Prediksi Batch 1
 
-![Grid Batch 1 Predictions](runs/compare_canvases/grid_val_batch1_pred.jpg)
+![Grid Batch 1 Predictions](runs/compare_2col/grid2_val_batch1_pred.jpg)
 
 ### 8.3 Grid Prediksi Batch 2
 
-![Grid Batch 2 Predictions](runs/compare_canvases/grid_val_batch2_pred.jpg)
+![Grid Batch 2 Predictions](runs/compare_2col/grid2_val_batch2_pred.jpg)
 
 ### 8.4 Master Canvas — Perbandingan Visual Per Gambar
 
