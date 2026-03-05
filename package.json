@@ -1,0 +1,13 @@
+{
+  "name": "yolobench",
+  "version": "1.0.0",
+  "private": true,
+  "description": "YOLO research logbook and dataset analysis utilities",
+  "scripts": {
+    "update:inline": "node scripts/update_inline.js",
+    "analyze:bbox": "node scripts/analyze_bbox_outliers.js"
+  },
+  "dependencies": {
+    "sharp": "^0.34.4"
+  }
+}

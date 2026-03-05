@@ -1778,6 +1778,50 @@
         {"text": "Eval model lonsum_only (4 run)", "done": true},
         {"text": "Bandingkan hasil antar skenario", "done": true}
       ],
+      "cross_test_summary": {
+        "headline": "Workbook `cross_test_analysis.xlsx` menegaskan bahwa training `combined` paling stabil lintas domain, `damimas` sangat kompetitif pada DAMIMAS dan COMBINED, sedangkan `lonsum_only` belum cukup kuat sebagai skenario train utama.",
+        "highlights": [
+          "Rata-rata mAP50 pada test `combined`: train `combined` = 0.482, train `damimas` = 0.469, train `lonsum` = 0.252.",
+          "Rata-rata mAP50 pada test `lonsum`: train `combined` = 0.300, train `damimas` = 0.230, train `lonsum` = 0.111.",
+          "Pada train `combined` -> test `combined`, YOLOv9c unggul atas YOLO26l (0.497 vs 0.459 mean mAP50).",
+          "Best combined test adalah tie: `damimas_yv9c_42` dan `combined_yv9c_123` sama-sama mencapai mAP50 0.505 dan mAP50-95 0.230."
+        ],
+        "best_cases": [
+          {
+            "label": "Best combined test (tie)",
+            "model": "damimas_yv9c_42 / combined_yv9c_123",
+            "arch": "YOLOv9c",
+            "train_set": "damimas / combined",
+            "test_set": "combined",
+            "mAP50": 0.505,
+            "mAP5095": 0.23
+          },
+          {
+            "label": "Best DAMIMAS test",
+            "model": "damimas_yv9c_42",
+            "arch": "YOLOv9c",
+            "train_set": "damimas",
+            "test_set": "damimas",
+            "mAP50": 0.517,
+            "mAP5095": 0.236
+          },
+          {
+            "label": "Best LONSUM test",
+            "model": "combined_yv9c_42",
+            "arch": "YOLOv9c",
+            "train_set": "combined",
+            "test_set": "lonsum",
+            "mAP50": 0.325,
+            "mAP5095": 0.103
+          }
+        ],
+        "generalization_notes": [
+          "Model train `combined` hanya turun sekitar 15.5%–20.3% saat pindah dari in-domain ke cross-domain; ini pola paling stabil di workbook.",
+          "Model train `damimas` turun lebih besar, sekitar 39.2%–54.0%, menunjukkan gap domain ke lonsum masih dominan.",
+          "Model train `lonsum` memiliki gap negatif karena performa in-domain lonsum sendiri paling lemah; ini menandakan set train lonsum terlalu kecil untuk dijadikan baseline utama."
+        ],
+        "source_artifact": "cross_test_analysis.xlsx"
+      },
       "runs": [
         {
           "run_id": "exp10",
@@ -2061,14 +2105,66 @@
       "id": "e6",
       "date": "2026-03-05",
       "type": "discussion",
-      "status": "Plan",
+      "status": "Solved",
       "title": "Presentasi hasil evaluasi v2 ke dosen",
       "tags": ["presentasi", "v2", "evaluation"],
-      "notes_md": "Presentasi hasil evaluasi v2 (12 run) + 2 legacy yang dilakukan tanggal 4 Maret.\n\n**Dokumen presentasi:** [PRESENTASI_HASIL_TEST.md](https://github.com/muhammad-zainal-muttaqin/YOLOBench/blob/main/Test/PRESENTASI_HASIL_TEST.md)\n\nTopik utama:\n- Perbandingan v2 vs legacy (14 model ditest pada dataset gabungan 592 gambar)\n- Analisis per-kelas B1/B2/B3/B4: hierarki kesulitan deteksi kematangan TBS\n- Domain gap: model LONSUM gagal generalisasi, DAMIMAS sangat representatif\n- YOLOv9c konsisten lebih baik dari YOLO26L (~4-5 poin mAP50)\n- v2 terbaik: mAP50=0.505, mAP50-95=0.230 (+43% vs legacy)\n- Rekomendasi: fokus peningkatan deteksi B4 (recall terbaik hanya 28%)",
+      "notes_md": "Presentasi hasil evaluasi v2 (12 run) + 2 legacy yang dilakukan tanggal 4 Maret sudah selesai.\n\n**Dokumen presentasi:** [PRESENTASI_HASIL_TEST.md](https://github.com/muhammad-zainal-muttaqin/YOLOBench/blob/main/Test/PRESENTASI_HASIL_TEST.md)\n\nTopik utama:\n- Perbandingan v2 vs legacy (14 model ditest pada dataset gabungan 592 gambar)\n- Analisis per-kelas B1/B2/B3/B4: hierarki kesulitan deteksi kematangan TBS\n- Domain gap: model LONSUM gagal generalisasi, DAMIMAS sangat representatif\n- YOLOv9c konsisten lebih baik dari YOLO26L (~4-5 poin mAP50)\n- v2 terbaik: mAP50=0.505, mAP50-95=0.230 (+43% vs legacy)\n- Rekomendasi: fokus peningkatan deteksi B4 (recall terbaik hanya 28%)\n\nNext step yang disepakati setelah presentasi: audit outlier dataset untuk mencari anotasi salah, sampel blur/gelap, objek ekstrem, dan kemungkinan sumber error B2/B4.",
       "schedules": [
-        { "text": "Siapkan dashboard untuk presentasi", "done": false },
-        { "text": "Presentasi hasil ke dosen", "done": false },
-        { "text": "Catat feedback & next steps", "done": false }
+        { "text": "Siapkan dashboard untuk presentasi", "done": true },
+        { "text": "Presentasi hasil ke dosen", "done": true },
+        { "text": "Catat feedback & next steps", "done": true }
+      ],
+      "runs": []
+    },
+    {
+      "id": "e7",
+      "date": "2026-03-06",
+      "type": "dataset-prep",
+      "status": "Progress",
+      "title": "Audit outlier dataset pasca-presentasi",
+      "tags": ["dataset", "outlier", "audit", "B1", "B2", "B3", "B4"],
+      "notes_md": "Melanjutkan penelitian pada Jumat, 6 Maret 2026 dengan fokus mencari outlier dataset yang paling mungkin menjelaskan error model pada seluruh kelas B1-B4, dengan perhatian khusus pada overlap antarkelas dan anomali ukuran box.\n\nTujuan kerja hari ini:\n- memetakan distribusi bounding box untuk B1, B2, B3, dan B4 sebagai baseline audit\n- menemukan sampel dengan anotasi meragukan atau label tidak konsisten pada semua kelas\n- menemukan gambar dengan kualitas ekstrem (blur, overexposed, underexposed, occlusion berat)\n- menemukan distribusi objek yang terlalu padat, terlalu kecil, terlalu besar, atau sangat tidak biasa\n- menandai sampel yang kemungkinan memicu false negative / false positive berulang pada model terbaik\n\nHipotesis awal:\n- B1 tetap perlu dianalisis sebagai baseline kelas paling stabil agar batas wajar ukuran dan visualnya jelas.\n- Sebagian masalah B2 dan B3 mungkin berasal dari overlap visual dengan kelas tetangga, bukan hanya kelemahan model.\n- Sebagian bottleneck B4 bukan hanya kapasitas model, tetapi campuran antara visual ambiguity dan kualitas/ketelitian anotasi.\n- Sebagian gap domain DAMIMAS vs LONSUM bisa diperparah oleh subset kecil gambar yang sangat berbeda secara pencahayaan, warna, atau sudut pandang.\n\nOutput yang diharapkan dari audit ini:\n1. daftar file/gambar outlier prioritas tinggi untuk B1-B4\n2. kategori outlier per gambar\n3. keputusan tindak lanjut: perbaiki label, keluarkan dari train, atau jadikan subset evaluasi khusus\n4. ringkasan apakah distribusi ukuran B1-B4 masih konsisten secara ordinal atau terlalu overlap\n\nArtefak lokal audit:\n- `analysis/bbox_outliers/summary.md`\n- `analysis/bbox_outliers/outliers.csv`\n- `analysis/bbox_outliers/ordinal_violations.csv`\n- `analysis/bbox_outliers/dense_images.csv`\n- `analysis/bbox_outliers/canvases/`",
+      "bbox_audit_summary": {
+        "headline": "Audit bbox pada `dataset_combined` menunjukkan distribusi ukuran antarkelas B1-B4 saling overlap kuat. Median ukuran tetap menurun dari B1 ke B4, sehingga B1 masih berguna sebagai baseline, tetapi overlap B2-B3-B4 dan pelanggaran ordinal cukup banyak sehingga kandidat ambiguity label memang nyata di data.",
+        "distribution_stats": [
+          { "class_name": "B1", "count": 2177, "p10": 0.0061, "p50": 0.0140, "p90": 0.0339, "width_p50": 125, "height_p50": 137 },
+          { "class_name": "B2", "count": 4075, "p10": 0.0045, "p50": 0.0107, "p90": 0.0268, "width_p50": 109, "height_p50": 121 },
+          { "class_name": "B3", "count": 8296, "p10": 0.0034, "p50": 0.0096, "p90": 0.0261, "width_p50": 105, "height_p50": 114 },
+          { "class_name": "B4", "count": 3442, "p10": 0.0026, "p50": 0.0072, "p90": 0.0171, "width_p50": 94, "height_p50": 96 }
+        ],
+        "highlights": [
+          "B1 tetap menjadi anchor distribusi paling besar dan paling stabil; kelas ini perlu dipakai sebagai pembanding saat menilai anomali kelas lain.",
+          "Semua pasangan kelas overlap pada rentang P10-P90, jadi ukuran bbox saja belum memisahkan kelas dengan bersih.",
+          "Total ter-scan: 3992 gambar dan 17990 bounding box di seluruh split train/val/test.",
+          "Jumlah kandidat pelanggaran ordinal yang ter-flag: 4697 pasangan bbox.",
+          "Jumlah gambar padat dengan >= 8 bbox: 120 gambar; kasus ini penting karena sering menampilkan campuran kelas B1-B4 dalam satu frame."
+        ],
+        "priority_findings": [
+          "Baseline B1 kecil yang layak direview tetap perlu dikumpulkan agar batas bawah ukuran B1 tidak bercampur dengan B2/B3.",
+          "Kandidat outlier besar B4 tertinggi: `DAMIMAS_A21B_0642_3.jpg` (test, rel_area 0.0869).",
+          "Kandidat outlier besar B2 tertinggi: `DAMIMAS_A21B_0716_3.jpg` (test, rel_area 0.0917).",
+          "Pelanggaran ordinal tertinggi yang layak direview: `DAMIMAS_A21B_0222_4.jpg` dengan pola `B1 < B3`, karena ini langsung merusak urutan ukuran yang diharapkan.",
+          "Gambar padat prioritas tertinggi: `DAMIMAS_A21B_0007_2.jpg` dengan 10 bbox (B1:2, B2:0, B3:6, B4:2)."
+        ],
+        "artifact_links": [
+          { "label": "Ringkasan Markdown", "path": "analysis/bbox_outliers/summary.md" },
+          { "label": "CSV Outlier", "path": "analysis/bbox_outliers/outliers.csv" },
+          { "label": "CSV Pelanggaran Ordinal", "path": "analysis/bbox_outliers/ordinal_violations.csv" },
+          { "label": "CSV Gambar Padat", "path": "analysis/bbox_outliers/dense_images.csv" },
+          { "label": "Folder Canvas", "path": "analysis/bbox_outliers/canvases/" }
+        ],
+        "canvas_examples": [
+          "analysis/bbox_outliers/canvases/class_left_B1.jpg",
+          "analysis/bbox_outliers/canvases/class_right_B4.jpg",
+          "analysis/bbox_outliers/canvases/dense_train_DAMIMAS_A21B_0007_2.jpg"
+        ]
+      },
+      "schedules": [
+        { "text": "Tentukan baseline distribusi B1 sebagai pembanding kelas lain", "done": false },
+        { "text": "Kumpulkan kandidat outlier dari error run terbaik dan terburuk", "done": false },
+        { "text": "Kelompokkan outlier: label salah, kualitas buruk, domain shift, objek ekstrem, dan overlap antarkelas", "done": false },
+        { "text": "Bandingkan pola outlier DAMIMAS vs LONSUM", "done": false },
+        { "text": "Susun shortlist sampel prioritas untuk revisi anotasi B1-B4", "done": false }
       ],
       "runs": []
     }

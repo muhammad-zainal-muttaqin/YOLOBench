@@ -107,6 +107,13 @@ Setiap event merepresentasikan **satu kegiatan/aktivitas** dalam satu hari.
     { "text": "Deskripsi task", "done": true },
     { "text": "Task belum selesai", "done": false }
   ],
+  "cross_test_summary": {
+    "headline": "Ringkasan singkat hasil cross-test.",
+    "highlights": ["Poin penting 1", "Poin penting 2"],
+    "best_cases": [],
+    "generalization_notes": [],
+    "source_artifact": "cross_test_analysis.xlsx"
+  },
   "runs": []
 }
 ```
@@ -123,6 +130,7 @@ Setiap event merepresentasikan **satu kegiatan/aktivitas** dalam satu hari.
 | `tags` | Ya | Array of string | Untuk filtering. Masukkan gen (`legacy`/`v2`), model, dataset. |
 | `notes_md` | Ya | String (markdown) | Penjelasan detail. Gunakan `\n` untuk newline dalam JSON. **Dirender sebagai Markdown** (heading, tabel, bold, list, code block, gambar). Lihat [Panduan Markdown](#panduan-markdown-untuk-notes_md-dan-summary). |
 | `schedules` | Opsional | Array of `{text, done}` | Checklist tasks. `done`: `true`/`false`. |
+| `cross_test_summary` | Opsional | Object | Ringkasan analisis lintas-run/lintas-domain di level event. Cocok untuk workbook agregat seperti cross-test. |
 | `runs` | Opsional | Array of Run objects | Bisa `[]` kosong untuk event tanpa eksperimen. |
 
 ### Contoh Event TANPA runs (meeting/planning):
@@ -140,6 +148,42 @@ Setiap event merepresentasikan **satu kegiatan/aktivitas** dalam satu hari.
     { "text": "Define scenarios", "done": true }
   ],
   "runs": []
+}
+```
+
+### `cross_test_summary` dipakai kapan?
+
+Gunakan field ini jika satu event punya **analisis agregat yang tidak cocok dimasukkan ke satu run**, misalnya:
+- cross-test train-vs-test antar domain
+- ranking model lintas beberapa run
+- ringkasan dari workbook/Excel agregat
+
+Struktur minimumnya:
+
+```json
+{
+  "cross_test_summary": {
+    "headline": "Kesimpulan 1 paragraf.",
+    "highlights": [
+      "Angka penting 1",
+      "Angka penting 2"
+    ],
+    "best_cases": [
+      {
+        "label": "Best combined test",
+        "model": "damimas_yv9c_42",
+        "arch": "YOLOv9c",
+        "train_set": "damimas",
+        "test_set": "combined",
+        "mAP50": 0.505,
+        "mAP5095": 0.230
+      }
+    ],
+    "generalization_notes": [
+      "Catatan domain gap / stabilitas model"
+    ],
+    "source_artifact": "cross_test_analysis.xlsx"
+  }
 }
 ```
 

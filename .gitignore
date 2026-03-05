@@ -19,3 +19,11 @@ Thumbs.db
 
 # Local environment
 .env
+
+# Node
+node_modules/
+package-lock.json
+
+# Generated analysis artifacts
+analysis/
+dataset_combined

@@ -19,6 +19,7 @@
 7. [Kurva F1, PR, dan Confusion Matrix](#7-kurva-f1-pr-dan-confusion-matrix)
 8. [Visualisasi Prediksi](#8-visualisasi-prediksi)
 9. [Kesimpulan dan Rekomendasi](#9-kesimpulan-dan-rekomendasi)
+10. [Cross-Test: Evaluasi Silang Train vs Test Domain](#10-cross-test-evaluasi-silang-train-vs-test-domain)
 
 ---
 
@@ -386,4 +387,170 @@ Setiap canvas menampilkan 1 gambar test yang sama, diprediksi oleh Ground Truth 
 
 ---
 
-*Laporan ini dihasilkan dari evaluasi pada dataset `dataset_combined_test` (592 gambar). Semua gambar dan kurva tersedia di direktori `Test/`.*
+## 10. Cross-Test: Evaluasi Silang Train vs Test Domain
+
+### 10.1 Metodologi Cross-Test
+
+Setiap model dievaluasi pada **3 subset test** yang berbeda:
+- **test_combined** — Seluruh 592 gambar (DAMIMAS + LONSUM)
+- **test_damimas** — 532 gambar (hanya prefix DAMIMAS)
+- **test_lonsum** — 60 gambar (hanya prefix LONSUM)
+
+Tujuan: mengukur **domain gap** dan **generalisasi** antar sumber data.
+
+Total evaluasi: **42 kombinasi** (32 Part 1 + 10 Part 2).
+
+---
+
+### 10.2 Matriks Cross-Test: mAP50 per Model per Test Subset
+
+#### Combined v2 Models
+
+| Model | Test Combined | Test DAMIMAS | Test LONSUM |
+|-------|:---:|:---:|:---:|
+| combined_y26l_123 | 0.461 | 0.470 | 0.309 |
+| combined_y26l_42 | 0.457 | 0.465 | 0.280 |
+| combined_yv9c_123 | **0.505** | **0.514** | 0.291 |
+| combined_yv9c_42 | 0.504 | 0.514 | **0.325** |
+
+#### DAMIMAS v2 Models
+
+| Model | Test Combined | Test DAMIMAS | Test LONSUM |
+|-------|:---:|:---:|:---:|
+| damimas_y26l_123 | 0.469 | 0.479 | 0.280 |
+| damimas_y26l_42 | 0.465 | 0.474 | 0.288 |
+| damimas_yv9c_123 | 0.500 | 0.512 | 0.255 |
+| damimas_yv9c_42 | **0.505** | **0.517** | 0.238 |
+
+#### LONSUM v2 Models
+
+| Model | Test Combined | Test DAMIMAS | Test LONSUM |
+|-------|:---:|:---:|:---:|
+| lonsum_y26l_123 | 0.232 | 0.240 | 0.096 |
+| lonsum_y26l_42 | 0.211 | 0.219 | 0.158 |
+| lonsum_yv9c_123 | 0.257 | 0.269 | 0.092 |
+| lonsum_yv9c_42 | **0.307** | **0.318** | 0.097 |
+
+#### Legacy Models
+
+| Model | Test Combined | Test DAMIMAS | Test LONSUM |
+|-------|:---:|:---:|:---:|
+| legacy_yv9c_640 | **0.483** | **0.493** | **0.293** |
+| legacy_y26l_1280_damimas | 0.405 | 0.417 | 0.090 |
+
+---
+
+### 10.3 Matriks Cross-Test: mAP50-95 per Model per Test Subset
+
+#### Combined v2 Models
+
+| Model | Test Combined | Test DAMIMAS | Test LONSUM |
+|-------|:---:|:---:|:---:|
+| combined_y26l_123 | 0.214 | 0.219 | 0.129 |
+| combined_y26l_42 | 0.203 | 0.207 | 0.090 |
+| combined_yv9c_123 | **0.230** | **0.235** | 0.105 |
+| combined_yv9c_42 | 0.226 | 0.231 | 0.103 |
+
+#### DAMIMAS v2 Models
+
+| Model | Test Combined | Test DAMIMAS | Test LONSUM |
+|-------|:---:|:---:|:---:|
+| damimas_y26l_123 | 0.220 | 0.225 | 0.132 |
+| damimas_y26l_42 | 0.203 | 0.207 | 0.094 |
+| damimas_yv9c_123 | 0.224 | 0.229 | 0.081 |
+| damimas_yv9c_42 | **0.230** | **0.236** | 0.069 |
+
+#### LONSUM v2 Models
+
+| Model | Test Combined | Test DAMIMAS | Test LONSUM |
+|-------|:---:|:---:|:---:|
+| lonsum_y26l_123 | 0.091 | 0.094 | 0.034 |
+| lonsum_y26l_42 | 0.081 | 0.085 | 0.044 |
+| lonsum_yv9c_123 | 0.091 | 0.097 | 0.028 |
+| lonsum_yv9c_42 | 0.119 | 0.124 | 0.034 |
+
+#### Legacy Models
+
+| Model | Test Combined | Test DAMIMAS | Test LONSUM |
+|-------|:---:|:---:|:---:|
+| legacy_yv9c_640 | 0.161 | 0.165 | 0.059 |
+| legacy_y26l_1280_damimas | 0.137 | 0.141 | 0.031 |
+
+---
+
+### 10.4 Ringkasan Rata-Rata per Grup (mAP50)
+
+| Train Group | Test Combined | Test DAMIMAS | Test LONSUM | Avg |
+|-------------|:---:|:---:|:---:|:---:|
+| **Combined v2** | 0.482 | 0.491 | **0.301** | **0.425** |
+| **DAMIMAS v2** | 0.485 | **0.496** | 0.265 | 0.415 |
+| **LONSUM v2** | 0.252 | 0.262 | 0.111 | 0.208 |
+| **Legacy** | 0.444 | 0.455 | 0.192 | 0.364 |
+
+---
+
+### 10.5 Per-Class Cross-Test (Model Terbaik: combined_yv9c_123)
+
+#### Test DAMIMAS (532 gambar)
+
+| Kelas | Images | Instances | P | R | mAP50 | mAP50-95 |
+|-------|--------|-----------|------|------|-------|----------|
+| all | 532 | 2478 | 0.489 | 0.604 | 0.514 | 0.235 |
+| B1 | 260 | 306 | 0.663 | 0.863 | 0.830 | 0.425 |
+| B2 | 335 | 540 | 0.381 | 0.591 | 0.398 | 0.181 |
+| B3 | 470 | 1081 | 0.495 | 0.612 | 0.501 | 0.216 |
+| B4 | 325 | 551 | 0.418 | 0.351 | 0.327 | 0.119 |
+
+#### Test LONSUM (60 gambar)
+
+| Kelas | Images | Instances | P | R | mAP50 | mAP50-95 |
+|-------|--------|-----------|------|------|-------|----------|
+| all | 60 | 156 | 0.253 | 0.282 | 0.291 | 0.105 |
+| B1 | 2 | 2 | 0.373 | 0.500 | 0.638 | 0.213 |
+| B2 | 16 | 23 | 0.130 | 0.174 | 0.170 | 0.076 |
+| B3 | 48 | 111 | 0.394 | 0.405 | 0.300 | 0.106 |
+| B4 | 16 | 20 | 0.116 | 0.050 | 0.056 | 0.024 |
+
+---
+
+### 10.6 Analisis Domain Gap
+
+#### Temuan Utama
+
+1. **Semua model performa lebih tinggi pada test_damimas vs test_combined:**
+   - DAMIMAS mendominasi test set (532/592 = 90% gambar), sehingga skor test_damimas sedikit lebih tinggi
+   - Gap kecil (~1-2% mAP50) — menunjukkan 60 gambar LONSUM hanya sedikit "merusak" skor
+
+2. **Domain gap LONSUM sangat besar:**
+   - Combined v2 terbaik: 0.514 (DAMIMAS) → 0.291 (LONSUM) = **drop 43%**
+   - DAMIMAS v2 terbaik: 0.517 (DAMIMAS) → 0.255 (LONSUM) = **drop 51%**
+   - LONSUM v2 di domain sendiri hanya 0.097–0.158 (sangat buruk)
+
+3. **Combined v2 paling tahan terhadap domain shift:**
+   - Rata-rata test_lonsum: **0.301** (vs DAMIMAS v2: 0.265)
+   - Training pada data gabungan memberikan robustness ~14% lebih baik pada domain LONSUM
+
+4. **LONSUM sebagai domain yang sangat sulit:**
+   - Bahkan model LONSUM sendiri gagal di test LONSUM (mAP50 = 0.10–0.16)
+   - Data LONSUM kemungkinan memiliki kualitas/konsistensi label yang rendah, atau variabilitas visual yang tinggi
+
+5. **Legacy yv9c_640 cukup kompetitif pada LONSUM:**
+   - mAP50 = 0.293 pada test_lonsum — hanya kalah tipis dari combined_yv9c_42 (0.325)
+   - Namun mAP50-95 = 0.059 jauh tertinggal dari v2 (0.103–0.129)
+
+6. **legacy_y26l_1280_damimas sangat buruk pada LONSUM:**
+   - mAP50 = 0.090 pada test_lonsum — hampir tidak bisa mendeteksi apa-apa
+   - Ini expected karena dilatih hanya pada DAMIMAS dengan resolusi tinggi (1280)
+
+#### Rekomendasi dari Cross-Test
+
+| Prioritas | Rekomendasi | Alasan |
+|-----------|-------------|--------|
+| **Tinggi** | Gunakan model Combined v2 untuk deployment multi-domain | Generalisasi terbaik ke DAMIMAS dan LONSUM |
+| **Tinggi** | Investigasi kualitas data LONSUM | Model LONSUM gagal bahkan di domain sendiri (mAP50 < 0.16) |
+| **Sedang** | Pertimbangkan domain adaptation / fine-tuning untuk LONSUM | Gap 43-51% menunjukkan simple training tidak cukup |
+| **Rendah** | Tambah data LONSUM ke training set | Hanya 60 gambar test — representasi terlalu kecil |
+
+---
+
+*Laporan ini dihasilkan dari evaluasi pada dataset `dataset_combined_test` (592 gambar) dan cross-test pada subset DAMIMAS (532 gambar) dan LONSUM (60 gambar). Semua gambar dan kurva tersedia di direktori `Test/`.*

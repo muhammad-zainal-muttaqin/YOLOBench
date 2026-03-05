@@ -1,0 +1,511 @@
+Models requested : 14
+Models available : 14
+
+Splitting images by prefix...
+  Subset 'damimas': 532 gambar
+  Subset 'lonsum': 60 gambar
+  YAML 'damimas': /kaggle/working/compare_cross_test/data_damimas.yaml
+  YAML 'lonsum': /kaggle/working/compare_cross_test/data_lonsum.yaml
+  YAML 'combined': /kaggle/working/compare_cross_test/data_combined.yaml
+
+Total evaluasi yang akan dijalankan: 32
+Kombinasi unik (train, test):
+  train_combined__test_combined
+  train_damimas__test_damimas
+  train_damimas__test_lonsum
+  train_damimas__test_combined
+  train_lonsum__test_damimas
+  train_lonsum__test_lonsum
+  train_lonsum__test_combined
+
+================================================================================
+[1/32] Model: combined_y26l_123  |  Train: combined  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLO26l summary (fused): 190 layers, 24,748,824 parameters, 0 gradients, 86.1 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 552.3±282.5 MB/s, size: 568.8 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.449      0.537      0.461      0.214
+                    B1        262        308      0.662      0.815      0.804       0.41
+                    B2        351        563      0.327      0.471       0.32       0.15
+                    B3        518       1192      0.422      0.582       0.45      0.193
+                    B4        341        571      0.383      0.282       0.27      0.105
+Speed: 1.1ms preprocess, 23.9ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val5
+  => mAP50=0.4613, mAP50-95=0.2143, P=0.4486, R=0.5375
+
+================================================================================
+[2/32] Model: combined_y26l_42  |  Train: combined  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLO26l summary (fused): 190 layers, 24,748,824 parameters, 0 gradients, 86.1 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 659.5±163.1 MB/s, size: 620.3 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.448      0.537      0.457      0.203
+                    B1        262        308       0.65      0.819      0.793       0.37
+                    B2        351        563      0.372      0.501      0.344      0.155
+                    B3        518       1192      0.411      0.543      0.426      0.183
+                    B4        341        571      0.358      0.284      0.265      0.104
+Speed: 1.0ms preprocess, 24.8ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val6
+  => mAP50=0.4568, mAP50-95=0.2029, P=0.4477, R=0.5365
+
+================================================================================
+[3/32] Model: combined_yv9c_123  |  Train: combined  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLOv9c summary (fused): 156 layers, 25,322,332 parameters, 0 gradients, 102.3 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 667.1±165.9 MB/s, size: 571.8 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.486      0.588      0.505       0.23
+                    B1        262        308      0.662       0.86      0.829      0.423
+                    B2        351        563      0.378      0.572       0.39      0.177
+                    B3        518       1192       0.49      0.579      0.482      0.206
+                    B4        341        571      0.414      0.339      0.318      0.115
+Speed: 1.0ms preprocess, 24.6ms inference, 0.0ms loss, 0.8ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val7
+  => mAP50=0.5048, mAP50-95=0.2303, P=0.4861, R=0.5875
+
+================================================================================
+[4/32] Model: combined_yv9c_42  |  Train: combined  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLOv9c summary (fused): 156 layers, 25,322,332 parameters, 0 gradients, 102.3 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 804.6±291.0 MB/s, size: 565.8 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.482      0.611      0.504      0.226
+                    B1        262        308      0.736      0.843      0.844      0.417
+                    B2        351        563      0.369      0.517      0.367      0.164
+                    B3        518       1192      0.458      0.654      0.476      0.199
+                    B4        341        571      0.365      0.432      0.327      0.123
+Speed: 1.1ms preprocess, 25.7ms inference, 0.0ms loss, 0.8ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val8
+  => mAP50=0.5036, mAP50-95=0.2259, P=0.4821, R=0.6114
+
+================================================================================
+[5/32] Model: damimas_y26l_123  |  Train: damimas  |  Test: damimas
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLO26l summary (fused): 190 layers, 24,748,824 parameters, 0 gradients, 86.1 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 723.7±314.2 MB/s, size: 621.2 KB)
+val: New cache created: /kaggle/working/compare_cross_test/_subsets/subset_damimas/labels/test.cache
+                   all        532       2478      0.456      0.555      0.479      0.225
+                    B1        260        306      0.607      0.797      0.795      0.408
+                    B2        335        540      0.393      0.502      0.361      0.169
+                    B3        470       1081       0.45      0.578      0.471      0.213
+                    B4        325        551      0.375      0.341      0.287      0.109
+Speed: 1.0ms preprocess, 28.0ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val9
+  => mAP50=0.4786, mAP50-95=0.2250, P=0.4562, R=0.5546
+
+================================================================================
+[6/32] Model: damimas_y26l_123  |  Train: damimas  |  Test: lonsum
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 752.2±169.7 MB/s, size: 487.1 KB)
+val: New cache created: /kaggle/working/compare_cross_test/_subsets/subset_lonsum/labels/test.cache
+                   all         60        156      0.279      0.283       0.28      0.132
+                    B1          2          2      0.334        0.5       0.54      0.271
+                    B2         16         23      0.348      0.391      0.339      0.155
+                    B3         48        111      0.311      0.189      0.187     0.0875
+                    B4         16         20      0.122       0.05     0.0531     0.0165
+Speed: 4.0ms preprocess, 28.6ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val10
+  => mAP50=0.2800, mAP50-95=0.1324, P=0.2789, R=0.2826
+
+================================================================================
+[7/32] Model: damimas_y26l_123  |  Train: damimas  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 523.0±390.2 MB/s, size: 584.2 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.454      0.539      0.469       0.22
+                    B1        262        308      0.606      0.795      0.792      0.406
+                    B2        351        563      0.393      0.492      0.357      0.167
+                    B3        518       1192      0.443      0.538      0.445      0.201
+                    B4        341        571      0.375      0.331       0.28      0.106
+Speed: 1.0ms preprocess, 27.1ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val11
+  => mAP50=0.4686, mAP50-95=0.2201, P=0.4539, R=0.5390
+
+================================================================================
+[8/32] Model: damimas_y26l_42  |  Train: damimas  |  Test: damimas
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLO26l summary (fused): 190 layers, 24,748,824 parameters, 0 gradients, 86.1 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 774.0±130.7 MB/s, size: 608.3 KB)
+                   all        532       2478      0.449      0.562      0.474      0.207
+                    B1        260        306      0.706      0.797      0.827      0.394
+                    B2        335        540       0.36      0.496      0.338      0.149
+                    B3        470       1081      0.408      0.602      0.467      0.191
+                    B4        325        551      0.322       0.35      0.266     0.0959
+Speed: 1.0ms preprocess, 26.9ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val12
+  => mAP50=0.4742, mAP50-95=0.2074, P=0.4490, R=0.5615
+
+================================================================================
+[9/32] Model: damimas_y26l_42  |  Train: damimas  |  Test: lonsum
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 580.0±142.6 MB/s, size: 527.2 KB)
+                   all         60        156      0.897      0.201      0.288      0.094
+                    B1          2          2      0.899        0.5      0.538      0.134
+                    B2         16         23      0.925      0.217      0.307      0.125
+                    B3         48        111      0.762     0.0868      0.261     0.0983
+                    B4         16         20          1          0     0.0447      0.018
+Speed: 4.3ms preprocess, 27.3ms inference, 0.0ms loss, 0.2ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val13
+  => mAP50=0.2878, mAP50-95=0.0940, P=0.8967, R=0.2011
+
+================================================================================
+[10/32] Model: damimas_y26l_42  |  Train: damimas  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 683.3±117.3 MB/s, size: 591.5 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.446      0.547      0.465      0.203
+                    B1        262        308      0.703      0.795      0.823      0.391
+                    B2        351        563      0.356      0.485      0.335      0.146
+                    B3        518       1192      0.407       0.57      0.446      0.181
+                    B4        341        571       0.32       0.34      0.257     0.0928
+Speed: 1.1ms preprocess, 27.2ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val14
+  => mAP50=0.4653, mAP50-95=0.2030, P=0.4463, R=0.5474
+
+================================================================================
+[11/32] Model: damimas_yv9c_123  |  Train: damimas  |  Test: damimas
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLOv9c summary (fused): 156 layers, 25,322,332 parameters, 0 gradients, 102.3 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 618.3±213.3 MB/s, size: 588.2 KB)
+                   all        532       2478      0.487      0.629      0.512      0.229
+                    B1        260        306      0.656      0.902      0.838      0.408
+                    B2        335        540      0.365      0.653      0.376       0.17
+                    B3        470       1081      0.485       0.65      0.506      0.221
+                    B4        325        551      0.441      0.312      0.325      0.119
+Speed: 1.0ms preprocess, 26.6ms inference, 0.0ms loss, 0.9ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val15
+  => mAP50=0.5115, mAP50-95=0.2294, P=0.4869, R=0.6292
+
+================================================================================
+[12/32] Model: damimas_yv9c_123  |  Train: damimas  |  Test: lonsum
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 405.2±170.6 MB/s, size: 497.9 KB)
+                   all         60        156      0.201      0.265      0.255     0.0805
+                    B1          2          2      0.118        0.5      0.519      0.102
+                    B2         16         23      0.317      0.364      0.234      0.105
+                    B3         48        111      0.371      0.198      0.212       0.09
+                    B4         16         20          0          0     0.0544     0.0241
+Speed: 4.2ms preprocess, 27.9ms inference, 0.0ms loss, 1.5ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val16
+  => mAP50=0.2549, mAP50-95=0.0805, P=0.2014, R=0.2655
+
+================================================================================
+[13/32] Model: damimas_yv9c_123  |  Train: damimas  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 658.5±166.4 MB/s, size: 609.4 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.483      0.613        0.5      0.224
+                    B1        262        308      0.649      0.899      0.835      0.405
+                    B2        351        563      0.365      0.643       0.37      0.167
+                    B3        518       1192      0.483      0.607      0.479      0.208
+                    B4        341        571      0.436      0.301      0.317      0.116
+Speed: 1.0ms preprocess, 26.1ms inference, 0.0ms loss, 0.8ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val17
+  => mAP50=0.5002, mAP50-95=0.2240, P=0.4834, R=0.6127
+
+================================================================================
+[14/32] Model: damimas_yv9c_42  |  Train: damimas  |  Test: damimas
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLOv9c summary (fused): 156 layers, 25,322,332 parameters, 0 gradients, 102.3 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 675.4±108.7 MB/s, size: 624.6 KB)
+                   all        532       2478      0.504      0.608      0.517      0.236
+                    B1        260        306      0.711      0.859      0.849      0.425
+                    B2        335        540       0.36      0.633      0.385      0.173
+                    B3        470       1081      0.488      0.644      0.507      0.222
+                    B4        325        551      0.458      0.296      0.328      0.123
+Speed: 1.0ms preprocess, 26.1ms inference, 0.0ms loss, 0.9ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val18
+  => mAP50=0.5172, mAP50-95=0.2357, P=0.5043, R=0.6081
+
+================================================================================
+[15/32] Model: damimas_yv9c_42  |  Train: damimas  |  Test: lonsum
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 518.6±82.9 MB/s, size: 456.2 KB)
+                   all         60        156      0.544      0.213      0.238      0.069
+                    B1          2          2      0.587        0.5      0.503     0.0999
+                    B2         16         23      0.268      0.217       0.17     0.0736
+                    B3         48        111      0.322      0.133      0.215     0.0779
+                    B4         16         20          1          0     0.0635     0.0245
+Speed: 6.1ms preprocess, 27.0ms inference, 0.0ms loss, 1.3ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val19
+  => mAP50=0.2377, mAP50-95=0.0690, P=0.5444, R=0.2126
+
+================================================================================
+[16/32] Model: damimas_yv9c_42  |  Train: damimas  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 565.7±297.1 MB/s, size: 564.1 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.502       0.59      0.505       0.23
+                    B1        262        308      0.712      0.857      0.846      0.422
+                    B2        351        563      0.356      0.618      0.377      0.169
+                    B3        518       1192      0.483      0.599       0.48      0.209
+                    B4        341        571      0.458      0.285      0.318       0.12
+Speed: 1.1ms preprocess, 26.1ms inference, 0.0ms loss, 0.9ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val20
+  => mAP50=0.5054, mAP50-95=0.2298, P=0.5022, R=0.5899
+
+================================================================================
+[17/32] Model: lonsum_y26l_123  |  Train: lonsum  |  Test: damimas
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLO26l summary (fused): 190 layers, 24,748,824 parameters, 0 gradients, 86.1 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 575.3±223.6 MB/s, size: 615.1 KB)
+                   all        532       2478      0.319      0.298      0.239     0.0937
+                    B1        260        306      0.524      0.415        0.4      0.167
+                    B2        335        540      0.269      0.152      0.167     0.0639
+                    B3        470       1081      0.325      0.489      0.298      0.111
+                    B4        325        551      0.158      0.134     0.0931     0.0331
+Speed: 1.2ms preprocess, 27.5ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val21
+  => mAP50=0.2395, mAP50-95=0.0937, P=0.3189, R=0.2976
+
+================================================================================
+[18/32] Model: lonsum_y26l_123  |  Train: lonsum  |  Test: lonsum
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 447.1±108.8 MB/s, size: 479.5 KB)
+                   all         60        156      0.375      0.164     0.0962     0.0336
+                    B1          2          2          1          0          0          0
+                    B2         16         23      0.108      0.174      0.093     0.0234
+                    B3         48        111      0.287      0.333      0.237     0.0847
+                    B4         16         20      0.106       0.15     0.0552      0.026
+Speed: 4.5ms preprocess, 27.7ms inference, 0.0ms loss, 0.6ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val22
+  => mAP50=0.0962, mAP50-95=0.0336, P=0.3752, R=0.1643
+
+================================================================================
+[19/32] Model: lonsum_y26l_123  |  Train: lonsum  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 642.4±125.7 MB/s, size: 595.7 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.313      0.294      0.232     0.0907
+                    B1        262        308      0.524      0.412      0.397      0.166
+                    B2        351        563      0.251      0.153      0.152     0.0569
+                    B3        518       1192      0.322      0.475      0.291      0.108
+                    B4        341        571      0.155      0.135     0.0899     0.0321
+Speed: 1.1ms preprocess, 27.2ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val23
+  => mAP50=0.2323, mAP50-95=0.0907, P=0.3132, R=0.2937
+
+================================================================================
+[20/32] Model: lonsum_y26l_42  |  Train: lonsum  |  Test: damimas
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLO26l summary (fused): 190 layers, 24,748,824 parameters, 0 gradients, 86.1 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 832.6±245.0 MB/s, size: 652.1 KB)
+                   all        532       2478      0.288      0.272      0.219     0.0848
+                    B1        260        306      0.374      0.444      0.357      0.139
+                    B2        335        540      0.245     0.0785       0.13     0.0536
+                    B3        470       1081      0.328      0.444      0.292      0.112
+                    B4        325        551      0.204      0.123     0.0965     0.0352
+Speed: 1.0ms preprocess, 27.3ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val24
+  => mAP50=0.2187, mAP50-95=0.0848, P=0.2877, R=0.2724
+
+================================================================================
+[21/32] Model: lonsum_y26l_42  |  Train: lonsum  |  Test: lonsum
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 606.0±170.0 MB/s, size: 492.8 KB)
+                   all         60        156      0.365      0.152      0.157     0.0444
+                    B1          2          2          1          0      0.252     0.0252
+                    B2         16         23      0.119      0.217     0.0946      0.028
+                    B3         48        111      0.264      0.342      0.209     0.0809
+                    B4         16         20     0.0752       0.05     0.0744     0.0434
+Speed: 4.7ms preprocess, 28.0ms inference, 0.0ms loss, 0.3ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val25
+  => mAP50=0.1575, mAP50-95=0.0444, P=0.3646, R=0.1524
+
+================================================================================
+[22/32] Model: lonsum_y26l_42  |  Train: lonsum  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 615.3±171.0 MB/s, size: 540.8 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.281      0.267      0.211     0.0814
+                    B1        262        308      0.377      0.435      0.356      0.137
+                    B2        351        563      0.221     0.0835      0.113     0.0461
+                    B3        518       1192      0.325       0.43      0.282      0.108
+                    B4        341        571      0.202      0.119     0.0931     0.0341
+Speed: 1.1ms preprocess, 27.3ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val26
+  => mAP50=0.2108, mAP50-95=0.0814, P=0.2810, R=0.2670
+
+================================================================================
+[23/32] Model: lonsum_yv9c_123  |  Train: lonsum  |  Test: damimas
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLOv9c summary (fused): 156 layers, 25,322,332 parameters, 0 gradients, 102.3 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 668.9±256.6 MB/s, size: 613.2 KB)
+                   all        532       2478      0.309      0.302      0.269     0.0966
+                    B1        260        306       0.36      0.696      0.527      0.185
+                    B2        335        540      0.293     0.0876      0.149     0.0571
+                    B3        470       1081      0.434      0.322      0.321      0.117
+                    B4        325        551      0.147      0.104     0.0785     0.0269
+Speed: 1.0ms preprocess, 26.4ms inference, 0.0ms loss, 0.8ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val27
+  => mAP50=0.2689, mAP50-95=0.0966, P=0.3085, R=0.3024
+
+================================================================================
+[24/32] Model: lonsum_yv9c_123  |  Train: lonsum  |  Test: lonsum
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 569.9±106.3 MB/s, size: 487.3 KB)
+                   all         60        156      0.115      0.204     0.0915     0.0276
+                    B1          2          2          0          0     0.0196    0.00784
+                    B2         16         23     0.0798      0.261     0.0593     0.0149
+                    B3         48        111       0.32      0.405      0.238     0.0696
+                    B4         16         20     0.0616       0.15     0.0494      0.018
+Speed: 4.5ms preprocess, 26.6ms inference, 0.0ms loss, 1.9ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val28
+  => mAP50=0.0915, mAP50-95=0.0276, P=0.1152, R=0.2041
+
+================================================================================
+[25/32] Model: lonsum_yv9c_123  |  Train: lonsum  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 704.7±121.7 MB/s, size: 593.7 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.289        0.3      0.257     0.0912
+                    B1        262        308      0.363      0.689      0.525      0.184
+                    B2        351        563      0.233     0.0906      0.123     0.0461
+                    B3        518       1192      0.422       0.32      0.307      0.109
+                    B4        341        571      0.138     0.0998     0.0741     0.0254
+Speed: 1.1ms preprocess, 26.2ms inference, 0.0ms loss, 0.8ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val29
+  => mAP50=0.2573, mAP50-95=0.0912, P=0.2891, R=0.2997
+
+================================================================================
+[26/32] Model: lonsum_yv9c_42  |  Train: lonsum  |  Test: damimas
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLOv9c summary (fused): 156 layers, 25,322,332 parameters, 0 gradients, 102.3 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 682.5±307.2 MB/s, size: 604.0 KB)
+                   all        532       2478      0.373      0.379      0.318      0.124
+                    B1        260        306      0.521      0.641      0.562      0.236
+                    B2        335        540      0.351      0.131      0.185     0.0704
+                    B3        470       1081      0.404      0.525      0.377      0.141
+                    B4        325        551      0.215      0.221      0.149     0.0481
+Speed: 1.1ms preprocess, 26.4ms inference, 0.0ms loss, 0.8ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val30
+  => mAP50=0.3181, mAP50-95=0.1238, P=0.3727, R=0.3795
+
+================================================================================
+[27/32] Model: lonsum_yv9c_42  |  Train: lonsum  |  Test: lonsum
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 573.1±108.2 MB/s, size: 527.7 KB)
+                   all         60        156     0.0962      0.159     0.0966     0.0336
+                    B1          2          2          0          0     0.0239    0.00239
+                    B2         16         23     0.0713       0.13      0.101     0.0353
+                    B3         48        111      0.266      0.405      0.224     0.0792
+                    B4         16         20      0.048        0.1     0.0376     0.0177
+Speed: 4.5ms preprocess, 26.6ms inference, 0.0ms loss, 2.0ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val31
+  => mAP50=0.0966, mAP50-95=0.0336, P=0.0962, R=0.1590
+
+================================================================================
+[28/32] Model: lonsum_yv9c_42  |  Train: lonsum  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 504.5±105.3 MB/s, size: 564.9 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.366       0.37      0.307      0.119
+                    B1        262        308      0.531      0.633      0.558      0.234
+                    B2        351        563      0.321      0.128      0.167     0.0632
+                    B3        518       1192      0.397      0.503      0.361      0.134
+                    B4        341        571      0.214      0.215      0.143     0.0464
+Speed: 1.0ms preprocess, 26.0ms inference, 0.0ms loss, 0.8ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val32
+  => mAP50=0.3074, mAP50-95=0.1194, P=0.3658, R=0.3698
+
+================================================================================
+[29/32] Model: legacy_yv9c_640  |  Train: combined  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLOv9c summary (fused): 156 layers, 25,322,332 parameters, 0 gradients, 102.3 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 627.3±302.5 MB/s, size: 561.9 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.467      0.587      0.483      0.161
+                    B1        262        308      0.624      0.854      0.798      0.279
+                    B2        351        563      0.419      0.595       0.42      0.147
+                    B3        518       1192      0.441      0.585      0.448      0.147
+                    B4        341        571      0.384      0.312      0.265     0.0706
+Speed: 1.0ms preprocess, 26.3ms inference, 0.0ms loss, 0.8ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val33
+  => mAP50=0.4828, mAP50-95=0.1609, P=0.4671, R=0.5865
+
+================================================================================
+[30/32] Model: legacy_y26l_1280_damimas_only  |  Train: damimas  |  Test: damimas
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+YOLO26l summary (fused): 190 layers, 24,748,824 parameters, 0 gradients, 86.1 GFLOPs
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 865.5±275.6 MB/s, size: 571.9 KB)
+                   all        532       2478      0.404      0.484      0.417      0.141
+                    B1        260        306      0.531      0.771      0.708      0.251
+                    B2        335        540      0.423      0.417      0.374      0.131
+                    B3        470       1081      0.397      0.512      0.414      0.133
+                    B4        325        551      0.267      0.236      0.172     0.0486
+Speed: 1.1ms preprocess, 27.4ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val34
+  => mAP50=0.4171, mAP50-95=0.1410, P=0.4044, R=0.4840
+
+================================================================================
+[31/32] Model: legacy_y26l_1280_damimas_only  |  Train: damimas  |  Test: lonsum
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 490.4±145.1 MB/s, size: 468.7 KB)
+                   all         60        156      0.127       0.29     0.0896     0.0309
+                    B1          2          2       0.11        0.5     0.0842     0.0305
+                    B2         16         23       0.11      0.304      0.112     0.0404
+                    B3         48        111      0.259      0.306      0.145     0.0457
+                    B4         16         20     0.0278       0.05      0.017    0.00709
+Speed: 5.1ms preprocess, 27.7ms inference, 0.0ms loss, 0.2ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val35
+  => mAP50=0.0896, mAP50-95=0.0309, P=0.1265, R=0.2902
+
+================================================================================
+[32/32] Model: legacy_y26l_1280_damimas_only  |  Train: damimas  |  Test: combined
+================================================================================
+Ultralytics 8.4.19 🚀 Python-3.12.12 torch-2.9.0+cu126 CUDA:0 (Tesla T4, 14913MiB)
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 723.7±203.6 MB/s, size: 603.5 KB)
+WARNING ⚠️ val: Cache directory /kaggle/input/datasets/mzainalmuttaqin2/dataset-combined-test-only/dataset_combined_test/labels is not writable, cache not saved.
+                   all        592       2634      0.398       0.47      0.405      0.137
+                    B1        262        308      0.525      0.766      0.702      0.249
+                    B2        351        563      0.415      0.405      0.363      0.127
+                    B3        518       1192      0.389      0.477      0.389      0.125
+                    B4        341        571      0.264      0.233      0.166     0.0469
+Speed: 1.0ms preprocess, 27.3ms inference, 0.0ms loss, 0.1ms postprocess per image
+Results saved to /kaggle/working/runs/detect/val36
+  => mAP50=0.4049, mAP50-95=0.1369, P=0.3983, R=0.4704
+
+Generating side-by-side canvases per subset...
+  Master canvas (damimas): /kaggle/working/compare_cross_test/master_canvas_damimas.jpg
+  Master canvas (lonsum): /kaggle/working/compare_cross_test/master_canvas_lonsum.jpg
+  Master canvas (combined): /kaggle/working/compare_cross_test/master_canvas_combined.jpg
+
+================================================================================
+DONE!
+================================================================================
+Global metrics : /kaggle/working/compare_cross_test/global_metrics_cross.csv
+Per-class      : /kaggle/working/compare_cross_test/per_class_metrics_cross.csv
+Cross summary  : /kaggle/working/compare_cross_test/cross_summary.csv
+Canvases       : /kaggle/working/compare_cross_test/canvases
+
