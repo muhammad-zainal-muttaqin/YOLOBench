@@ -2064,7 +2064,7 @@
       "status": "Plan",
       "title": "Presentasi hasil evaluasi v2 ke dosen",
       "tags": ["presentasi", "v2", "evaluation"],
-      "notes_md": "Presentasi hasil evaluasi v2 (12 run) yang dilakukan tanggal 4 Maret.\n\nTopik utama:\n- Perbandingan v2 vs legacy (cross-evaluation)\n- Analisis per-kelas B1/B2/B3/B4 di 3 skenario\n- Dekomposisi gap: penghapusan leakage vs domain shift\n- Rekomendasi langkah selanjutnya",
+      "notes_md": "Presentasi hasil evaluasi v2 (12 run) + 2 legacy yang dilakukan tanggal 4 Maret.\n\n**Dokumen presentasi:** [PRESENTASI_HASIL_TEST.md](https://github.com/muhammad-zainal-muttaqin/YOLOBench/blob/main/Test/PRESENTASI_HASIL_TEST.md)\n\nTopik utama:\n- Perbandingan v2 vs legacy (14 model ditest pada dataset gabungan 592 gambar)\n- Analisis per-kelas B1/B2/B3/B4: hierarki kesulitan deteksi kematangan TBS\n- Domain gap: model LONSUM gagal generalisasi, DAMIMAS sangat representatif\n- YOLOv9c konsisten lebih baik dari YOLO26L (~4-5 poin mAP50)\n- v2 terbaik: mAP50=0.505, mAP50-95=0.230 (+43% vs legacy)\n- Rekomendasi: fokus peningkatan deteksi B4 (recall terbaik hanya 28%)",
       "schedules": [
         { "text": "Siapkan dashboard untuk presentasi", "done": false },
         { "text": "Presentasi hasil ke dosen", "done": false },

@@ -1,20 +1,4 @@
-#!/usr/bin/env python3
-"""
-Kaggle-ready same-test comparison script.
-
-Purpose:
-- Compare multiple models on the exact same test set
-- Export global and per-class metrics
-- Generate side-by-side canvases (GT + all models) per sampled image
-- Generate one master canvas for presentation
-
-Usage in Kaggle notebook (single cell):
-!pip install -q ultralytics pyyaml opencv-python
-!python /kaggle/working/YOLOBench/scripts/kaggle_same_test_canvas.py
-
-You can edit the CONFIG section below directly before running.
-"""
-
+!pip install -q ultralytics pyyaml
 import contextlib
 import csv
 import io
@@ -59,8 +43,8 @@ IOU = 0.6
 DEVICE = 0
 
 NUM_SAMPLES = 8
-PANEL_SIZE = 360
-PANELS_PER_ROW = 5
+PANEL_SIZE = 720
+PANELS_PER_ROW = 2
 SEED = 42
 
 SAVE_FULL_VAL_LOG = True
