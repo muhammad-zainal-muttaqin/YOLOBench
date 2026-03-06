@@ -1,0 +1,107 @@
+{
+  "datasetDir": "C:\\Users\\MyBook Z Series\\OneDrive\\Documents\\YOLOBench\\dataset_combined",
+  "outputDir": "C:\\Users\\MyBook Z Series\\OneDrive\\Documents\\YOLOBench\\analysis\\bbox_outliers",
+  "objectCount": 17990,
+  "imageCount": 3992,
+  "missingImages": [],
+  "classStats": [
+    {
+      "classId": 0,
+      "className": "B1",
+      "count": 2177,
+      "p10": 0.0061402613759999995,
+      "p50": 0.014005642176000001,
+      "p90": 0.0338942189,
+      "widthP50": 124.99967999999998,
+      "heightP50": 136.79232000000002
+    },
+    {
+      "classId": 1,
+      "className": "B2",
+      "count": 4075,
+      "p10": 0.004495688132,
+      "p50": 0.010651779859,
+      "p90": 0.026809429453,
+      "widthP50": 109.09056,
+      "heightP50": 120.64
+    },
+    {
+      "classId": 2,
+      "className": "B3",
+      "count": 8296,
+      "p10": 0.0034135272359999995,
+      "p50": 0.009642980459,
+      "p90": 0.02608512214,
+      "widthP50": 105.29952,
+      "heightP50": 114.34495999999999
+    },
+    {
+      "classId": 3,
+      "className": "B4",
+      "count": 3442,
+      "p10": 0.0026338519559999996,
+      "p50": 0.007219048243999999,
+      "p90": 0.017111491839,
+      "widthP50": 93.5952,
+      "heightP50": 96.1088
+    }
+  ],
+  "overlapRows": [
+    {
+      "lhs": "B1",
+      "rhs": "B2",
+      "lhsP10": 0.0061402613759999995,
+      "lhsP90": 0.0338942189,
+      "rhsP10": 0.004495688132,
+      "rhsP90": 0.026809429453,
+      "overlap": true
+    },
+    {
+      "lhs": "B1",
+      "rhs": "B3",
+      "lhsP10": 0.0061402613759999995,
+      "lhsP90": 0.0338942189,
+      "rhsP10": 0.0034135272359999995,
+      "rhsP90": 0.02608512214,
+      "overlap": true
+    },
+    {
+      "lhs": "B1",
+      "rhs": "B4",
+      "lhsP10": 0.0061402613759999995,
+      "lhsP90": 0.0338942189,
+      "rhsP10": 0.0026338519559999996,
+      "rhsP90": 0.017111491839,
+      "overlap": true
+    },
+    {
+      "lhs": "B2",
+      "rhs": "B3",
+      "lhsP10": 0.004495688132,
+      "lhsP90": 0.026809429453,
+      "rhsP10": 0.0034135272359999995,
+      "rhsP90": 0.02608512214,
+      "overlap": true
+    },
+    {
+      "lhs": "B2",
+      "rhs": "B4",
+      "lhsP10": 0.004495688132,
+      "lhsP90": 0.026809429453,
+      "rhsP10": 0.0026338519559999996,
+      "rhsP90": 0.017111491839,
+      "overlap": true
+    },
+    {
+      "lhs": "B3",
+      "rhs": "B4",
+      "lhsP10": 0.0034135272359999995,
+      "lhsP90": 0.02608512214,
+      "rhsP10": 0.0026338519559999996,
+      "rhsP90": 0.017111491839,
+      "overlap": true
+    }
+  ],
+  "denseImageCount": 120,
+  "violationCount": 4694
+}
