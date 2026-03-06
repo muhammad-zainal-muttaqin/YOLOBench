@@ -2140,14 +2140,16 @@
           "Jumlah gambar padat dengan >= 8 bbox: 120 gambar; kasus ini penting karena sering menampilkan campuran kelas B1-B4 dalam satu frame."
         ],
         "priority_findings": [
-          "Baseline B1 kecil yang layak direview tetap perlu dikumpulkan agar batas bawah ukuran B1 tidak bercampur dengan B2/B3.",
-          "Kandidat outlier besar B4 tertinggi: `DAMIMAS_A21B_0642_3.jpg` (test, rel_area 0.0869).",
-          "Kandidat outlier besar B2 tertinggi: `DAMIMAS_A21B_0716_3.jpg` (test, rel_area 0.0917).",
-          "Pelanggaran ordinal tertinggi yang layak direview: `DAMIMAS_A21B_0222_4.jpg` dengan pola `B1 < B3`, karena ini langsung merusak urutan ukuran yang diharapkan.",
-          "Gambar padat prioritas tertinggi: `DAMIMAS_A21B_0007_2.jpg` dengan 10 bbox (B1:2, B2:0, B3:6, B4:2)."
+          "3 bbox 0x0 teridentifikasi (pasti rusak): DAMIMAS_A21B_0007_2 B3, DAMIMAS_A21B_0011_3 B2, DAMIMAS_A21B_0087_2 B2.",
+          "9 bbox dengan rel_area <= 0.0005 masuk review prioritas tinggi, termasuk B1 16x20 dan B2 61x8 (rasio aspek 7.25).",
+          "Total 33 bbox perlu aksi: 3 DROP + 9 REVIEW tinggi + 21 REVIEW tambahan.",
+          "Distribusi: B1=4, B2=11, B3=11, B4=7 — B2/B3 paling banyak kandidat problematik.",
+          "66 kandidat sangat kecil (w<=32 atau h<=32 atau rel_area<=0.001): DAMIMAS=60, LONSUM=6.",
+          "Shortlist final tersedia di `analysis/bbox_outliers/shortlist_review.md`."
         ],
         "artifact_links": [
           { "label": "Ringkasan Markdown", "path": "analysis/bbox_outliers/summary.md" },
+          { "label": "Shortlist Review", "path": "analysis/bbox_outliers/shortlist_review.md" },
           { "label": "CSV Outlier", "path": "analysis/bbox_outliers/outliers.csv" },
           { "label": "CSV Pelanggaran Ordinal", "path": "analysis/bbox_outliers/ordinal_violations.csv" },
           { "label": "CSV Gambar Padat", "path": "analysis/bbox_outliers/dense_images.csv" },
@@ -2160,11 +2162,14 @@
         ]
       },
       "schedules": [
-        { "text": "Tentukan baseline distribusi B1 sebagai pembanding kelas lain", "done": false },
-        { "text": "Kumpulkan kandidat outlier dari error run terbaik dan terburuk", "done": false },
-        { "text": "Kelompokkan outlier: label salah, kualitas buruk, domain shift, objek ekstrem, dan overlap antarkelas", "done": false },
-        { "text": "Bandingkan pola outlier DAMIMAS vs LONSUM", "done": false },
-        { "text": "Susun shortlist sampel prioritas untuk revisi anotasi B1-B4", "done": false }
+        { "text": "Tentukan baseline distribusi B1 sebagai pembanding kelas lain", "done": true },
+        { "text": "Kumpulkan kandidat outlier dari error run terbaik dan terburuk", "done": true },
+        { "text": "Kelompokkan outlier: label salah, kualitas buruk, domain shift, objek ekstrem, dan overlap antarkelas", "done": true },
+        { "text": "Bandingkan pola outlier DAMIMAS vs LONSUM", "done": true },
+        { "text": "Susun shortlist sampel prioritas untuk revisi anotasi B1-B4", "done": true },
+        { "text": "Review visual Tier 1 (3 bbox 0x0) → hapus dari label", "done": false },
+        { "text": "Review visual Tier 2 (9 bbox rel_area <= 0.0005) → drop/perbaiki", "done": false },
+        { "text": "Review visual Tier 3 (21 bbox w/h <= 24) → pertahankan jika terbaca", "done": false }
       ],
       "runs": []
     }
