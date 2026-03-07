@@ -25,5 +25,9 @@ node_modules/
 package-lock.json
 
 # Generated analysis artifacts
-analysis/
 dataset_combined
+
+# Archive & temporary
+archive/
+candidate_remove/
+dataset_cleaned/

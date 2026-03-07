@@ -1,3 +1,5 @@
-# Exclude large test results from Cloudflare Pages deployment
+# Exclude large/non-deploy content from Cloudflare Pages
 Test/
 scripts/__pycache__/
+archive/
+dataset_cleaned/
