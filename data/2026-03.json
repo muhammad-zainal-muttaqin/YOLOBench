@@ -2853,22 +2853,6 @@
         }
       ],
       "runs": []
-    },
-    {
-      "id": "e9",
-      "date": "2026-03-08",
-      "type": "planning",
-      "status": "Solved",
-      "title": "Tidy up root folder: arsipkan artefak lama ke archive/",
-      "tags": ["housekeeping", "repo-cleanup"],
-      "notes_md": "Membersihkan root folder sebelum masuk tahap training. File-file lama yang sudah tidak aktif dipindahkan ke `archive/` agar root tetap rapi.\n\n### Yang dipindahkan ke `archive/`\n| Folder/File | Tujuan |\n|---|---|\n| `Hasil Eval/` (raw text logs) | `archive/raw_logs/` |\n| `Test/` (presentasi & scripts) | `archive/presentation/` |\n| `cross_test_analysis.xlsx` | `archive/` |\n| `E0_Protocol_Flowchart.html` | `archive/` |\n| `E0_Timeline.html` | `archive/` |\n| `GEMINI.md` | `archive/` |\n| `scripts/Generate Gambar.txt` | `archive/` |\n| `analysis/manual_review_list.md` | `archive/` |\n\n### Yang dihapus\n- `scripts/collect_removed.js` — one-time script, sudah dipakai\n- `candidate_remove/` — sudah tidak ada\n\n### Update config\n- `.gitignore`: tambah `archive/`, `candidate_remove/`, `dataset_cleaned/`\n- `.cfignore`: tambah `archive/`, `dataset_cleaned/`\n\nRoot folder sekarang hanya berisi file aktif: dokumentasi, dashboard, data, scripts, analysis, dan dataset_cleaned.",
-      "schedules": [
-        { "text": "Buat archive/ dan pindahkan file lama", "done": true },
-        { "text": "Hapus file/folder temporary", "done": true },
-        { "text": "Update .gitignore dan .cfignore", "done": true },
-        { "text": "Verifikasi dashboard tidak rusak", "done": true }
-      ],
-      "runs": []
     }
   ]
 }
