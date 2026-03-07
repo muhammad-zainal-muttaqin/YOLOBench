@@ -1770,13 +1770,33 @@
       "type": "evaluation",
       "status": "Solved",
       "title": "Evaluasi V2: YOLO26l & YOLOv9c pada combined test set (3 skenario × 2 seed)",
-      "tags": ["v2", "YOLO26l", "YOLOv9c", "all_data", "damimas_only", "lonsum_only", "evaluation"],
+      "tags": [
+        "v2",
+        "YOLO26l",
+        "YOLOv9c",
+        "all_data",
+        "damimas_only",
+        "lonsum_only",
+        "evaluation"
+      ],
       "notes_md": "Mengevaluasi semua 12 model v2 pada shared combined test set (592 gambar, damimas+lonsum).\nSumber angka: output evaluasi 4 Maret (`Hasil Eval/Hasil Eval-4th March 2026.txt`).\n\n## Kenapa V2 (~50%) Terlihat Lebih Rendah dari Legacy (~65%)?\n\nAngka 65% legacy (exp7 YOLOv9c) BUKAN performa sebenarnya — itu ter-inflate oleh 2 faktor. Cross-evaluation membuktikan bahwa **v2 justru lebih baik dari legacy** pada test set yang sama.\n\n### Cross-Evaluation YOLOv9c (mAP50):\n| Model | Legacy test (518) | V2 combined test (592) |\n|---|---|---|\n| Legacy yv9c_640 | 0.650 | 0.483 |\n| V2 damimas/yv9c_42 | 0.599 | 0.505 |\n\nPada test set yang SAMA (v2 combined), **v2 menang**: 0.505 vs 0.483.\nPada mAP50-95, gap lebih besar: **v2=0.230 vs legacy=0.161 (+43%)**.\n\n### Dekomposisi Gap (YOLOv9c, mAP50):\n```\nLegacy pada legacy test:  0.650\n  ↓ -0.051 (35%) — Penghapusan leakage (tree-level split)\nV2 pada legacy test:      0.599\n  ↓ -0.094 (65%) — Domain shift (lonsum di test set)\nV2 pada combined test:    0.505\n```\n\n### Faktor 1: Image-Level Leakage di Legacy (~35% dari gap)\nLegacy pakai image-level split → pohon yang SAMA bisa muncul di train & test. Model 'menghafal' tampilan pohon → performa test ter-inflate ~5 poin mAP50.\n\n### Faktor 2: Lonsum di Test Set V2 (~65% dari gap)\nTest set v2 combined berisi damimas + lonsum. Model yang dilatih damimas_only tidak pernah lihat distribusi visual lonsum (kebun berbeda, kondisi berbeda). Ini menyebabkan domain shift ~9.4 poin mAP50. Model legacy bahkan drop LEBIH besar (0.167) saat ditest pada combined, menunjukkan legacy lebih 'overfit' ke damimas.\n\n### Kesimpulan:\n- Model v2 lebih robust dan generalize lebih baik\n- Lonsum standalone (276 gambar train) terlalu kecil untuk melatih model yang baik\n- Menambah lonsum ke combined training hampir tidak membantu (all_data ≈ damimas_only)\n- Untuk paper: gunakan v2 combined test sebagai benchmark utama, laporkan per-domain jika perlu\n\n## Temuan Utama:\n- YOLOv9c > YOLO26l di semua skenario\n- Terbaik keseluruhan: damimas_only/YOLOv9c seed42 (mAP50=0.505, mAP50-95=0.230)\n- B1 paling mudah dideteksi (mAP50 ~0.85), B4 paling sulit (~0.07-0.33)\n- Variasi seed minimal pada skenario data besar; pada lonsum_only variasi lebih besar karena data sangat kecil\n\n## Hasil 12 Run (Global)\nSemua dievaluasi di `all_data/test (592 imgs)`.\n\n| Train scenario | Model | Seed | mAP50 | mAP50-95 | P | R |\n|---|---:|---:|---:|---:|---:|---:|\n| all_data | YOLO26l | 123 | 0.461 | 0.214 | 0.449 | 0.537 |\n| all_data | YOLO26l | 42 | 0.457 | 0.203 | 0.448 | 0.537 |\n| all_data | YOLOv9c | 123 | 0.505 | 0.230 | 0.486 | 0.588 |\n| all_data | YOLOv9c | 42 | 0.504 | 0.226 | 0.482 | 0.611 |\n| damimas_only | YOLO26l | 123 | 0.469 | 0.220 | 0.454 | 0.539 |\n| damimas_only | YOLO26l | 42 | 0.465 | 0.203 | 0.446 | 0.547 |\n| damimas_only | YOLOv9c | 123 | 0.500 | 0.224 | 0.483 | 0.613 |\n| damimas_only | YOLOv9c | 42 | 0.505 | 0.230 | 0.502 | 0.590 |\n| lonsum_only | YOLO26l | 123 | 0.232 | 0.091 | 0.313 | 0.294 |\n| lonsum_only | YOLO26l | 42 | 0.211 | 0.081 | 0.281 | 0.267 |\n| lonsum_only | YOLOv9c | 123 | 0.257 | 0.091 | 0.289 | 0.300 |\n| lonsum_only | YOLOv9c | 42 | 0.307 | 0.119 | 0.366 | 0.370 |\n\n## Ringkasan Angka (Mean)\n| Scenario | Model | Mean mAP50 | Mean mAP50-95 | Mean P | Mean R |\n|---|---|---:|---:|---:|---:|\n| all_data | YOLO26l | 0.459 | 0.209 | 0.448 | 0.537 |\n| all_data | YOLOv9c | 0.505 | 0.228 | 0.484 | 0.600 |\n| damimas_only | YOLO26l | 0.467 | 0.212 | 0.450 | 0.543 |\n| damimas_only | YOLOv9c | 0.503 | 0.227 | 0.493 | 0.602 |\n| lonsum_only | YOLO26l | 0.222 | 0.086 | 0.297 | 0.281 |\n| lonsum_only | YOLOv9c | 0.282 | 0.105 | 0.328 | 0.335 |\n\nInterpretasi cepat:\n- Gap arsitektur (mean mAP50) konsisten: YOLOv9c lebih tinggi sekitar +0.035 s.d. +0.061 poin dibanding YOLO26l (tergantung skenario).\n- all_data ≈ damimas_only pada combined test: menambah lonsum ke training tidak memberi uplift berarti (indikasi lonsum data terlalu kecil/berbeda domain).\n- lonsum_only jauh tertinggal karena data train sangat sedikit dan domain shift besar.\n\n## Analisis Per-Kelas (B1–B4)\n**Komposisi test set (tetap untuk semua run)**: 592 gambar, 2634 instance.\n- B1: 308 instance (262 gambar)\n- B2: 563 instance (351 gambar)\n- B3: 1192 instance (518 gambar)\n- B4: 571 instance (341 gambar)\n\n### Mean mAP50 per kelas\n| Scenario | Model | B1 | B2 | B3 | B4 |\n|---|---|---:|---:|---:|---:|\n| all_data | YOLO26l | 0.799 | 0.332 | 0.438 | 0.268 |\n| all_data | YOLOv9c | 0.837 | 0.379 | 0.479 | 0.323 |\n| damimas_only | YOLO26l | 0.808 | 0.346 | 0.446 | 0.268 |\n| damimas_only | YOLOv9c | 0.841 | 0.374 | 0.480 | 0.318 |\n| lonsum_only | YOLO26l | 0.377 | 0.132 | 0.286 | 0.092 |\n| lonsum_only | YOLOv9c | 0.542 | 0.145 | 0.334 | 0.109 |\n\n### Best per kelas (mAP50)\n- B1 terbaik: exp17 (damimas_only / YOLOv9c / seed42) = 0.846\n- B2 terbaik: exp12 (all_data / YOLOv9c / seed123) = 0.390\n- B3 terbaik: exp12 (all_data / YOLOv9c / seed123) = 0.482\n- B4 terbaik: exp13 (all_data / YOLOv9c / seed42) = 0.327\n\nInterpretasi:\n- Bottleneck utama ada di **B4** (dan sebagian **B2**) karena mAP50 jauh lebih rendah dari B1/B3 di semua skenario.\n- Pada lonsum_only, semua kelas drop, dan B4 paling parah (indikasi kombinasi: data train kecil + domain shift + kelas sulit).\n\n## Analisis Gambar Pohon (Qualitative)\nRepo ini belum menyimpan contoh gambar/prediksi (tidak ada file `.png/.jpg` di repo), jadi analisis visual di bawah adalah *template* presentasi yang bisa langsung diisi begitu contoh gambar tersedia.\n\nChecklist yang disarankan untuk presentasi ke dosen:\n1. Ambil 8–12 sampel gambar dari test set: 2–3 per kelas (B1–B4), plus 2 sampel campuran (banyak objek/tumpang tindih).\n2. Untuk tiap gambar, tampilkan 2 overlay prediksi: model terbaik (exp17 atau exp12) vs model terburuk (exp19).\n3. Kategorikan error per gambar:\n   - False negative (objek tidak terdeteksi) vs false positive\n   - Mis-localization (bbox meleset) vs mis-classification (kelas salah)\n4. Hubungkan temuan visual dengan metrik:\n   - Jika B4 recall rendah, tunjukkan contoh B4 yang kecil/occluded/kontras rendah.\n   - Jika lonsum_only drop, tunjukkan 1–2 contoh domain shift (pencahayaan/warna/tekstur kebun berbeda).\n\nKalau Anda taruh contoh gambar prediksi ke folder `assets/qualitative/`, saya bisa bantu susun galeri di Markdown (mis. `![B4 sulit](assets/qualitative/b4_hard.png)`) supaya bisa ditunjukkan langsung di dashboard.",
       "schedules": [
-        {"text": "Eval model all_data (4 run)", "done": true},
-        {"text": "Eval model damimas_only (4 run)", "done": true},
-        {"text": "Eval model lonsum_only (4 run)", "done": true},
-        {"text": "Bandingkan hasil antar skenario", "done": true}
+        {
+          "text": "Eval model all_data (4 run)",
+          "done": true
+        },
+        {
+          "text": "Eval model damimas_only (4 run)",
+          "done": true
+        },
+        {
+          "text": "Eval model lonsum_only (4 run)",
+          "done": true
+        },
+        {
+          "text": "Bandingkan hasil antar skenario",
+          "done": true
+        }
       ],
       "cross_test_summary": {
         "headline": "Workbook `cross_test_analysis.xlsx` menegaskan bahwa training `combined` paling stabil lintas domain, `damimas` sangat kompetitif pada DAMIMAS dan COMBINED, sedangkan `lonsum_only` belum cukup kuat sebagai skenario train utama.",
@@ -1835,14 +1855,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.461, "mAP5095": 0.214, "P": 0.449, "R": 0.537},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.662, "R": 0.815, "mAP50": 0.804, "mAP5095": 0.41, "F1": 0.731},
-                "B2": {"images": 351, "instances": 563, "P": 0.327, "R": 0.471, "mAP50": 0.32, "mAP5095": 0.15, "F1": 0.386},
-                "B3": {"images": 518, "instances": 1192, "P": 0.422, "R": 0.582, "mAP50": 0.45, "mAP5095": 0.193, "F1": 0.489},
-                "B4": {"images": 341, "instances": 571, "P": 0.383, "R": 0.282, "mAP50": 0.27, "mAP5095": 0.105, "F1": 0.325}
+              "global": {
+                "mAP50": 0.461,
+                "mAP5095": 0.214,
+                "P": 0.449,
+                "R": 0.537
               },
-              "speed": {"preprocess": 1.0, "inference": 22.7, "postprocess": 0.1}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.662,
+                  "R": 0.815,
+                  "mAP50": 0.804,
+                  "mAP5095": 0.41,
+                  "F1": 0.731
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.327,
+                  "R": 0.471,
+                  "mAP50": 0.32,
+                  "mAP5095": 0.15,
+                  "F1": 0.386
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.422,
+                  "R": 0.582,
+                  "mAP50": 0.45,
+                  "mAP5095": 0.193,
+                  "F1": 0.489
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.383,
+                  "R": 0.282,
+                  "mAP50": 0.27,
+                  "mAP5095": 0.105,
+                  "F1": 0.325
+                }
+              },
+              "speed": {
+                "preprocess": 1,
+                "inference": 22.7,
+                "postprocess": 0.1
+              }
             }
           }
         },
@@ -1858,14 +1919,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.457, "mAP5095": 0.203, "P": 0.448, "R": 0.537},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.65, "R": 0.819, "mAP50": 0.793, "mAP5095": 0.37, "F1": 0.725},
-                "B2": {"images": 351, "instances": 563, "P": 0.372, "R": 0.501, "mAP50": 0.344, "mAP5095": 0.155, "F1": 0.427},
-                "B3": {"images": 518, "instances": 1192, "P": 0.411, "R": 0.543, "mAP50": 0.426, "mAP5095": 0.183, "F1": 0.468},
-                "B4": {"images": 341, "instances": 571, "P": 0.358, "R": 0.284, "mAP50": 0.265, "mAP5095": 0.104, "F1": 0.317}
+              "global": {
+                "mAP50": 0.457,
+                "mAP5095": 0.203,
+                "P": 0.448,
+                "R": 0.537
               },
-              "speed": {"preprocess": 1.0, "inference": 23.5, "postprocess": 0.1}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.65,
+                  "R": 0.819,
+                  "mAP50": 0.793,
+                  "mAP5095": 0.37,
+                  "F1": 0.725
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.372,
+                  "R": 0.501,
+                  "mAP50": 0.344,
+                  "mAP5095": 0.155,
+                  "F1": 0.427
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.411,
+                  "R": 0.543,
+                  "mAP50": 0.426,
+                  "mAP5095": 0.183,
+                  "F1": 0.468
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.358,
+                  "R": 0.284,
+                  "mAP50": 0.265,
+                  "mAP5095": 0.104,
+                  "F1": 0.317
+                }
+              },
+              "speed": {
+                "preprocess": 1,
+                "inference": 23.5,
+                "postprocess": 0.1
+              }
             }
           }
         },
@@ -1881,14 +1983,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.505, "mAP5095": 0.230, "P": 0.486, "R": 0.588},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.662, "R": 0.86, "mAP50": 0.829, "mAP5095": 0.423, "F1": 0.748},
-                "B2": {"images": 351, "instances": 563, "P": 0.378, "R": 0.572, "mAP50": 0.39, "mAP5095": 0.177, "F1": 0.455},
-                "B3": {"images": 518, "instances": 1192, "P": 0.49, "R": 0.579, "mAP50": 0.482, "mAP5095": 0.206, "F1": 0.531},
-                "B4": {"images": 341, "instances": 571, "P": 0.414, "R": 0.339, "mAP50": 0.318, "mAP5095": 0.115, "F1": 0.373}
+              "global": {
+                "mAP50": 0.505,
+                "mAP5095": 0.23,
+                "P": 0.486,
+                "R": 0.588
               },
-              "speed": {"preprocess": 1.1, "inference": 23.2, "postprocess": 0.8}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.662,
+                  "R": 0.86,
+                  "mAP50": 0.829,
+                  "mAP5095": 0.423,
+                  "F1": 0.748
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.378,
+                  "R": 0.572,
+                  "mAP50": 0.39,
+                  "mAP5095": 0.177,
+                  "F1": 0.455
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.49,
+                  "R": 0.579,
+                  "mAP50": 0.482,
+                  "mAP5095": 0.206,
+                  "F1": 0.531
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.414,
+                  "R": 0.339,
+                  "mAP50": 0.318,
+                  "mAP5095": 0.115,
+                  "F1": 0.373
+                }
+              },
+              "speed": {
+                "preprocess": 1.1,
+                "inference": 23.2,
+                "postprocess": 0.8
+              }
             }
           }
         },
@@ -1904,14 +2047,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.504, "mAP5095": 0.226, "P": 0.482, "R": 0.611},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.736, "R": 0.843, "mAP50": 0.844, "mAP5095": 0.417, "F1": 0.786},
-                "B2": {"images": 351, "instances": 563, "P": 0.369, "R": 0.517, "mAP50": 0.367, "mAP5095": 0.164, "F1": 0.430},
-                "B3": {"images": 518, "instances": 1192, "P": 0.458, "R": 0.654, "mAP50": 0.476, "mAP5095": 0.199, "F1": 0.539},
-                "B4": {"images": 341, "instances": 571, "P": 0.365, "R": 0.432, "mAP50": 0.327, "mAP5095": 0.123, "F1": 0.396}
+              "global": {
+                "mAP50": 0.504,
+                "mAP5095": 0.226,
+                "P": 0.482,
+                "R": 0.611
               },
-              "speed": {"preprocess": 1.2, "inference": 24.1, "postprocess": 0.8}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.736,
+                  "R": 0.843,
+                  "mAP50": 0.844,
+                  "mAP5095": 0.417,
+                  "F1": 0.786
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.369,
+                  "R": 0.517,
+                  "mAP50": 0.367,
+                  "mAP5095": 0.164,
+                  "F1": 0.43
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.458,
+                  "R": 0.654,
+                  "mAP50": 0.476,
+                  "mAP5095": 0.199,
+                  "F1": 0.539
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.365,
+                  "R": 0.432,
+                  "mAP50": 0.327,
+                  "mAP5095": 0.123,
+                  "F1": 0.396
+                }
+              },
+              "speed": {
+                "preprocess": 1.2,
+                "inference": 24.1,
+                "postprocess": 0.8
+              }
             }
           }
         },
@@ -1927,14 +2111,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.469, "mAP5095": 0.220, "P": 0.454, "R": 0.539},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.606, "R": 0.795, "mAP50": 0.792, "mAP5095": 0.406, "F1": 0.688},
-                "B2": {"images": 351, "instances": 563, "P": 0.393, "R": 0.492, "mAP50": 0.357, "mAP5095": 0.167, "F1": 0.437},
-                "B3": {"images": 518, "instances": 1192, "P": 0.443, "R": 0.538, "mAP50": 0.445, "mAP5095": 0.201, "F1": 0.486},
-                "B4": {"images": 341, "instances": 571, "P": 0.375, "R": 0.331, "mAP50": 0.28, "mAP5095": 0.106, "F1": 0.352}
+              "global": {
+                "mAP50": 0.469,
+                "mAP5095": 0.22,
+                "P": 0.454,
+                "R": 0.539
               },
-              "speed": {"preprocess": 1.0, "inference": 26.6, "postprocess": 0.1}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.606,
+                  "R": 0.795,
+                  "mAP50": 0.792,
+                  "mAP5095": 0.406,
+                  "F1": 0.688
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.393,
+                  "R": 0.492,
+                  "mAP50": 0.357,
+                  "mAP5095": 0.167,
+                  "F1": 0.437
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.443,
+                  "R": 0.538,
+                  "mAP50": 0.445,
+                  "mAP5095": 0.201,
+                  "F1": 0.486
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.375,
+                  "R": 0.331,
+                  "mAP50": 0.28,
+                  "mAP5095": 0.106,
+                  "F1": 0.352
+                }
+              },
+              "speed": {
+                "preprocess": 1,
+                "inference": 26.6,
+                "postprocess": 0.1
+              }
             }
           }
         },
@@ -1950,14 +2175,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.465, "mAP5095": 0.203, "P": 0.446, "R": 0.547},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.703, "R": 0.795, "mAP50": 0.823, "mAP5095": 0.391, "F1": 0.746},
-                "B2": {"images": 351, "instances": 563, "P": 0.356, "R": 0.485, "mAP50": 0.335, "mAP5095": 0.146, "F1": 0.410},
-                "B3": {"images": 518, "instances": 1192, "P": 0.407, "R": 0.57, "mAP50": 0.446, "mAP5095": 0.181, "F1": 0.475},
-                "B4": {"images": 341, "instances": 571, "P": 0.32, "R": 0.34, "mAP50": 0.257, "mAP5095": 0.0928, "F1": 0.330}
+              "global": {
+                "mAP50": 0.465,
+                "mAP5095": 0.203,
+                "P": 0.446,
+                "R": 0.547
               },
-              "speed": {"preprocess": 1.0, "inference": 27.8, "postprocess": 0.1}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.703,
+                  "R": 0.795,
+                  "mAP50": 0.823,
+                  "mAP5095": 0.391,
+                  "F1": 0.746
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.356,
+                  "R": 0.485,
+                  "mAP50": 0.335,
+                  "mAP5095": 0.146,
+                  "F1": 0.41
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.407,
+                  "R": 0.57,
+                  "mAP50": 0.446,
+                  "mAP5095": 0.181,
+                  "F1": 0.475
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.32,
+                  "R": 0.34,
+                  "mAP50": 0.257,
+                  "mAP5095": 0.0928,
+                  "F1": 0.33
+                }
+              },
+              "speed": {
+                "preprocess": 1,
+                "inference": 27.8,
+                "postprocess": 0.1
+              }
             }
           }
         },
@@ -1973,14 +2239,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.500, "mAP5095": 0.224, "P": 0.483, "R": 0.613},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.649, "R": 0.899, "mAP50": 0.835, "mAP5095": 0.405, "F1": 0.754},
-                "B2": {"images": 351, "instances": 563, "P": 0.365, "R": 0.643, "mAP50": 0.37, "mAP5095": 0.167, "F1": 0.466},
-                "B3": {"images": 518, "instances": 1192, "P": 0.483, "R": 0.607, "mAP50": 0.479, "mAP5095": 0.208, "F1": 0.538},
-                "B4": {"images": 341, "instances": 571, "P": 0.436, "R": 0.301, "mAP50": 0.317, "mAP5095": 0.116, "F1": 0.356}
+              "global": {
+                "mAP50": 0.5,
+                "mAP5095": 0.224,
+                "P": 0.483,
+                "R": 0.613
               },
-              "speed": {"preprocess": 1.0, "inference": 25.8, "postprocess": 0.8}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.649,
+                  "R": 0.899,
+                  "mAP50": 0.835,
+                  "mAP5095": 0.405,
+                  "F1": 0.754
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.365,
+                  "R": 0.643,
+                  "mAP50": 0.37,
+                  "mAP5095": 0.167,
+                  "F1": 0.466
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.483,
+                  "R": 0.607,
+                  "mAP50": 0.479,
+                  "mAP5095": 0.208,
+                  "F1": 0.538
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.436,
+                  "R": 0.301,
+                  "mAP50": 0.317,
+                  "mAP5095": 0.116,
+                  "F1": 0.356
+                }
+              },
+              "speed": {
+                "preprocess": 1,
+                "inference": 25.8,
+                "postprocess": 0.8
+              }
             }
           }
         },
@@ -1996,14 +2303,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.505, "mAP5095": 0.230, "P": 0.502, "R": 0.590},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.712, "R": 0.857, "mAP50": 0.846, "mAP5095": 0.422, "F1": 0.778},
-                "B2": {"images": 351, "instances": 563, "P": 0.356, "R": 0.618, "mAP50": 0.377, "mAP5095": 0.169, "F1": 0.452},
-                "B3": {"images": 518, "instances": 1192, "P": 0.483, "R": 0.599, "mAP50": 0.48, "mAP5095": 0.209, "F1": 0.535},
-                "B4": {"images": 341, "instances": 571, "P": 0.458, "R": 0.285, "mAP50": 0.318, "mAP5095": 0.12, "F1": 0.351}
+              "global": {
+                "mAP50": 0.505,
+                "mAP5095": 0.23,
+                "P": 0.502,
+                "R": 0.59
               },
-              "speed": {"preprocess": 1.1, "inference": 25.6, "postprocess": 0.8}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.712,
+                  "R": 0.857,
+                  "mAP50": 0.846,
+                  "mAP5095": 0.422,
+                  "F1": 0.778
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.356,
+                  "R": 0.618,
+                  "mAP50": 0.377,
+                  "mAP5095": 0.169,
+                  "F1": 0.452
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.483,
+                  "R": 0.599,
+                  "mAP50": 0.48,
+                  "mAP5095": 0.209,
+                  "F1": 0.535
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.458,
+                  "R": 0.285,
+                  "mAP50": 0.318,
+                  "mAP5095": 0.12,
+                  "F1": 0.351
+                }
+              },
+              "speed": {
+                "preprocess": 1.1,
+                "inference": 25.6,
+                "postprocess": 0.8
+              }
             }
           }
         },
@@ -2019,14 +2367,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.232, "mAP5095": 0.0907, "P": 0.313, "R": 0.294},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.524, "R": 0.412, "mAP50": 0.397, "mAP5095": 0.166, "F1": 0.461},
-                "B2": {"images": 351, "instances": 563, "P": 0.251, "R": 0.153, "mAP50": 0.152, "mAP5095": 0.0569, "F1": 0.190},
-                "B3": {"images": 518, "instances": 1192, "P": 0.322, "R": 0.475, "mAP50": 0.291, "mAP5095": 0.108, "F1": 0.384},
-                "B4": {"images": 341, "instances": 571, "P": 0.155, "R": 0.135, "mAP50": 0.0899, "mAP5095": 0.0321, "F1": 0.144}
+              "global": {
+                "mAP50": 0.232,
+                "mAP5095": 0.0907,
+                "P": 0.313,
+                "R": 0.294
               },
-              "speed": {"preprocess": 1.1, "inference": 27.2, "postprocess": 0.1}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.524,
+                  "R": 0.412,
+                  "mAP50": 0.397,
+                  "mAP5095": 0.166,
+                  "F1": 0.461
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.251,
+                  "R": 0.153,
+                  "mAP50": 0.152,
+                  "mAP5095": 0.0569,
+                  "F1": 0.19
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.322,
+                  "R": 0.475,
+                  "mAP50": 0.291,
+                  "mAP5095": 0.108,
+                  "F1": 0.384
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.155,
+                  "R": 0.135,
+                  "mAP50": 0.0899,
+                  "mAP5095": 0.0321,
+                  "F1": 0.144
+                }
+              },
+              "speed": {
+                "preprocess": 1.1,
+                "inference": 27.2,
+                "postprocess": 0.1
+              }
             }
           }
         },
@@ -2042,14 +2431,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.211, "mAP5095": 0.0814, "P": 0.281, "R": 0.267},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.377, "R": 0.435, "mAP50": 0.356, "mAP5095": 0.137, "F1": 0.404},
-                "B2": {"images": 351, "instances": 563, "P": 0.221, "R": 0.0835, "mAP50": 0.113, "mAP5095": 0.0461, "F1": 0.121},
-                "B3": {"images": 518, "instances": 1192, "P": 0.325, "R": 0.43, "mAP50": 0.282, "mAP5095": 0.108, "F1": 0.370},
-                "B4": {"images": 341, "instances": 571, "P": 0.202, "R": 0.119, "mAP50": 0.0931, "mAP5095": 0.0341, "F1": 0.150}
+              "global": {
+                "mAP50": 0.211,
+                "mAP5095": 0.0814,
+                "P": 0.281,
+                "R": 0.267
               },
-              "speed": {"preprocess": 1.1, "inference": 27.2, "postprocess": 0.1}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.377,
+                  "R": 0.435,
+                  "mAP50": 0.356,
+                  "mAP5095": 0.137,
+                  "F1": 0.404
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.221,
+                  "R": 0.0835,
+                  "mAP50": 0.113,
+                  "mAP5095": 0.0461,
+                  "F1": 0.121
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.325,
+                  "R": 0.43,
+                  "mAP50": 0.282,
+                  "mAP5095": 0.108,
+                  "F1": 0.37
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.202,
+                  "R": 0.119,
+                  "mAP50": 0.0931,
+                  "mAP5095": 0.0341,
+                  "F1": 0.15
+                }
+              },
+              "speed": {
+                "preprocess": 1.1,
+                "inference": 27.2,
+                "postprocess": 0.1
+              }
             }
           }
         },
@@ -2065,14 +2495,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.257, "mAP5095": 0.0912, "P": 0.289, "R": 0.300},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.363, "R": 0.689, "mAP50": 0.525, "mAP5095": 0.184, "F1": 0.475},
-                "B2": {"images": 351, "instances": 563, "P": 0.233, "R": 0.0906, "mAP50": 0.123, "mAP5095": 0.0461, "F1": 0.130},
-                "B3": {"images": 518, "instances": 1192, "P": 0.422, "R": 0.32, "mAP50": 0.307, "mAP5095": 0.109, "F1": 0.364},
-                "B4": {"images": 341, "instances": 571, "P": 0.138, "R": 0.0998, "mAP50": 0.0741, "mAP5095": 0.0254, "F1": 0.116}
+              "global": {
+                "mAP50": 0.257,
+                "mAP5095": 0.0912,
+                "P": 0.289,
+                "R": 0.3
               },
-              "speed": {"preprocess": 1.2, "inference": 25.9, "postprocess": 0.7}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.363,
+                  "R": 0.689,
+                  "mAP50": 0.525,
+                  "mAP5095": 0.184,
+                  "F1": 0.475
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.233,
+                  "R": 0.0906,
+                  "mAP50": 0.123,
+                  "mAP5095": 0.0461,
+                  "F1": 0.13
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.422,
+                  "R": 0.32,
+                  "mAP50": 0.307,
+                  "mAP5095": 0.109,
+                  "F1": 0.364
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.138,
+                  "R": 0.0998,
+                  "mAP50": 0.0741,
+                  "mAP5095": 0.0254,
+                  "F1": 0.116
+                }
+              },
+              "speed": {
+                "preprocess": 1.2,
+                "inference": 25.9,
+                "postprocess": 0.7
+              }
             }
           }
         },
@@ -2088,14 +2559,55 @@
             "test": {
               "images": 592,
               "instances": 2634,
-              "global": {"mAP50": 0.307, "mAP5095": 0.119, "P": 0.366, "R": 0.370},
-              "classes": {
-                "B1": {"images": 262, "instances": 308, "P": 0.531, "R": 0.633, "mAP50": 0.558, "mAP5095": 0.234, "F1": 0.578},
-                "B2": {"images": 351, "instances": 563, "P": 0.321, "R": 0.128, "mAP50": 0.167, "mAP5095": 0.0632, "F1": 0.183},
-                "B3": {"images": 518, "instances": 1192, "P": 0.397, "R": 0.503, "mAP50": 0.361, "mAP5095": 0.134, "F1": 0.443},
-                "B4": {"images": 341, "instances": 571, "P": 0.214, "R": 0.215, "mAP50": 0.143, "mAP5095": 0.0464, "F1": 0.214}
+              "global": {
+                "mAP50": 0.307,
+                "mAP5095": 0.119,
+                "P": 0.366,
+                "R": 0.37
               },
-              "speed": {"preprocess": 1.0, "inference": 25.9, "postprocess": 0.8}
+              "classes": {
+                "B1": {
+                  "images": 262,
+                  "instances": 308,
+                  "P": 0.531,
+                  "R": 0.633,
+                  "mAP50": 0.558,
+                  "mAP5095": 0.234,
+                  "F1": 0.578
+                },
+                "B2": {
+                  "images": 351,
+                  "instances": 563,
+                  "P": 0.321,
+                  "R": 0.128,
+                  "mAP50": 0.167,
+                  "mAP5095": 0.0632,
+                  "F1": 0.183
+                },
+                "B3": {
+                  "images": 518,
+                  "instances": 1192,
+                  "P": 0.397,
+                  "R": 0.503,
+                  "mAP50": 0.361,
+                  "mAP5095": 0.134,
+                  "F1": 0.443
+                },
+                "B4": {
+                  "images": 341,
+                  "instances": 571,
+                  "P": 0.214,
+                  "R": 0.215,
+                  "mAP50": 0.143,
+                  "mAP5095": 0.0464,
+                  "F1": 0.214
+                }
+              },
+              "speed": {
+                "preprocess": 1,
+                "inference": 25.9,
+                "postprocess": 0.8
+              }
             }
           }
         }
@@ -2107,12 +2619,25 @@
       "type": "discussion",
       "status": "Solved",
       "title": "Presentasi hasil evaluasi v2 ke dosen",
-      "tags": ["presentasi", "v2", "evaluation"],
+      "tags": [
+        "presentasi",
+        "v2",
+        "evaluation"
+      ],
       "notes_md": "Presentasi hasil evaluasi v2 (12 run) + 2 legacy yang dilakukan tanggal 4 Maret sudah selesai.\n\n**Dokumen presentasi:** [PRESENTASI_HASIL_TEST.md](https://github.com/muhammad-zainal-muttaqin/YOLOBench/blob/main/Test/PRESENTASI_HASIL_TEST.md)\n\nTopik utama:\n- Perbandingan v2 vs legacy (14 model ditest pada dataset gabungan 592 gambar)\n- Analisis per-kelas B1/B2/B3/B4: hierarki kesulitan deteksi kematangan TBS\n- Domain gap: model LONSUM gagal generalisasi, DAMIMAS sangat representatif\n- YOLOv9c konsisten lebih baik dari YOLO26L (~4-5 poin mAP50)\n- v2 terbaik: mAP50=0.505, mAP50-95=0.230 (+43% vs legacy)\n- Rekomendasi: fokus peningkatan deteksi B4 (recall terbaik hanya 28%)\n\nNext step yang disepakati setelah presentasi: audit outlier dataset untuk mencari anotasi salah, sampel blur/gelap, objek ekstrem, dan kemungkinan sumber error B2/B4.",
       "schedules": [
-        { "text": "Siapkan dashboard untuk presentasi", "done": true },
-        { "text": "Presentasi hasil ke dosen", "done": true },
-        { "text": "Catat feedback & next steps", "done": true }
+        {
+          "text": "Siapkan dashboard untuk presentasi",
+          "done": true
+        },
+        {
+          "text": "Presentasi hasil ke dosen",
+          "done": true
+        },
+        {
+          "text": "Catat feedback & next steps",
+          "done": true
+        }
       ],
       "runs": []
     },
@@ -2120,17 +2645,57 @@
       "id": "e7",
       "date": "2026-03-06",
       "type": "dataset-prep",
-      "status": "Progress",
+      "status": "Solved",
       "title": "Audit outlier dataset pasca-presentasi",
-      "tags": ["dataset", "outlier", "audit", "B1", "B2", "B3", "B4"],
-      "notes_md": "Melanjutkan penelitian pada Jumat, 6 Maret 2026 dengan fokus mencari outlier dataset yang paling mungkin menjelaskan error model pada seluruh kelas B1-B4, dengan perhatian khusus pada overlap antarkelas dan anomali ukuran box.\n\nTujuan kerja hari ini:\n- memetakan distribusi bounding box untuk B1, B2, B3, dan B4 sebagai baseline audit\n- menemukan sampel dengan anotasi meragukan atau label tidak konsisten pada semua kelas\n- menemukan gambar dengan kualitas ekstrem (blur, overexposed, underexposed, occlusion berat)\n- menemukan distribusi objek yang terlalu padat, terlalu kecil, terlalu besar, atau sangat tidak biasa\n- menandai sampel yang kemungkinan memicu false negative / false positive berulang pada model terbaik\n\nHipotesis awal:\n- B1 tetap perlu dianalisis sebagai baseline kelas paling stabil agar batas wajar ukuran dan visualnya jelas.\n- Sebagian masalah B2 dan B3 mungkin berasal dari overlap visual dengan kelas tetangga, bukan hanya kelemahan model.\n- Sebagian bottleneck B4 bukan hanya kapasitas model, tetapi campuran antara visual ambiguity dan kualitas/ketelitian anotasi.\n- Sebagian gap domain DAMIMAS vs LONSUM bisa diperparah oleh subset kecil gambar yang sangat berbeda secara pencahayaan, warna, atau sudut pandang.\n\nOutput yang diharapkan dari audit ini:\n1. daftar file/gambar outlier prioritas tinggi untuk B1-B4\n2. kategori outlier per gambar\n3. keputusan tindak lanjut: perbaiki label, keluarkan dari train, atau jadikan subset evaluasi khusus\n4. ringkasan apakah distribusi ukuran B1-B4 masih konsisten secara ordinal atau terlalu overlap\n\nArtefak lokal audit:\n- `analysis/bbox_outliers/summary.md`\n- `analysis/bbox_outliers/outliers.csv`\n- `analysis/bbox_outliers/ordinal_violations.csv`\n- `analysis/bbox_outliers/dense_images.csv`\n- `analysis/bbox_outliers/canvases/`",
+      "tags": [
+        "dataset",
+        "outlier",
+        "audit",
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ],
+      "notes_md": "Melanjutkan penelitian pada Jumat, 6 Maret 2026 dengan fokus mencari outlier dataset yang paling mungkin menjelaskan error model pada seluruh kelas B1-B4, dengan perhatian khusus pada overlap antarkelas dan anomali ukuran box.\n\nTujuan kerja hari ini:\n- memetakan distribusi bounding box untuk B1, B2, B3, dan B4 sebagai baseline audit\n- menemukan sampel dengan anotasi meragukan atau label tidak konsisten pada semua kelas\n- menemukan gambar dengan kualitas ekstrem (blur, overexposed, underexposed, occlusion berat)\n- menemukan distribusi objek yang terlalu padat, terlalu kecil, terlalu besar, atau sangat tidak biasa\n- menandai sampel yang kemungkinan memicu false negative / false positive berulang pada model terbaik\n\nHipotesis awal:\n- B1 tetap perlu dianalisis sebagai baseline kelas paling stabil agar batas wajar ukuran dan visualnya jelas.\n- Sebagian masalah B2 dan B3 mungkin berasal dari overlap visual dengan kelas tetangga, bukan hanya kelemahan model.\n- Sebagian bottleneck B4 bukan hanya kapasitas model, tetapi campuran antara visual ambiguity dan kualitas/ketelitian anotasi.\n- Sebagian gap domain DAMIMAS vs LONSUM bisa diperparah oleh subset kecil gambar yang sangat berbeda secara pencahayaan, warna, atau sudut pandang.\n\nOutput yang diharapkan dari audit ini:\n1. daftar file/gambar outlier prioritas tinggi untuk B1-B4\n2. kategori outlier per gambar\n3. keputusan tindak lanjut: perbaiki label, keluarkan dari train, atau jadikan subset evaluasi khusus\n4. ringkasan apakah distribusi ukuran B1-B4 masih konsisten secara ordinal atau terlalu overlap\n\nArtefak lokal audit:\n- `analysis/bbox_outliers/summary.md`\n- `analysis/bbox_outliers/outliers.csv`\n- `analysis/bbox_outliers/ordinal_violations.csv`\n- `analysis/bbox_outliers/dense_images.csv`\n- `analysis/bbox_outliers/canvases/`\n\n---\n\n**Update 2026-03-08:** Seluruh review manual selesai (273/273 item). Audit mencakup 4 kategori: aspect ratio outliers (5), size-mismatch >10x (62), class confusion top-50 (50), dan single-bbox images (156). Dari 273 item yang di-review, 42 file label dikoreksi (relabel, resize, merge, hapus bbox kecil/rusak), 224 file dikonfirmasi OK tanpa perubahan. Dataset cleaning pipeline (`clean_dataset.js`) juga sudah dijalankan ulang — total 10 bbox di-drop otomatis (7 IoU same-class, 2 manual drop, 1 rel_area). Review viewer (`review_viewer.html`) diperbaiki: fix scroll gambar portrait + tambah fitur done-tracking dengan localStorage.",
       "bbox_audit_summary": {
         "headline": "Audit bbox pada `dataset_combined` menunjukkan distribusi ukuran antarkelas B1-B4 saling overlap kuat. Median ukuran tetap menurun dari B1 ke B4, sehingga B1 masih berguna sebagai baseline, tetapi overlap B2-B3-B4 dan pelanggaran ordinal cukup banyak sehingga kandidat ambiguity label memang nyata di data.",
         "distribution_stats": [
-          { "class_name": "B1", "count": 2177, "p10": 0.0061, "p50": 0.0140, "p90": 0.0339, "width_p50": 125, "height_p50": 137 },
-          { "class_name": "B2", "count": 4075, "p10": 0.0045, "p50": 0.0107, "p90": 0.0268, "width_p50": 109, "height_p50": 121 },
-          { "class_name": "B3", "count": 8296, "p10": 0.0034, "p50": 0.0096, "p90": 0.0261, "width_p50": 105, "height_p50": 114 },
-          { "class_name": "B4", "count": 3442, "p10": 0.0026, "p50": 0.0072, "p90": 0.0171, "width_p50": 94, "height_p50": 96 }
+          {
+            "class_name": "B1",
+            "count": 2177,
+            "p10": 0.0061,
+            "p50": 0.014,
+            "p90": 0.0339,
+            "width_p50": 125,
+            "height_p50": 137
+          },
+          {
+            "class_name": "B2",
+            "count": 4075,
+            "p10": 0.0045,
+            "p50": 0.0107,
+            "p90": 0.0268,
+            "width_p50": 109,
+            "height_p50": 121
+          },
+          {
+            "class_name": "B3",
+            "count": 8296,
+            "p10": 0.0034,
+            "p50": 0.0096,
+            "p90": 0.0261,
+            "width_p50": 105,
+            "height_p50": 114
+          },
+          {
+            "class_name": "B4",
+            "count": 3442,
+            "p10": 0.0026,
+            "p50": 0.0072,
+            "p90": 0.0171,
+            "width_p50": 94,
+            "height_p50": 96
+          }
         ],
         "highlights": [
           "B1 tetap menjadi anchor distribusi paling besar dan paling stabil; kelas ini perlu dipakai sebagai pembanding saat menilai anomali kelas lain.",
@@ -2148,12 +2713,30 @@
           "Shortlist final tersedia di `analysis/bbox_outliers/shortlist_review.md`."
         ],
         "artifact_links": [
-          { "label": "Ringkasan Markdown", "path": "analysis/bbox_outliers/summary.md" },
-          { "label": "Shortlist Review", "path": "analysis/bbox_outliers/shortlist_review.md" },
-          { "label": "CSV Outlier", "path": "analysis/bbox_outliers/outliers.csv" },
-          { "label": "CSV Pelanggaran Ordinal", "path": "analysis/bbox_outliers/ordinal_violations.csv" },
-          { "label": "CSV Gambar Padat", "path": "analysis/bbox_outliers/dense_images.csv" },
-          { "label": "Folder Canvas", "path": "analysis/bbox_outliers/canvases/" }
+          {
+            "label": "Ringkasan Markdown",
+            "path": "analysis/bbox_outliers/summary.md"
+          },
+          {
+            "label": "Shortlist Review",
+            "path": "analysis/bbox_outliers/shortlist_review.md"
+          },
+          {
+            "label": "CSV Outlier",
+            "path": "analysis/bbox_outliers/outliers.csv"
+          },
+          {
+            "label": "CSV Pelanggaran Ordinal",
+            "path": "analysis/bbox_outliers/ordinal_violations.csv"
+          },
+          {
+            "label": "CSV Gambar Padat",
+            "path": "analysis/bbox_outliers/dense_images.csv"
+          },
+          {
+            "label": "Folder Canvas",
+            "path": "analysis/bbox_outliers/canvases/"
+          }
         ],
         "canvas_examples": [
           "analysis/bbox_outliers/canvases/class_left_B1.jpg",
@@ -2162,14 +2745,128 @@
         ]
       },
       "schedules": [
-        { "text": "Tentukan baseline distribusi B1 sebagai pembanding kelas lain", "done": true },
-        { "text": "Kumpulkan kandidat outlier dari error run terbaik dan terburuk", "done": true },
-        { "text": "Kelompokkan outlier: label salah, kualitas buruk, domain shift, objek ekstrem, dan overlap antarkelas", "done": true },
-        { "text": "Bandingkan pola outlier DAMIMAS vs LONSUM", "done": true },
-        { "text": "Susun shortlist sampel prioritas untuk revisi anotasi B1-B4", "done": true },
-        { "text": "Review visual Tier 1 (3 bbox 0x0) → hapus dari label", "done": false },
-        { "text": "Review visual Tier 2 (9 bbox rel_area <= 0.0005) → drop/perbaiki", "done": false },
-        { "text": "Review visual Tier 3 (21 bbox w/h <= 24) → pertahankan jika terbaca", "done": false }
+        {
+          "text": "Tentukan baseline distribusi B1 sebagai pembanding kelas lain",
+          "done": true
+        },
+        {
+          "text": "Kumpulkan kandidat outlier dari error run terbaik dan terburuk",
+          "done": true
+        },
+        {
+          "text": "Kelompokkan outlier: label salah, kualitas buruk, domain shift, objek ekstrem, dan overlap antarkelas",
+          "done": true
+        },
+        {
+          "text": "Bandingkan pola outlier DAMIMAS vs LONSUM",
+          "done": true
+        },
+        {
+          "text": "Susun shortlist sampel prioritas untuk revisi anotasi B1-B4",
+          "done": true
+        },
+        {
+          "text": "Review visual Tier 1 (3 bbox 0x0) → hapus dari label",
+          "done": true
+        },
+        {
+          "text": "Review visual Tier 2 (9 bbox rel_area <= 0.0005) → drop/perbaiki",
+          "done": true
+        },
+        {
+          "text": "Review visual Tier 3 (21 bbox w/h <= 24) → pertahankan jika terbaca",
+          "done": true
+        },
+        {
+          "text": "Jalankan analisis lanjutan: aspect ratio, overlap IoU, edge bbox, class confusion",
+          "done": true
+        },
+        {
+          "text": "Review overlapping bbox (IoU > 0.5 beda kelas) — kemungkinan duplikat/salah label",
+          "done": true
+        },
+        {
+          "text": "Review class confusion candidates — bbox yang lebih cocok di kelas lain",
+          "done": true
+        },
+        {
+          "text": "Finalisasi clean_rules.json berdasarkan semua temuan audit",
+          "done": true
+        },
+        {
+          "text": "Jalankan clean_dataset.js --dry-run, review cleaning_report.md",
+          "done": true
+        },
+        {
+          "text": "Jalankan clean_dataset.js untuk generate dataset_cleaned",
+          "done": true
+        },
+        {
+          "text": "Validasi dataset_cleaned: cek jumlah bbox per kelas masih proporsional",
+          "done": true
+        },
+        {
+          "text": "Re-training eksperimen dengan dataset_cleaned (→ dipindah ke event terpisah)",
+          "done": true
+        }
+      ],
+      "runs": []
+    },
+    {
+      "id": "e8",
+      "date": "2026-03-08",
+      "type": "dataset-prep",
+      "status": "Solved",
+      "title": "Finalisasi dataset_cleaned: review manual 273 item + apply koreksi",
+      "tags": [
+        "dataset",
+        "cleaning",
+        "review",
+        "v2",
+        "all_data"
+      ],
+      "notes_md": "## Ringkasan\n\nReview manual seluruh 273 item outlier selesai 100%. Dataset `dataset_cleaned/` siap digunakan untuk training.\n\n## Proses\n\n1. **Review manual via `review_viewer.html`** — 273 gambar di-review satu per satu\n   - Aspect ratio outliers: 5 item\n   - Size-mismatch >10x: 62 item\n   - Class confusion top-50: 50 item\n   - Single-bbox images: 156 item\n\n2. **Koreksi bbox** — 42 file label diubah:\n   - Relabel kelas (misalnya B3→B2 untuk buah yang salah klasifikasi)\n   - Resize bbox yang terlalu kecil/besar\n   - Merge bbox duplikat\n   - Hapus bbox zero-area dan bbox terlalu kecil\n   - Tambah bbox yang terlewat (single-bbox → multi-bbox pada beberapa gambar)\n   - 3 file dikosongkan (background tanpa buah: LONSUM_A21A_0022_3, LONSUM_A21A_0016_1, LONSUM_A21A_0097_1)\n\n3. **Auto-cleaning** via `clean_dataset.js`:\n   - 10 bbox di-drop: 7 IoU same-class, 2 manual drop, 1 rel_area\n   - Per kelas: B1=2, B2=3, B3=4, B4=1\n\n4. **83 gambar background** (label kosong) dimasukkan kembali ke dataset sebagai negative samples\n\n## Dataset Final: `dataset_cleaned/`\n\n| Split | Images |\n|---|---:|\n| train | 2780 |\n| val | 620 |\n| test | 592 |\n| **Total** | **3992** |\n\nBbox: **17945** (dari 17990 awal, -45 bbox total termasuk koreksi manual + auto-clean)\n\n| Kelas | Jumlah |\n|---|---:|\n| B1 | 2169 |\n| B2 | 4079 |\n| B3 | 8266 |\n| B4 | 3431 |\n\n## Artefak\n\n- `analysis/bbox_corrections.json` — 266 entries (42 changed + 224 no_change)\n- `analysis/cleaning_report.md` — laporan auto-cleaning\n- `analysis/review_viewer.html` — viewer dengan done-tracking\n- `dataset_cleaned/` — dataset siap training dengan `data.yaml`\n\n## Next\n\nTraining baseline v2 pada `dataset_cleaned/` dengan YOLO26l dan YOLOv9c, seed 42 dan 123.",
+      "schedules": [
+        {
+          "text": "Review manual 273 item outlier",
+          "done": true
+        },
+        {
+          "text": "Apply 42 koreksi bbox ke label files",
+          "done": true
+        },
+        {
+          "text": "Re-run clean_dataset.js",
+          "done": true
+        },
+        {
+          "text": "Masukkan 83 gambar background sebagai negative samples",
+          "done": true
+        },
+        {
+          "text": "Fix data.yaml path untuk training",
+          "done": true
+        },
+        {
+          "text": "Training baseline v2 pada dataset_cleaned",
+          "done": false
+        }
+      ],
+      "runs": []
+    },
+    {
+      "id": "e9",
+      "date": "2026-03-08",
+      "type": "planning",
+      "status": "Solved",
+      "title": "Tidy up root folder: arsipkan artefak lama ke archive/",
+      "tags": ["housekeeping", "repo-cleanup"],
+      "notes_md": "Membersihkan root folder sebelum masuk tahap training. File-file lama yang sudah tidak aktif dipindahkan ke `archive/` agar root tetap rapi.\n\n### Yang dipindahkan ke `archive/`\n| Folder/File | Tujuan |\n|---|---|\n| `Hasil Eval/` (raw text logs) | `archive/raw_logs/` |\n| `Test/` (presentasi & scripts) | `archive/presentation/` |\n| `cross_test_analysis.xlsx` | `archive/` |\n| `E0_Protocol_Flowchart.html` | `archive/` |\n| `E0_Timeline.html` | `archive/` |\n| `GEMINI.md` | `archive/` |\n| `scripts/Generate Gambar.txt` | `archive/` |\n| `analysis/manual_review_list.md` | `archive/` |\n\n### Yang dihapus\n- `scripts/collect_removed.js` — one-time script, sudah dipakai\n- `candidate_remove/` — sudah tidak ada\n\n### Update config\n- `.gitignore`: tambah `archive/`, `candidate_remove/`, `dataset_cleaned/`\n- `.cfignore`: tambah `archive/`, `dataset_cleaned/`\n\nRoot folder sekarang hanya berisi file aktif: dokumentasi, dashboard, data, scripts, analysis, dan dataset_cleaned.",
+      "schedules": [
+        { "text": "Buat archive/ dan pindahkan file lama", "done": true },
+        { "text": "Hapus file/folder temporary", "done": true },
+        { "text": "Update .gitignore dan .cfignore", "done": true },
+        { "text": "Verifikasi dashboard tidak rusak", "done": true }
       ],
       "runs": []
     }
