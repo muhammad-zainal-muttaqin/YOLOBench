@@ -1,230 +1,243 @@
 # Analisis Mendalam `dataset_640`
 
-## Ringkasan Eksekutif
+## 1. Ringkasan Eksekutif
 
-Analisis ini membedah `dataset_640` sebagai objek riset, bukan sekadar dataset training biasa. Fokusnya bukan hanya distribusi split dan jumlah label, tetapi juga pola tersembunyi: bias source, heterogenitas internal kelas, posisi vertikal, co-occurrence, perbedaan protokol view, dan kaitannya dengan performa model.
+Laporan ini menganalisis `dataset_640` secara menyeluruh — bukan hanya menghitung distribusi split, tetapi juga menggali pola tersembunyi yang memengaruhi performa model: ketimpangan sumber data, perbedaan geometri antar kelas, hubungan kemunculan bersama, dan domain shift antar kebun.
 
-- Total image: 3.992
-- Total instance: 17.949
-- Empty label: 83
-- Total tree: 953
-- Tree leakage antar split: 0
-- Resolusi unik: [['640', '853']]
+| Metrik | Nilai |
+| --- | --- |
+| Total image | 3.992 |
+| Total instance (bounding box) | 17.949 |
+| Image tanpa label | 83 |
+| Total pohon (tree) | 953 |
+| Kebocoran tree antar split | **0** (aman) |
+| Resolusi | 640 × 853 |
 
+---
 
-## Audit Integritas
+## 2. Audit Integritas Data
 
-Folder lokal `dataset_640` berisi split 2772/608/612, berbeda dari log v2 repo yang menyebut 2780/620/592. Analisis ini memakai folder lokal sebagai sumber kebenaran dan mencatat mismatch tersebut sebagai temuan audit.
+> **Catatan:** Folder lokal `dataset_640` berisi split 2772 / 608 / 612, sedikit berbeda dari log v2 repo (2780 / 620 / 592). Laporan ini menggunakan folder lokal sebagai sumber kebenaran.
 
-- Semua image dan label berpasangan dengan baik: `True`.
-- Tidak ada tree yang muncul di lebih dari satu split.
-- Label kosong diperlakukan sebagai bagian dari distribusi nyata, bukan dibuang dari analisis.
-- Dataset menyimpan dua mode akuisisi sekaligus: view `1-4` dominan dan view `5-8` pada subset tree tertentu.
+Hasil pengecekan:
+- Semua image dan label file berpasangan dengan benar.
+- Tidak ada pohon yang muncul di lebih dari satu split — **tidak ada data leakage**.
+- 83 image tanpa label tetap diikutkan dalam analisis sebagai bagian distribusi nyata.
+- Ditemukan dua protokol foto: **4-view** (908 pohon) dan **8-view** (45 pohon, semua dari DAMIMAS).
 
-### Snapshot Split
+### 2.1 Komposisi Split
 
-| split | images | trees | instances | empty_images | avg_objects_per_image | median_objects_per_image | DAMIMAS | LONSUM |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| test | 612 | 144 | 2698 | 13 | 4.41 | 4.00 | 556 | 56 |
-| train | 2772 | 667 | 12426 | 57 | 4.48 | 5.00 | 2492 | 280 |
-| val | 608 | 142 | 2825 | 13 | 4.65 | 5.00 | 548 | 60 |
-
-### Snapshot Kelas
-
-| class_name | instances | instance_share | images_with_class | image_prevalence | mean_bbox_area | mean_y_center | mean_image_density |
+| Split | Image | Pohon | Instance | Image Kosong | Rata-rata Objek/Image | DAMIMAS | LONSUM |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| B1 | 2169 | 0.121 | 1805 | 0.452 | 0.018 | 0.451 | 5.205 |
-| B2 | 4078 | 0.227 | 2435 | 0.610 | 0.014 | 0.427 | 5.193 |
-| B3 | 8270 | 0.461 | 3536 | 0.886 | 0.013 | 0.380 | 5.115 |
-| B4 | 3432 | 0.191 | 2186 | 0.548 | 0.009 | 0.336 | 5.397 |
+| Train | 2.772 | 667 | 12.426 | 57 | 4,48 | 2.492 | 280 |
+| Val | 608 | 142 | 2.825 | 13 | 4,65 | 548 | 60 |
+| Test | 612 | 144 | 2.698 | 13 | 4,41 | 556 | 56 |
 
-### Snapshot Source x Kelas
+![Komposisi split dan sumber data](figures/split_source_composition.png)
 
-| source | class_name | instances | instance_share_within_source | images_with_class | image_prevalence_within_source | mean_bbox_area | mean_y_center |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| DAMIMAS | B1 | 2152 | 0.127 | 1790 | 0.498 | 0.018 | 0.451 |
-| DAMIMAS | B2 | 3924 | 0.232 | 2325 | 0.647 | 0.014 | 0.428 |
-| DAMIMAS | B3 | 7593 | 0.449 | 3211 | 0.893 | 0.013 | 0.382 |
-| DAMIMAS | B4 | 3254 | 0.192 | 2057 | 0.572 | 0.009 | 0.336 |
-| LONSUM | B1 | 17 | 0.017 | 15 | 0.038 | 0.012 | 0.432 |
-| LONSUM | B2 | 154 | 0.150 | 110 | 0.278 | 0.009 | 0.392 |
-| LONSUM | B3 | 677 | 0.660 | 325 | 0.821 | 0.008 | 0.365 |
-| LONSUM | B4 | 178 | 0.173 | 129 | 0.326 | 0.006 | 0.337 |
+### 2.2 Distribusi Kelas
 
-## Hidden Patterns
+Empat kelas kematangan buah sawit (B1–B4) memiliki distribusi yang **tidak seimbang**: B3 mendominasi hampir setengah dari seluruh instance.
 
-1. **Dataset nyaris sepenuhnya dikendalikan DAMIMAS**. DAMIMAS menyumbang 90.1% image dan 94.3% instance. Model combined lebih banyak belajar prior DAMIMAS daripada prior gabungan dua kebun.
-1. **B1 hampir eksklusif milik DAMIMAS**. LONSUM hanya punya 17 instance B1 dan prevalensinya di source itu cuma 3.8%. Transfer domain untuk B1 hampir tidak bisa diukur secara adil.
-1. **LONSUM lebih jarang objek per image, bukan hanya lebih sedikit image**. Rata-rata objek per image di DAMIMAS = 4.71, sedangkan LONSUM = 2.59. Combined dataset mencampur dua rezim kepadatan objek yang berbeda, sehingga domain shift menyentuh struktur scene, bukan sekadar tampilan visual.
-1. **Ada stratifikasi vertikal yang konsisten antar kelas**. Rerata y-center bergerak dari B1 (0.451) ke B4 (0.336). Posisi objek berperan besar dalam separasi kelas, bukan hanya tekstur lokal.
-1. **Ukuran objek lebih menentukan difficulty daripada jumlah sampel mentah**. B1 punya mean area terbesar (0.0179), sementara B4 terkecil (0.0091). Kelas kecil cenderung lebih sulit walau tidak selalu paling jarang.
-1. **Kelas tersulit hidup di image paling padat**. B4 muncul pada image dengan rata-rata 5.40 objek, tertinggi di dataset. Kelas sulit tidak selalu kalah karena jumlah data; ia bisa kalah karena selalu muncul di konteks yang paling padat dan paling ambigu.
-1. **Relasi antar kelas tidak independen**. Lift tertinggi ada pada B1-B2 (1.04), terendah pada B2-B4 (0.94). Ketergantungan ini tidak ekstrem, tetapi cukup sistematis untuk menunjukkan struktur komposisi objek yang berulang.
-1. **Domain shift terbesar datang dari prior kelas**. JS distance campuran kelas DAMIMAS vs LONSUM = 0.237. Gap lintas-source tidak hanya soal appearance, tetapi juga perubahan komposisi label.
-1. **Ada dua protokol akuisisi: 4-view dan 8-view**. Terdapat 45 tree dengan 8 view dan 908 tree dengan 4 view; seluruh tree 8-view berada di DAMIMAS. Coverage per tree tidak homogen dan ikut terikat ke source, sehingga protokol akuisisi berpotensi menjadi confounder terselubung.
-1. **Sub-populasi internal kelas kadang lebih dekat ke source daripada label global**. Cluster paling source-specific ada pada B3 cluster 0 dengan 98.9% sampel dari DAMIMAS. Satu label menyatukan beberapa mode visual berbeda yang tidak sepenuhnya ekuivalen.
-1. **Ranking difficulty model mengikuti struktur dataset**. Di log model, B1 punya mean mAP50 tertinggi (0.700), sedangkan B4 terendah (0.229). Properti dataset cukup konsisten untuk menjelaskan pola performa model.
-
-### Co-occurrence Tersering
-
-| class_combo | images | support |
-| --- | --- | --- |
-| B2+B3+B4 | 645 | 0.165 |
-| B1+B2+B3+B4 | 568 | 0.145 |
-| B2+B3 | 515 | 0.132 |
-| B1+B2+B3 | 450 | 0.115 |
-| B3+B4 | 434 | 0.111 |
-| B1+B3+B4 | 374 | 0.096 |
-| B3 | 351 | 0.090 |
-| B1+B3 | 199 | 0.051 |
-| B1+B2 | 125 | 0.032 |
-| B2 | 61 | 0.016 |
-
-### Pairwise Association Terkuat
-
-| class_a | class_b | images_with_both | support_both | confidence_a_to_b | confidence_b_to_a | lift |
-| --- | --- | --- | --- | --- | --- | --- |
-| B1 | B2 | 1174 | 0.300 | 0.650 | 0.482 | 1.044 |
-| B3 | B4 | 2021 | 0.517 | 0.572 | 0.925 | 1.022 |
-| B1 | B4 | 1009 | 0.258 | 0.559 | 0.462 | 1.000 |
-| B2 | B3 | 2178 | 0.557 | 0.894 | 0.616 | 0.989 |
-| B1 | B3 | 1591 | 0.407 | 0.881 | 0.450 | 0.974 |
-| B2 | B4 | 1284 | 0.328 | 0.527 | 0.587 | 0.943 |
-
-### Drift DAMIMAS vs LONSUM
-
-| split_scope | metric | class_name | value |
-| --- | --- | --- | --- |
-| all | bbox_area_js | B1 | 0.437 |
-| all | bbox_area_js | B3 | 0.280 |
-| all | bbox_area_js | B2 | 0.264 |
-| all | bbox_area_js | B4 | 0.221 |
-| all | y_center_js | B1 | 0.311 |
-| all | y_center_js | B4 | 0.263 |
-| all | y_center_js | B2 | 0.258 |
-| all | y_center_js | B3 | 0.207 |
-
-### Struktur Tree dan View
-
-| split | source | tree_id | views | total_objects | mean_objects_per_view | cv_objects_per_view | distinct_combos |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| train | LONSUM | LONSUM_A21A_0073 | 4 | 2 | 0.500 | 2.000 | 2 |
-| test | DAMIMAS | DAMIMAS_A21B_0074 | 4 | 2 | 0.500 | 2.000 | 2 |
-| train | LONSUM | LONSUM_A21A_0030 | 4 | 1 | 0.250 | 2.000 | 2 |
-| train | LONSUM | LONSUM_A21A_0072 | 4 | 1 | 0.250 | 2.000 | 2 |
-| train | LONSUM | LONSUM_A21A_0057 | 4 | 3 | 0.750 | 1.277 | 3 |
-| val | DAMIMAS | DAMIMAS_A21B_0528 | 4 | 2 | 0.500 | 1.155 | 2 |
-| train | LONSUM | LONSUM_A21A_0046 | 4 | 2 | 0.500 | 1.155 | 2 |
-| train | LONSUM | LONSUM_A21A_0032 | 4 | 2 | 0.500 | 1.155 | 2 |
-| test | DAMIMAS | DAMIMAS_A21B_0763 | 4 | 2 | 0.500 | 1.155 | 2 |
-| val | LONSUM | LONSUM_A21A_0085 | 4 | 2 | 0.500 | 1.155 | 3 |
-| val | DAMIMAS | DAMIMAS_A21B_0232 | 4 | 8 | 2.000 | 0.913 | 3 |
-| train | LONSUM | LONSUM_A21A_0022 | 4 | 8 | 2.000 | 0.913 | 3 |
-
-## Separabilitas Visual
-
-Embedding crop berbasis `ResNet50` menunjukkan bahwa separasi kelas tidak merata. Kelas dengan sinyal ukuran dan posisi yang kuat cenderung lebih mudah dipisahkan, sementara kelas tengah lebih banyak saling tumpang tindih.
-
-### Ringkasan Probe
-
-| class_name | precision | recall | overall_accuracy |
-| --- | --- | --- | --- |
-| B1 | 0.770 | 0.713 | 0.528 |
-| B2 | 0.394 | 0.463 | 0.528 |
-| B3 | 0.420 | 0.362 | 0.528 |
-| B4 | 0.554 | 0.575 | 0.528 |
-
-### Cluster Internal Kelas
-
-| class_name | cluster_id | samples | dominant_source | dominant_source_share | dominant_view | dominant_view_share | mean_bbox_area | mean_y_center |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| B1 | 0 | 101 | DAMIMAS | 0.871 | 1 | 0.327 | 0.011 | 0.444 |
-| B1 | 1 | 112 | DAMIMAS | 0.982 | 1 | 0.277 | 0.016 | 0.457 |
-| B1 | 2 | 107 | DAMIMAS | 0.981 | 1 | 0.299 | 0.026 | 0.445 |
-| B2 | 0 | 107 | DAMIMAS | 0.626 | 3 | 0.318 | 0.008 | 0.414 |
-| B2 | 1 | 88 | DAMIMAS | 0.989 | 3 | 0.261 | 0.009 | 0.449 |
-| B2 | 2 | 125 | DAMIMAS | 0.936 | 3 | 0.296 | 0.022 | 0.425 |
-| B3 | 0 | 94 | DAMIMAS | 0.989 | 2 | 0.277 | 0.020 | 0.384 |
-| B3 | 1 | 113 | DAMIMAS | 0.602 | 2 | 0.292 | 0.006 | 0.367 |
-| B3 | 2 | 113 | DAMIMAS | 0.973 | 2 | 0.292 | 0.010 | 0.396 |
-| B4 | 0 | 106 | DAMIMAS | 0.943 | 3 | 0.274 | 0.011 | 0.324 |
-| B4 | 1 | 103 | DAMIMAS | 0.641 | 4 | 0.359 | 0.004 | 0.346 |
-| B4 | 2 | 111 | DAMIMAS | 0.946 | 3 | 0.297 | 0.009 | 0.345 |
-
-### Outlier Audit
-
-| class_name | source | split | view_id | bbox_area | y_center | label_count | centroid_distance |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| B1 | DAMIMAS | train | 6 | 0.033 | 0.534 | 3 | 17.046 |
-| B1 | LONSUM | train | 1 | 0.002 | 0.330 | 4 | 14.655 |
-| B1 | DAMIMAS | val | 4 | 0.012 | 0.508 | 5 | 13.888 |
-| B1 | DAMIMAS | train | 2 | 0.008 | 0.360 | 3 | 13.827 |
-| B1 | LONSUM | train | 4 | 0.011 | 0.410 | 3 | 13.650 |
-| B1 | DAMIMAS | train | 1 | 0.002 | 0.463 | 7 | 13.161 |
-| B1 | DAMIMAS | val | 1 | 0.046 | 0.282 | 3 | 13.003 |
-| B1 | DAMIMAS | test | 3 | 0.004 | 0.319 | 3 | 12.756 |
-| B2 | LONSUM | train | 1 | 0.001 | 0.170 | 4 | 15.332 |
-| B2 | LONSUM | train | 1 | 0.001 | 0.254 | 4 | 14.062 |
-| B2 | LONSUM | train | 3 | 0.004 | 0.330 | 5 | 14.002 |
-| B2 | LONSUM | train | 2 | 0.007 | 0.191 | 3 | 13.622 |
-
-## Kaitan dengan Hasil Model
-
-| scenario | model | runs | mean_mAP50 | mean_mAP5095 | mean_precision | mean_recall |
-| --- | --- | --- | --- | --- | --- | --- |
-| all_data | YOLOv9c | 2 | 0.504 | 0.228 | 0.484 | 0.599 |
-| damimas_only | YOLOv9c | 2 | 0.502 | 0.227 | 0.492 | 0.601 |
-| damimas_only | YOLO26l | 2 | 0.467 | 0.212 | 0.450 | 0.543 |
-| all_data | YOLO26l | 2 | 0.459 | 0.209 | 0.449 | 0.537 |
-| lonsum_only | YOLOv9c | 2 | 0.282 | 0.105 | 0.328 | 0.335 |
-| lonsum_only | YOLO26l | 2 | 0.222 | 0.086 | 0.297 | 0.280 |
-
-| class_name | mean_mAP50 | mean_mAP5095 | mean_precision | mean_recall | mean_f1 |
+| Kelas | Instance | Proporsi | Muncul di (image) | Rata-rata Area BBox | Rata-rata Posisi Y |
 | --- | --- | --- | --- | --- | --- |
-| B1 | 0.700 | 0.330 | 0.598 | 0.738 | 0.656 |
-| B3 | 0.410 | 0.170 | 0.422 | 0.533 | 0.468 |
-| B2 | 0.285 | 0.126 | 0.329 | 0.396 | 0.341 |
-| B4 | 0.229 | 0.085 | 0.318 | 0.264 | 0.285 |
+| B1 (mentah) | 2.169 | 12,1% | 1.805 (45%) | 0,018 | 0,451 (bawah) |
+| B2 (mengkal) | 4.078 | 22,7% | 2.435 (61%) | 0,014 | 0,427 |
+| B3 (matang) | 8.270 | 46,1% | 3.536 (89%) | 0,013 | 0,380 |
+| B4 (lewat matang) | 3.432 | 19,1% | 2.186 (55%) | 0,009 | 0,336 (atas) |
 
-Interpretasi utama:
+![Distribusi kelas](figures/class_distribution.png)
 
-- Kelas kecil dan tinggi di frame cenderung lebih sulit.
-- Jika satu kelas sangat dominan di satu source tetapi nyaris hilang di source lain, metrik combined bisa terlihat sehat padahal transfer domain sebenarnya lemah.
-- Banyaknya sampel mentah tidak otomatis membuat kelas mudah; crowding dan overlap visual sering lebih menentukan.
+![Histogram jumlah label per image](figures/label_count_histogram.png)
 
-## Artefak
+---
 
-![Split & Source Composition](figures/split_source_composition.png)
+## 3. Temuan Utama
 
-![Class Distribution](figures/class_distribution.png)
+### 3.1 Ketimpangan Sumber Data (DAMIMAS vs LONSUM)
 
-![Label Count Histogram](figures/label_count_histogram.png)
+DAMIMAS mendominasi dataset secara masif: **90,1% image** dan **94,3% instance**. Akibatnya, model yang dilatih pada combined dataset sebenarnya hampir hanya belajar pola DAMIMAS.
 
-![Class Co-occurrence Lift](figures/class_cooccurrence_lift.png)
+| Sumber | Kelas | Instance | Proporsi di Sumber | Muncul di (image) | Area BBox | Posisi Y |
+| --- | --- | --- | --- | --- | --- | --- |
+| DAMIMAS | B1 | 2.152 | 12,7% | 1.790 (50%) | 0,018 | 0,451 |
+| DAMIMAS | B2 | 3.924 | 23,2% | 2.325 (65%) | 0,014 | 0,428 |
+| DAMIMAS | B3 | 7.593 | 44,9% | 3.211 (89%) | 0,013 | 0,382 |
+| DAMIMAS | B4 | 3.254 | 19,2% | 2.057 (57%) | 0,009 | 0,336 |
+| LONSUM | B1 | **17** | 1,7% | 15 (4%) | 0,012 | 0,432 |
+| LONSUM | B2 | 154 | 15,0% | 110 (28%) | 0,009 | 0,392 |
+| LONSUM | B3 | 677 | 66,0% | 325 (82%) | 0,008 | 0,365 |
+| LONSUM | B4 | 178 | 17,3% | 129 (33%) | 0,006 | 0,337 |
 
-![Bbox Geometry](figures/bbox_geometry.png)
+Temuan penting:
+- **B1 hampir tidak ada di LONSUM** — hanya 17 instance. Evaluasi transfer domain untuk kelas ini tidak adil.
+- **LONSUM lebih jarang objek per image** (rata-rata 2,59 vs 4,71 di DAMIMAS). Ini bukan sekadar beda tampilan visual, tapi beda struktur scene.
+- **JS distance komposisi kelas** DAMIMAS vs LONSUM = 0,237 — domain shift yang signifikan pada level prior kelas.
 
-![Spatial Heatmaps](figures/spatial_heatmaps.png)
+![Drift antar sumber per kelas](figures/source_class_drift.png)
 
-![Source Class Drift](figures/source_class_drift.png)
+#### Drift per Kelas (Jensen-Shannon Distance)
 
-![View Consistency](figures/view_consistency.png)
+| Metrik | B1 | B2 | B3 | B4 |
+| --- | --- | --- | --- | --- |
+| Area BBox | 0,437 | 0,264 | 0,280 | 0,221 |
+| Posisi Y | 0,311 | 0,258 | 0,207 | 0,263 |
 
-![Embedding t-SNE by Class](figures/embedding_tsne_class.png)
+B1 menunjukkan drift paling besar pada kedua metrik — ukuran dan posisi buah B1 berbeda jauh antara dua kebun.
 
-![Embedding t-SNE by Source](figures/embedding_tsne_source.png)
+### 3.2 Pola Geometri: Ukuran dan Posisi Menentukan Kesulitan
 
-![Probe Confusion Matrix](figures/probe_confusion_matrix.png)
+Ada pola yang konsisten: **semakin matang buah, semakin kecil dan semakin tinggi posisinya di frame**.
 
-![Representative Crops](figures/representative_crops.png)
+| Kelas | Rata-rata Area BBox | Rata-rata Posisi Y | Kepadatan Image |
+| --- | --- | --- | --- |
+| B1 (mentah) | 0,0179 (terbesar) | 0,451 (terbawah) | 5,21 |
+| B2 (mengkal) | 0,0140 | 0,427 | 5,19 |
+| B3 (matang) | 0,0130 | 0,380 | 5,12 |
+| B4 (lewat matang) | 0,0091 (terkecil) | 0,336 (teratas) | 5,40 (terpadat) |
 
-![Outlier Gallery](figures/outlier_gallery.png)
+Insight:
+- **Ukuran objek lebih menentukan kesulitan deteksi daripada jumlah sampel.** B4 bukan kelas paling jarang, tapi paling sulit karena paling kecil.
+- **B4 selalu muncul di image paling padat** (rata-rata 5,4 objek/image) — konteks yang paling ambigu untuk model.
+- **Stratifikasi vertikal konsisten** — posisi Y bisa menjadi sinyal tambahan untuk separasi kelas.
 
-## Rekomendasi Prioritas
+![Geometri bounding box per kelas](figures/bbox_geometry.png)
 
-1. Prioritaskan enrichment untuk B4: kelas ini paling kecil secara geometri, jadi butuh close-up, quality control anotasi, dan augmentasi skala.
-1. Lengkapi coverage LONSUM untuk B1; saat ini kelas itu hampir tidak ada di source tersebut sehingga benchmark combined belum seimbang.
-1. Gunakan relasi konteks untuk pasangan B1-B2 karena keduanya muncul bersama jauh di atas ekspektasi acak.
-1. Jangan menjadikan jumlah sampel sebagai satu-satunya prioritas. B1 sudah relatif mudah, sementara B4 butuh intervensi data-centric yang lebih spesifik.
-1. Pertahankan split per-tree karena integritasnya sudah baik; fokus perbaikan berikutnya seharusnya pada coverage source, protokol view campur, dan image kosong.
-    
+![Heatmap spasial per kelas](figures/spatial_heatmaps.png)
+
+### 3.3 Hubungan Kemunculan Bersama (Co-occurrence)
+
+Kelas-kelas tidak muncul secara independen. Kombinasi tersering menunjukkan bahwa **kebanyakan image berisi campuran 3-4 kelas sekaligus**.
+
+| Kombinasi | Image | Proporsi |
+| --- | --- | --- |
+| B2 + B3 + B4 | 645 | 16,5% |
+| B1 + B2 + B3 + B4 (lengkap) | 568 | 14,5% |
+| B2 + B3 | 515 | 13,2% |
+| B1 + B2 + B3 | 450 | 11,5% |
+| B3 + B4 | 434 | 11,1% |
+
+![Co-occurrence lift antar kelas](figures/class_cooccurrence_lift.png)
+
+#### Asosiasi Berpasangan
+
+| Pasangan | Image Bersama | Lift | Interpretasi |
+| --- | --- | --- | --- |
+| B1 ↔ B2 | 1.174 | **1,044** | Muncul bersama di atas ekspektasi acak |
+| B3 ↔ B4 | 2.021 | 1,022 | Sering berdampingan |
+| B2 ↔ B4 | 1.284 | **0,943** | Cenderung *tidak* muncul bersama |
+
+### 3.4 Protokol Akuisisi: 4-View vs 8-View
+
+| Protokol | Jumlah Pohon | Sumber |
+| --- | --- | --- |
+| 4-view (standar) | 908 | DAMIMAS + LONSUM |
+| 8-view (diperluas) | 45 | DAMIMAS saja |
+
+Seluruh pohon 8-view hanya berasal dari DAMIMAS. Protokol akuisisi terikat ke sumber data, sehingga berpotensi menjadi **confounder terselubung** — model mungkin belajar membedakan protokol foto, bukan kematangan buah.
+
+![Konsistensi antar view](figures/view_consistency.png)
+
+---
+
+## 4. Separabilitas Visual (Embedding Analysis)
+
+Embedding crop dihasilkan menggunakan ResNet50 dan divisualisasikan dengan t-SNE. Hasilnya menunjukkan bahwa **separasi kelas tidak merata**: kelas dengan sinyal ukuran dan posisi yang kuat (B1, B4) lebih mudah dipisahkan, sementara kelas tengah (B2, B3) saling tumpang tindih.
+
+### 4.1 Linear Probe Accuracy
+
+| Kelas | Precision | Recall | Akurasi Keseluruhan |
+| --- | --- | --- | --- |
+| B1 | **0,770** | **0,713** | 0,528 |
+| B4 | 0,554 | 0,575 | 0,528 |
+| B2 | 0,394 | 0,463 | 0,528 |
+| B3 | 0,420 | 0,362 | 0,528 |
+
+B1 paling mudah dipisahkan secara visual, B2 dan B3 paling sulit — sejalan dengan posisi mereka yang berdekatan di t-SNE.
+
+![t-SNE embedding per kelas](figures/embedding_tsne_class.png)
+
+![t-SNE embedding per sumber](figures/embedding_tsne_source.png)
+
+![Confusion matrix linear probe](figures/probe_confusion_matrix.png)
+
+### 4.2 Cluster Internal Kelas
+
+Setiap kelas memiliki sub-populasi internal yang kadang lebih terkait ke sumber data daripada ke label globalnya. Contoh: **B3 cluster 0** berisi 98,9% sampel dari DAMIMAS — satu label menyatukan mode visual yang berbeda.
+
+| Kelas | Cluster | Sampel | Dominan Sumber | Share | Area BBox | Posisi Y |
+| --- | --- | --- | --- | --- | --- | --- |
+| B1 | 0 | 101 | DAMIMAS | 87,1% | 0,011 | 0,444 |
+| B1 | 1 | 112 | DAMIMAS | 98,2% | 0,016 | 0,457 |
+| B1 | 2 | 107 | DAMIMAS | 98,1% | 0,026 | 0,445 |
+| B2 | 0 | 107 | DAMIMAS | 62,6% | 0,008 | 0,414 |
+| B2 | 1 | 88 | DAMIMAS | 98,9% | 0,009 | 0,449 |
+| B2 | 2 | 125 | DAMIMAS | 93,6% | 0,022 | 0,425 |
+| B3 | 0 | 94 | DAMIMAS | **98,9%** | 0,020 | 0,384 |
+| B3 | 1 | 113 | DAMIMAS | 60,2% | 0,006 | 0,367 |
+| B3 | 2 | 113 | DAMIMAS | 97,3% | 0,010 | 0,396 |
+| B4 | 0 | 106 | DAMIMAS | 94,3% | 0,011 | 0,324 |
+| B4 | 1 | 103 | DAMIMAS | 64,1% | 0,004 | 0,346 |
+| B4 | 2 | 111 | DAMIMAS | 94,6% | 0,009 | 0,345 |
+
+![Sampel representatif per cluster](figures/representative_crops.png)
+
+### 4.3 Outlier yang Perlu Diperiksa
+
+Instance berikut memiliki jarak terjauh dari centroid cluster-nya — kandidat untuk audit anotasi.
+
+| Kelas | Sumber | Split | View | Area BBox | Posisi Y | Jarak |
+| --- | --- | --- | --- | --- | --- | --- |
+| B1 | DAMIMAS | train | 6 | 0,033 | 0,534 | 17,05 |
+| B1 | LONSUM | train | 1 | 0,002 | 0,330 | 14,66 |
+| B1 | DAMIMAS | val | 4 | 0,012 | 0,508 | 13,89 |
+| B2 | LONSUM | train | 1 | 0,001 | 0,170 | 15,33 |
+| B2 | LONSUM | train | 1 | 0,001 | 0,254 | 14,06 |
+| B2 | LONSUM | train | 3 | 0,004 | 0,330 | 14,00 |
+
+![Galeri outlier](figures/outlier_gallery.png)
+
+---
+
+## 5. Kaitan dengan Performa Model
+
+Apakah pola dataset ini terlihat di hasil training? **Ya.**
+
+### 5.1 Performa per Skenario Data
+
+| Skenario | Model | Run | mAP50 | mAP50-95 | Precision | Recall |
+| --- | --- | --- | --- | --- | --- | --- |
+| all_data | YOLOv9c | 2 | **0,504** | 0,228 | 0,484 | 0,599 |
+| damimas_only | YOLOv9c | 2 | 0,502 | 0,227 | 0,492 | 0,601 |
+| damimas_only | YOLO26l | 2 | 0,467 | 0,212 | 0,450 | 0,543 |
+| all_data | YOLO26l | 2 | 0,459 | 0,209 | 0,449 | 0,537 |
+| lonsum_only | YOLOv9c | 2 | 0,282 | 0,105 | 0,328 | 0,335 |
+| lonsum_only | YOLO26l | 2 | 0,222 | 0,086 | 0,297 | 0,280 |
+
+Menambahkan LONSUM ke data DAMIMAS **hampir tidak mengubah performa** (0,502 → 0,504) — karena LONSUM hanya 10% dari dataset.
+
+### 5.2 Performa per Kelas
+
+| Kelas | mAP50 | mAP50-95 | Precision | Recall | F1 |
+| --- | --- | --- | --- | --- | --- |
+| B1 (mentah) | **0,700** | 0,330 | 0,598 | 0,738 | 0,656 |
+| B3 (matang) | 0,410 | 0,170 | 0,422 | 0,533 | 0,468 |
+| B2 (mengkal) | 0,285 | 0,126 | 0,329 | 0,396 | 0,341 |
+| B4 (lewat matang) | **0,229** | 0,085 | 0,318 | 0,264 | 0,285 |
+
+Ranking kesulitan model **konsisten dengan pola dataset**:
+- **B1 paling mudah** — ukuran terbesar, posisi paling jelas, embedding paling terpisah.
+- **B4 paling sulit** — ukuran terkecil, image terpadat, bukan karena data kurang tapi karena objek inherently sulit.
+- **B2 dan B3 saling bersaing** di tengah — embedding mereka tumpang tindih.
+
+---
+
+## 6. Rekomendasi
+
+| Prioritas | Aksi | Alasan |
+| --- | --- | --- |
+| 1 | **Enrichment khusus B4**: close-up, QC anotasi, augmentasi skala | Kelas terkecil secara geometri dan paling sulit dideteksi |
+| 2 | **Tambah data LONSUM untuk B1** | Hanya 17 instance — benchmark combined tidak seimbang untuk kelas ini |
+| 3 | **Manfaatkan co-occurrence B1-B2** | Lift 1,044 — pasangan ini bisa jadi sinyal kontekstual untuk model |
+| 4 | **Jangan hanya menambah jumlah sampel** | B1 sudah mudah meski sedikit; B4 butuh intervensi data-centric spesifik |
+| 5 | **Pertahankan split per-tree** | Integritas sudah baik; fokus selanjutnya pada coverage source dan protokol view |
