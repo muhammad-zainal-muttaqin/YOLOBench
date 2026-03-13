@@ -1,33 +1,54 @@
-# Gemini CLI context file
-GEMINI.md
+# === Datasets & model weights ===
+dataset_*/
+analysis_dataset_*/
+!analysis_dataset_640/
+*.zip
+*.pt
+*.pth
+*.onnx
+*.engine
 
-# Raw data / scratch files
+# === Research / scratch files ===
+Hasil Eval/
 Hasil Eval.txt
+small_object_research/
+result.md
+RESEARCH_BRIEF_*.md
 Notes-*.txt
 yolo-2stage.txt
 E0_*.html
 
-# OS files
+# === Python ===
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# === OS files ===
 .DS_Store
 Thumbs.db
 
-# Editor/IDE files
+# === Editor/IDE ===
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Local environment
+# === Local environment ===
 .env
 
-# Node
+# === Node ===
 node_modules/
 package-lock.json
 
-# Generated analysis artifacts
+# === Generated analysis artifacts ===
 dataset_combined
 
-# Archive & temporary
+# === Archive & temporary ===
 archive/
 candidate_remove/
 dataset_cleaned/
+
+# === Other AI context files ===
+GEMINI.md

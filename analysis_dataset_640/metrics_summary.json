@@ -1,0 +1,97 @@
+{
+  "integrity_summary": {
+    "total_images": 3992,
+    "total_instances": 17949,
+    "image_label_pairs_match": true,
+    "missing_labels": 0,
+    "missing_images": 0,
+    "empty_labels": 83,
+    "split_counts": {
+      "train": 2772,
+      "val": 608,
+      "test": 612
+    },
+    "resolution_unique": [
+      [
+        "640",
+        "853"
+      ]
+    ],
+    "tree_leakage_count": 0,
+    "trees_total": 953,
+    "views_total": {
+      "1": 953,
+      "2": 953,
+      "3": 953,
+      "4": 953,
+      "5": 45,
+      "6": 45,
+      "7": 45,
+      "8": 45
+    }
+  },
+  "top_hidden_patterns": [
+    {
+      "title": "Dataset nyaris sepenuhnya dikendalikan DAMIMAS",
+      "evidence": "DAMIMAS menyumbang 90.1% image dan 94.3% instance.",
+      "impact": "Model combined lebih banyak belajar prior DAMIMAS daripada prior gabungan dua kebun."
+    },
+    {
+      "title": "B1 hampir eksklusif milik DAMIMAS",
+      "evidence": "LONSUM hanya punya 17 instance B1 dan prevalensinya di source itu cuma 3.8%.",
+      "impact": "Transfer domain untuk B1 hampir tidak bisa diukur secara adil."
+    },
+    {
+      "title": "LONSUM lebih jarang objek per image, bukan hanya lebih sedikit image",
+      "evidence": "Rata-rata objek per image di DAMIMAS = 4.71, sedangkan LONSUM = 2.59.",
+      "impact": "Combined dataset mencampur dua rezim kepadatan objek yang berbeda, sehingga domain shift menyentuh struktur scene, bukan sekadar tampilan visual."
+    },
+    {
+      "title": "Ada stratifikasi vertikal yang konsisten antar kelas",
+      "evidence": "Rerata y-center bergerak dari B1 (0.451) ke B4 (0.336).",
+      "impact": "Posisi objek berperan besar dalam separasi kelas, bukan hanya tekstur lokal."
+    },
+    {
+      "title": "Ukuran objek lebih menentukan difficulty daripada jumlah sampel mentah",
+      "evidence": "B1 punya mean area terbesar (0.0179), sementara B4 terkecil (0.0091).",
+      "impact": "Kelas kecil cenderung lebih sulit walau tidak selalu paling jarang."
+    },
+    {
+      "title": "Kelas tersulit hidup di image paling padat",
+      "evidence": "B4 muncul pada image dengan rata-rata 5.40 objek, tertinggi di dataset.",
+      "impact": "Kelas sulit tidak selalu kalah karena jumlah data; ia bisa kalah karena selalu muncul di konteks yang paling padat dan paling ambigu."
+    },
+    {
+      "title": "Relasi antar kelas tidak independen",
+      "evidence": "Lift tertinggi ada pada B1-B2 (1.04), terendah pada B2-B4 (0.94).",
+      "impact": "Ketergantungan ini tidak ekstrem, tetapi cukup sistematis untuk menunjukkan struktur komposisi objek yang berulang."
+    },
+    {
+      "title": "Domain shift terbesar datang dari prior kelas",
+      "evidence": "JS distance campuran kelas DAMIMAS vs LONSUM = 0.237.",
+      "impact": "Gap lintas-source tidak hanya soal appearance, tetapi juga perubahan komposisi label."
+    },
+    {
+      "title": "Ada dua protokol akuisisi: 4-view dan 8-view",
+      "evidence": "Terdapat 45 tree dengan 8 view dan 908 tree dengan 4 view; seluruh tree 8-view berada di DAMIMAS.",
+      "impact": "Coverage per tree tidak homogen dan ikut terikat ke source, sehingga protokol akuisisi berpotensi menjadi confounder terselubung."
+    },
+    {
+      "title": "Sub-populasi internal kelas kadang lebih dekat ke source daripada label global",
+      "evidence": "Cluster paling source-specific ada pada B3 cluster 0 dengan 98.9% sampel dari DAMIMAS.",
+      "impact": "Satu label menyatukan beberapa mode visual berbeda yang tidak sepenuhnya ekuivalen."
+    },
+    {
+      "title": "Ranking difficulty model mengikuti struktur dataset",
+      "evidence": "Di log model, B1 punya mean mAP50 tertinggi (0.700), sedangkan B4 terendah (0.229).",
+      "impact": "Properti dataset cukup konsisten untuk menjelaskan pola performa model."
+    }
+  ],
+  "recommendations": [
+    "Prioritaskan enrichment untuk B4: kelas ini paling kecil secara geometri, jadi butuh close-up, quality control anotasi, dan augmentasi skala.",
+    "Lengkapi coverage LONSUM untuk B1; saat ini kelas itu hampir tidak ada di source tersebut sehingga benchmark combined belum seimbang.",
+    "Gunakan relasi konteks untuk pasangan B1-B2 karena keduanya muncul bersama jauh di atas ekspektasi acak.",
+    "Jangan menjadikan jumlah sampel sebagai satu-satunya prioritas. B1 sudah relatif mudah, sementara B4 butuh intervensi data-centric yang lebih spesifik.",
+    "Pertahankan split per-tree karena integritasnya sudah baik; fokus perbaikan berikutnya seharusnya pada coverage source, protokol view campur, dan image kosong."
+  ]
+}
