@@ -184,6 +184,54 @@ const formatNumber=(v,d=4)=>(typeof v==="number"&&!Number.isNaN(v)?v.toFixed(d):
 const sClass=s=>s&&s.toLowerCase()==="solved"?"solved":(s&&s.toLowerCase()==="progress"?"progress":"plan");
 const getGlobal=r=>(r.splits&&r.splits.test&&r.splits.test.global)||r.global_metrics||{};
 const getClasses=r=>(r.splits&&r.splits.test&&r.splits.test.classes)||r.class_metrics||{};
+const PREFERRED_TYPES=["discussion","planning","training","evaluation","dataset-prep"];
+const PREFERRED_SCENARIOS=["stratifikasi","sawit-yolo","damimas-full","all_data","damimas_only","lonsum_only"];
+const PREFERRED_MODELS=["YOLO26l","YOLOv9m","YOLOv9c"];
+const COMPARE_COLORS=["#1a8f60","#136e9c","#c57913","#8e3b8e","#c43a6b","#0f766e","#7c3aed","#b45309"];
+
+function orderedUnique(values, preferred=[]){
+  const uniq=[...new Set(values.filter(Boolean).map(String))];
+  const preferredSet=new Set(preferred.map(String));
+  const head=preferred.filter(v=>uniq.includes(String(v)));
+  const tail=uniq.filter(v=>!preferredSet.has(v)).sort((a,b)=>a.localeCompare(b));
+  return [...head,...tail];
+}
+
+function setSelectOptions(selectEl, values, includeAll=true){
+  if(!selectEl)return;
+  const current=selectEl.value||"ALL";
+  const normalized=includeAll&&values.indexOf(current)===-1?"ALL":current;
+  selectEl.innerHTML="";
+  if(includeAll){
+    const allOpt=document.createElement("option");
+    allOpt.value="ALL";
+    allOpt.textContent="ALL";
+    selectEl.appendChild(allOpt);
+  }
+  values.forEach(value=>{
+    const opt=document.createElement("option");
+    opt.value=value;
+    opt.textContent=value;
+    selectEl.appendChild(opt);
+  });
+  if([...selectEl.options].some(opt=>opt.value===normalized))selectEl.value=normalized;
+}
+
+function populateDynamicFilters(){
+  const runs=allEvents.flatMap(e=>e.runs||[]);
+  const types=orderedUnique(allEvents.map(e=>e.type),PREFERRED_TYPES);
+  const scenarios=orderedUnique(runs.map(r=>r.scenario),PREFERRED_SCENARIOS);
+  const models=orderedUnique(runs.map(r=>r.model),PREFERRED_MODELS);
+  if(S.type!=="ALL"&&!types.includes(S.type))S.type="ALL";
+  if(S.scenario!=="ALL"&&!scenarios.includes(S.scenario))S.scenario="ALL";
+  if(S.model!=="ALL"&&!models.includes(S.model))S.model="ALL";
+  setSelectOptions(U.fType,types,true);
+  setSelectOptions(U.fScenario,scenarios,true);
+  setSelectOptions(U.fModel,models,true);
+  U.fType.value=S.type;
+  U.fScenario.value=S.scenario;
+  U.fModel.value=S.model;
+}
 
 /* === Data Store === */
 let manifest=null;
@@ -603,8 +651,8 @@ function buildCompareTab(){
   const metric=S.metric;
   const metricLabel={mAP50:'mAP@50',mAP5095:'mAP@50-95',P:'Precision',R:'Recall'}[metric]||metric;
   const classes=["B1","B2","B3","B4"];
-  const scenarios=["all_data","damimas_only","lonsum_only"];
-  const models=[...new Set(v2.map(r=>r.model))].sort();
+  const scenarios=orderedUnique(v2.map(r=>r.scenario),PREFERRED_SCENARIOS);
+  const models=orderedUnique(v2.map(r=>r.model),PREFERRED_MODELS);
 
   // Build grouped data: scenario×model → avg per class (avg across seeds)
   const groups={};
@@ -667,10 +715,10 @@ function initCompareChart(){
   const v2=getV2Runs();
   const metric=S.metric;
   const classes=["B1","B2","B3","B4"];
-  const scenarios=["all_data","damimas_only","lonsum_only"];
-  const models=[...new Set(v2.map(r=>r.model))].sort();
-  const colorMap={'all_data|YOLO26l':'#1a8f60','all_data|YOLOv9c':'#0e683d','damimas_only|YOLO26l':'#136e9c','damimas_only|YOLOv9c':'#0a577f','lonsum_only|YOLO26l':'#c57913','lonsum_only|YOLOv9c':'#8e5809'};
+  const scenarios=orderedUnique(v2.map(r=>r.scenario),PREFERRED_SCENARIOS);
+  const models=orderedUnique(v2.map(r=>r.model),PREFERRED_MODELS);
   const datasets=[];
+  let colorIndex=0;
   scenarios.forEach(sc=>{
     models.forEach(m=>{
       const runs=v2.filter(r=>r.scenario===sc&&r.model===m);
@@ -679,7 +727,8 @@ function initCompareChart(){
         const vals=runs.map(r=>{const cd=r.splits&&r.splits.test&&r.splits.test.classes;return cd&&cd[c]?cd[c][metric]:null}).filter(v=>v!=null);
         return vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length*100):0;
       });
-      const color=colorMap[sc+'|'+m]||'#888';
+      const color=COMPARE_COLORS[colorIndex%COMPARE_COLORS.length];
+      colorIndex++;
       datasets.push({label:sc+' / '+m,data,backgroundColor:color+'88',borderColor:color,borderWidth:1});
     });
   });
@@ -786,6 +835,7 @@ async function init(){
     await loadMonth(ym);
   }
   rebuildAllEvents();
+  populateDynamicFilters();
   readHash();
   bind();
   render();

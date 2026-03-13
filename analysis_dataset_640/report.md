@@ -194,19 +194,31 @@ Interpretasi utama:
 
 ## Artefak
 
-- `[figures/split_source_composition.png](figures/split_source_composition.png)`
-- `[figures/class_distribution.png](figures/class_distribution.png)`
-- `[figures/label_count_histogram.png](figures/label_count_histogram.png)`
-- `[figures/class_cooccurrence_lift.png](figures/class_cooccurrence_lift.png)`
-- `[figures/bbox_geometry.png](figures/bbox_geometry.png)`
-- `[figures/spatial_heatmaps.png](figures/spatial_heatmaps.png)`
-- `[figures/source_class_drift.png](figures/source_class_drift.png)`
-- `[figures/view_consistency.png](figures/view_consistency.png)`
-- `[figures/embedding_tsne_class.png](figures/embedding_tsne_class.png)`
-- `[figures/embedding_tsne_source.png](figures/embedding_tsne_source.png)`
-- `[figures/probe_confusion_matrix.png](figures/probe_confusion_matrix.png)`
-- `[figures/representative_crops.png](figures/representative_crops.png)`
-- `[figures/outlier_gallery.png](figures/outlier_gallery.png)`
+![Split & Source Composition](figures/split_source_composition.png)
+
+![Class Distribution](figures/class_distribution.png)
+
+![Label Count Histogram](figures/label_count_histogram.png)
+
+![Class Co-occurrence Lift](figures/class_cooccurrence_lift.png)
+
+![Bbox Geometry](figures/bbox_geometry.png)
+
+![Spatial Heatmaps](figures/spatial_heatmaps.png)
+
+![Source Class Drift](figures/source_class_drift.png)
+
+![View Consistency](figures/view_consistency.png)
+
+![Embedding t-SNE by Class](figures/embedding_tsne_class.png)
+
+![Embedding t-SNE by Source](figures/embedding_tsne_source.png)
+
+![Probe Confusion Matrix](figures/probe_confusion_matrix.png)
+
+![Representative Crops](figures/representative_crops.png)
+
+![Outlier Gallery](figures/outlier_gallery.png)
 
 ## Rekomendasi Prioritas
 
